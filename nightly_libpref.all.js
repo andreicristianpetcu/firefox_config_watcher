@@ -1108,7 +1108,7 @@ pref("print.print_edge_right", 0);
 pref("print.print_edge_bottom", 0);
 
 // Print via the parent process. This is only used when e10s is enabled.
-#if defined(XP_WIN) || defined(XP_MACOSX) || defined(XP_LINUX)
+#if !defined(MOZ_WIDGET_GONK) && !defined(MOZ_WIDGET_ANDROID)
 pref("print.print_via_parent", true);
 #else
 pref("print.print_via_parent", false);
@@ -2573,16 +2573,6 @@ pref("layout.css.prefixes.webkit", true);
 // (Note: this pref has no effect if the master 'layout.css.prefixes.webkit'
 // pref is set to false.)
 pref("layout.css.prefixes.device-pixel-ratio-webkit", false);
-
-// Is the CSS Unprefixing Service enabled? (This service emulates support
-// for certain vendor-prefixed properties & values, for sites on a "fixlist".)
-pref("layout.css.unprefixing-service.enabled", true);
-#ifdef NIGHTLY_BUILD
-// Is the CSS Unprefixing Service whitelisted for all domains?
-// (This pref is only honored in Nightly builds and can be removed when
-// Bug 1177263 is fixed.)
-pref("layout.css.unprefixing-service.globally-whitelisted", false);
-#endif
 
 // Is support for the :scope selector enabled?
 pref("layout.css.scope-pseudo.enabled", true);
