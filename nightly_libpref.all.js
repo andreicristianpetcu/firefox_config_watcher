@@ -1059,6 +1059,12 @@ pref("browser.fixup.hide_user_pass", true);
 
 // Location Bar AutoComplete
 pref("browser.urlbar.autocomplete.enabled", true);
+#ifdef NIGHTLY_BUILD
+pref("browser.urlbar.usepreloadedtopurls.enabled", true);
+#else
+pref("browser.urlbar.usepreloadedtopurls.enabled", false);
+#endif
+pref("browser.urlbar.usepreloadedtopurls.expire_days", 14);
 
 // Print header customization
 // Use the following codes:
@@ -1983,6 +1989,12 @@ pref("network.auth.subresource-http-auth-allow", 2);
 // This preference has no effect when the browser is set to "Never Remember History",
 // in that case default credentials will always be used.
 pref("network.auth.private-browsing-sso", false);
+
+// Control how the throttling service works - number of ms that each
+// suspend and resume period lasts (prefs named appropriately)
+pref("network.throttle.suspend-for", 2000);
+pref("network.throttle.resume-for", 2000);
+pref("network.throttle.enable", true);
 
 pref("permissions.default.image",           1); // 1-Accept, 2-Deny, 3-dontAcceptForeign
 
@@ -4450,6 +4462,10 @@ pref("image.infer-src-animation.threshold-ms", 2000);
 // Discards inactive image frames and re-decodes them on demand from
 // compressed data.
 pref("image.mem.discardable", true);
+
+// Decodes images into shared memory to allow direct use in separate
+// rendering processes.
+pref("image.mem.shared", false);
 
 // Allows image locking of decoded image data in content processes.
 pref("image.mem.allow_locking_in_content_processes", true);

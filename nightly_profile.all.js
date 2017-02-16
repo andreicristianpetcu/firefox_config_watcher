@@ -1535,6 +1535,9 @@ pref("browser.migrate.automigrate.enabled", false);
 pref("browser.migrate.automigrate.daysToOfferUndo", 4);
 pref("browser.migrate.automigrate.ui.enabled", true);
 
+pref("browser.migrate.chrome.history.limit", 0);
+pref("browser.migrate.chrome.history.maxAgeInDays", 0);
+
 // Enable browser frames for use on desktop.  Only exposed to chrome callers.
 pref("dom.mozBrowserFramesEnabled", true);
 
@@ -1586,6 +1589,7 @@ pref("services.sync.validation.enabled", true);
 // Preferences for the form autofill system extension
 pref("browser.formautofill.experimental", false);
 pref("browser.formautofill.enabled", false);
+pref("browser.formautofill.loglevel", "Warn");
 
 // Enable safebrowsing v4 tables (suffixed by "-proto") update.
 #ifdef NIGHTLY_BUILD
