@@ -361,6 +361,7 @@ pref("media.libavcodec.allow-obsolete", false);
 #endif
 #if defined(MOZ_FFVPX)
 pref("media.ffvpx.enabled", true);
+pref("media.ffvpx.low-latency.enabled", false);
 #endif
 pref("media.gmp.decoder.enabled", false);
 pref("media.gmp.decoder.aac", 0);
@@ -715,6 +716,8 @@ pref("gfx.hidpi.enabled", 2);
 // Use containerless scrolling for now on desktop.
 pref("layout.scroll.root-frame-containers", false);
 #endif
+
+pref("layout.scrollbars.always-layerize-track", false);
 
 // Whether to enable LayerScope tool and default listening port
 pref("gfx.layerscope.enabled", false);
@@ -1257,11 +1260,7 @@ pref("privacy.trackingprotection.lower_network_priority",  false);
 
 pref("dom.event.contextmenu.enabled",       true);
 pref("dom.event.clipboardevents.enabled",   true);
-#if defined(XP_WIN) && !defined(RELEASE_OR_BETA) || defined(MOZ_WIDGET_GTK) && !defined(RELEASE_OR_BETA) || defined(XP_MACOSX) && !defined(RELEASE_OR_BETA) || defined(MOZ_WIDGET_ANDROID) && !defined(RELEASE_OR_BETA)
 pref("dom.event.highrestimestamp.enabled",  true);
-#else
-pref("dom.event.highrestimestamp.enabled",  false);
-#endif
 
 pref("dom.webcomponents.enabled",           false);
 pref("dom.webcomponents.customelements.enabled", false);
@@ -2237,9 +2236,9 @@ pref("extensions.blocklist.interval", 86400);
 // Required blocklist freshness for OneCRL OCSP bypass
 // (default is 1.25x extensions.blocklist.interval, or 30 hours)
 pref("security.onecrl.maximum_staleness_in_seconds", 108000);
-pref("extensions.blocklist.url", "https://blocklist.addons.mozilla.org/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
-pref("extensions.blocklist.detailsURL", "https://www.mozilla.com/%LOCALE%/blocklist/");
-pref("extensions.blocklist.itemURL", "https://blocklist.addons.mozilla.org/%LOCALE%/%APP%/blocked/%blockID%");
+pref("extensions.blocklist.url", "https://blocklists.settings.services.mozilla.com/v1/blocklist/3/%APP_ID%/%APP_VERSION%/%PRODUCT%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/%PING_COUNT%/%TOTAL_PING_COUNT%/%DAYS_SINCE_LAST_PING%/");
+pref("extensions.blocklist.detailsURL", "https://blocked.cdn.mozilla.net/");
+pref("extensions.blocklist.itemURL", "https://blocked.cdn.mozilla.net/%blockID%.html");
 // Controls what level the blocklist switches from warning about items to forcibly
 // blocking them.
 pref("extensions.blocklist.level", 2);
@@ -5189,6 +5188,9 @@ pref("browser.safebrowsing.provider.google.lists", "goog-badbinurl-shavar,goog-d
 pref("browser.safebrowsing.provider.google.updateURL", "https://safebrowsing.google.com/safebrowsing/downloads?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2&key=%GOOGLE_API_KEY%");
 pref("browser.safebrowsing.provider.google.gethashURL", "https://safebrowsing.google.com/safebrowsing/gethash?client=SAFEBROWSING_ID&appver=%MAJOR_VERSION%&pver=2.2");
 pref("browser.safebrowsing.provider.google.reportURL", "https://safebrowsing.google.com/safebrowsing/diagnostic?client=%NAME%&hl=%LOCALE%&site=");
+pref("browser.safebrowsing.provider.google.reportPhishMistakeURL", "https://%LOCALE%.phish-error.mozilla.com/?hl=%LOCALE%&url=");
+pref("browser.safebrowsing.provider.google.reportMalwareMistakeURL", "https://%LOCALE%.malware-error.mozilla.com/?hl=%LOCALE%&url=");
+
 
 // Prefs for v4.
 pref("browser.safebrowsing.provider.google4.pver", "4");
@@ -5197,10 +5199,10 @@ pref("browser.safebrowsing.provider.google4.updateURL", "https://safebrowsing.go
 // Leave it empty until we roll out v4 hash completion feature. See Bug 1323856.
 pref("browser.safebrowsing.provider.google4.gethashURL", "");
 pref("browser.safebrowsing.provider.google4.reportURL", "https://safebrowsing.google.com/safebrowsing/diagnostic?client=%NAME%&hl=%LOCALE%&site=");
+pref("browser.safebrowsing.provider.google4.reportPhishMistakeURL", "https://%LOCALE%.phish-error.mozilla.com/?hl=%LOCALE%&url=");
+pref("browser.safebrowsing.provider.google4.reportMalwareMistakeURL", "https://%LOCALE%.malware-error.mozilla.com/?hl=%LOCALE%&url=");
 
-pref("browser.safebrowsing.reportPhishMistakeURL", "https://%LOCALE%.phish-error.mozilla.com/?hl=%LOCALE%&url=");
 pref("browser.safebrowsing.reportPhishURL", "https://%LOCALE%.phish-report.mozilla.com/?hl=%LOCALE%&url=");
-pref("browser.safebrowsing.reportMalwareMistakeURL", "https://%LOCALE%.malware-error.mozilla.com/?hl=%LOCALE%&url=");
 
 // The table and global pref for blocking plugin content
 pref("browser.safebrowsing.blockedURIs.enabled", true);
@@ -5590,7 +5592,7 @@ pref("security.mixed_content.send_hsts_priming", true);
 pref("security.mixed_content.use_hsts", true);
 #endif
 // Approximately 1 week default cache for HSTS priming failures, in seconds
-pref ("security.mixed_content.hsts_priming_cache_timeout", 10080);
+pref ("security.mixed_content.hsts_priming_cache_timeout", 604800);
 // Force the channel to timeout in 3 seconds if we have not received
 // expects a time in milliseconds
 pref ("security.mixed_content.hsts_priming_request_timeout", 3000);
