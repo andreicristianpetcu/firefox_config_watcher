@@ -1233,7 +1233,7 @@ pref("javascript.options.strict.debug",     false);
 pref("javascript.options.baselinejit",      true);
 pref("javascript.options.ion",              true);
 pref("javascript.options.asmjs",            true);
-pref("javascript.options.wasm",             false);
+pref("javascript.options.wasm",             true);
 pref("javascript.options.wasm_baselinejit", false);
 pref("javascript.options.native_regexp",    true);
 pref("javascript.options.parallel_parsing", true);
@@ -1284,7 +1284,12 @@ pref("javascript.options.mem.gc_max_empty_chunk_count", 30);
 
 pref("javascript.options.showInConsole", false);
 
+#ifdef RELEASE_OR_BETA
+// Disabled in Beta and Release for now, see bug 1225406
+pref("javascript.options.shared_memory", false);
+#else
 pref("javascript.options.shared_memory", true);
+#endif
 
 pref("javascript.options.throw_on_debuggee_would_run", false);
 pref("javascript.options.dump_stack_on_debuggee_would_run", false);
