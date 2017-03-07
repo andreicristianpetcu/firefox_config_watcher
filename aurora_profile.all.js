@@ -65,9 +65,6 @@ pref("extensions.systemAddon.update.url", "https://aus5.mozilla.org/update/3/Sys
 // See the SCOPE constants in AddonManager.jsm for values to use here.
 pref("extensions.autoDisableScopes", 15);
 
-// Whether or not webextension themes are supported.
-pref("extensions.webextensions.themes.enabled", false);
-
 // Add-on content security policies.
 pref("extensions.webextensions.base-content-security-policy", "script-src 'self' https://* moz-extension: blob: filesystem: 'unsafe-eval' 'unsafe-inline'; object-src 'self' https://* moz-extension: blob: filesystem:;");
 pref("extensions.webextensions.default-content-security-policy", "script-src 'self'; object-src 'self';");
@@ -188,8 +185,6 @@ pref("browser.uitour.loglevel", "Error");
 pref("browser.uitour.requireSecure", true);
 pref("browser.uitour.themeOrigin", "https://addons.mozilla.org/%LOCALE%/firefox/themes/");
 pref("browser.uitour.url", "https://www.mozilla.org/%LOCALE%/firefox/%VERSION%/tour/");
-// This is used as a regexp match against the page's URL.
-pref("browser.uitour.readerViewTrigger", "^https:\\/\\/www\\.mozilla\\.org\\/[^\\/]+\\/firefox\\/reading\\/start");
 // How long to show a Hearbeat survey (two hours, in seconds)
 pref("browser.uitour.surveyDuration", 7200);
 
@@ -534,7 +529,8 @@ pref("privacy.sanitize.migrateFx3Prefs",    false);
 
 pref("privacy.panicButton.enabled",         true);
 
-pref("privacy.firstparty.isolate",          false);
+pref("privacy.firstparty.isolate",                        false);
+pref("privacy.firstparty.isolate.restrict_opener_access", true);
 
 // Time until temporary permissions expire, in ms
 pref("privacy.temporary_permission_expire_time_ms",  3600000);
@@ -939,12 +935,6 @@ pref("browser.tabs.remote.autostart", false);
 pref("browser.tabs.remote.desktopbehavior", true);
 
 #if defined(XP_WIN) && defined(MOZ_SANDBOX)
-// When this pref is true the Windows process sandbox will set up dummy
-// interceptions and log to the browser console when calls fail in the sandboxed
-// process and also if they are subsequently allowed by the broker process.
-// This will require a restart.
-pref("security.sandbox.windows.log", false);
-
 // Controls whether and how the Windows NPAPI plugin process is sandboxed.
 // To get a different setting for a particular plugin replace "default", with
 // the plugin's nice file name, see: nsPluginTag::GetNiceFileName.
@@ -1021,6 +1011,8 @@ pref("security.sandbox.content.level", 1);
 // This setting may not be required anymore once we decide to permanently
 // enable the content sandbox.
 pref("security.sandbox.content.level", 2);
+pref("security.sandbox.content.write_path_whitelist", "");
+pref("security.sandbox.content.syscall_whitelist", "");
 #endif
 
 #if defined(XP_MACOSX) || defined(XP_WIN)
@@ -1033,12 +1025,11 @@ pref("security.sandbox.content.tempDirSuffix", "");
 #endif
 
 #if defined(MOZ_SANDBOX)
-#if defined(XP_MACOSX)
 // This pref determines if messages relevant to sandbox violations are
 // logged.
-// At present, this setting refers only to mac sandbox messages sent to
-// the system console but the setting will be used on other platforms
-// in the future.
+#if defined(XP_WIN)
+pref("security.sandbox.logging.enabled", false);
+#else
 pref("security.sandbox.logging.enabled", true);
 #endif
 #endif
@@ -1199,20 +1190,8 @@ pref("browser.newtabpage.directory.source", "https://tiles.services.mozilla.com/
 // endpoint to send newtab click and view pings
 pref("browser.newtabpage.directory.ping", "https://tiles.services.mozilla.com/v3/links/");
 
-// activates the remote-hosted newtab page
-pref("browser.newtabpage.remote", false);
-
-// remote newtab version targeted
-pref("browser.newtabpage.remote.version", "1");
-
-// Toggles endpoints allowed for remote newtab communications
-pref("browser.newtabpage.remote.mode", "production");
-
-// content-signature tests for remote newtab
-pref("browser.newtabpage.remote.content-signing-test", false);
-
-// verification keys for remote-hosted newtab page
-pref("browser.newtabpage.remote.keys", "");
+// activates Activity Stream
+pref("browser.newtabpage.activity-stream.enabled", false);
 
 // Enable the DOM fullscreen API.
 pref("full-screen-api.enabled", true);
@@ -1266,6 +1245,8 @@ pref("plain_text.wrap_long_lines", true);
 // before content.
 pref("dom.debug.propagate_gesture_events_through_content", false);
 
+// All the Geolocation preferences are here.
+//
 // The request URL of the GeoLocation backend.
 #ifdef RELEASE_OR_BETA
 pref("geo.wifi.uri", "https://www.googleapis.com/geolocation/v1/geolocate?key=%GOOGLE_API_KEY%");
@@ -1294,6 +1275,11 @@ pref("geo.provider.use_gpsd", true);
 #endif
 #endif
 #endif
+
+// We keep allowing non-HTTPS geo requests on all the release
+// channels, for now.
+// TODO: default to false (or remove altogether) for #1072859.
+pref("geo.security.allowinsecure", true);
 
 // Necko IPC security checks only needed for app isolation for cookies/cache/etc:
 // currently irrelevant for desktop e10s
@@ -1373,7 +1359,12 @@ pref("media.eme.enabled", false);
 #else
 pref("media.eme.enabled", true);
 #endif
-pref("media.eme.apiVisible", true);
+
+#ifdef NIGHTLY_BUILD
+pref("media.eme.vp9-in-mp4.enabled", true);
+#else
+pref("media.eme.vp9-in-mp4.enabled", false);
+#endif
 
 // Whether we should run a test-pattern through EME GMPs before assuming they'll
 // decode H.264.
@@ -1521,23 +1512,19 @@ pref("browser.esedbreader.loglevel", "Error");
 
 pref("browser.laterrun.enabled", false);
 
-
-#if MOZ_UPDATE_CHANNEL == beta
+#ifdef EARLY_BETA_OR_EARLIER
 pref("browser.migrate.automigrate.enabled", true);
-pref("browser.migrate.automigrate.undo-survey", "https://qsurvey.mozilla.com/s3/Firefox-52-Import-Undo?prevBrowser=%IMPORTEDBROWSER%");
-pref("browser.migrate.automigrate.undo-survey-locales", "en-US");
 #else
 pref("browser.migrate.automigrate.enabled", false);
 #endif
-
-
 // 4 here means the suggestion notification will be automatically
 // hidden the 4th day, so it will actually be shown on 3 different days.
 pref("browser.migrate.automigrate.daysToOfferUndo", 4);
 pref("browser.migrate.automigrate.ui.enabled", true);
 
-pref("browser.migrate.chrome.history.limit", 0);
-pref("browser.migrate.chrome.history.maxAgeInDays", 0);
+// See comments in bug 1340115 on how we got to these numbers.
+pref("browser.migrate.chrome.history.limit", 2000);
+pref("browser.migrate.chrome.history.maxAgeInDays", 180);
 
 // Enable browser frames for use on desktop.  Only exposed to chrome callers.
 pref("dom.mozBrowserFramesEnabled", true);
@@ -1581,14 +1568,10 @@ pref("browser.crashReports.unsubmittedCheck.enabled", false);
 pref("browser.crashReports.unsubmittedCheck.chancesUntilSuppress", 4);
 pref("browser.crashReports.unsubmittedCheck.autoSubmit", false);
 
-#ifdef NIGHTLY_BUILD
-// Enable the (fairly costly) client/server validation on nightly only. The other prefs
-// controlling validation are located in /services/sync/services-sync.js
-pref("services.sync.validation.enabled", true);
-#endif
-
 // Preferences for the form autofill system extension
 pref("browser.formautofill.experimental", false);
+pref("browser.formautofill.enabled", false);
+pref("browser.formautofill.loglevel", "Warn");
 
 // Enable safebrowsing v4 tables (suffixed by "-proto") update.
 #ifdef NIGHTLY_BUILD
