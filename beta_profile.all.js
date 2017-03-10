@@ -188,8 +188,6 @@ pref("browser.uitour.loglevel", "Error");
 pref("browser.uitour.requireSecure", true);
 pref("browser.uitour.themeOrigin", "https://addons.mozilla.org/%LOCALE%/firefox/themes/");
 pref("browser.uitour.url", "https://www.mozilla.org/%LOCALE%/firefox/%VERSION%/tour/");
-// This is used as a regexp match against the page's URL.
-pref("browser.uitour.readerViewTrigger", "^https:\\/\\/www\\.mozilla\\.org\\/[^\\/]+\\/firefox\\/reading\\/start");
 // How long to show a Hearbeat survey (two hours, in seconds)
 pref("browser.uitour.surveyDuration", 7200);
 
@@ -1536,8 +1534,9 @@ pref("browser.migrate.automigrate.enabled", false);
 pref("browser.migrate.automigrate.daysToOfferUndo", 4);
 pref("browser.migrate.automigrate.ui.enabled", true);
 
-pref("browser.migrate.chrome.history.limit", 0);
-pref("browser.migrate.chrome.history.maxAgeInDays", 0);
+// See comments in bug 1340115 on how we got to these numbers.
+pref("browser.migrate.chrome.history.limit", 2000);
+pref("browser.migrate.chrome.history.maxAgeInDays", 180);
 
 // Enable browser frames for use on desktop.  Only exposed to chrome callers.
 pref("dom.mozBrowserFramesEnabled", true);
