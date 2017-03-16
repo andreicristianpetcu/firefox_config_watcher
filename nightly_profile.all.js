@@ -1204,6 +1204,11 @@ pref("full-screen-api.enabled", true);
 // (this pref has no effect if more than 6 hours have passed since the last crash)
 pref("toolkit.startup.max_resumed_crashes", 3);
 
+// Whether we use pdfium to view content with the pdf mime type.
+// Note: if the pref is set to false while Firefox is open, it won't
+// take effect until there are no open pdfium tabs.
+pref("pdfium.enabled", false);
+
 // Completely disable pdf.js as an option to preview pdfs within firefox.
 // Note: if this is not disabled it does not necessarily mean pdf.js is the pdf
 // handler just that it is an option.
@@ -1251,10 +1256,10 @@ pref("dom.debug.propagate_gesture_events_through_content", false);
 // All the Geolocation preferences are here.
 //
 
-// Geolocation preferences for the RELEASE channel.
+// Geolocation preferences for the RELEASE and "later" Beta channels.
 // Some of these prefs are specified even though they are redundant; they are
 // here for clarity and end-user experiments.
-#ifdef RELEASE
+#ifndef EARLY_BETA_OR_EARLIER
 pref("geo.wifi.uri", "https://www.googleapis.com/geolocation/v1/geolocate?key=%GOOGLE_API_KEY%");
 
 #ifdef XP_MACOSX
@@ -1289,11 +1294,6 @@ pref("geo.provider.use_gpsd", true);
 #endif
 
 #endif
-
-// We keep allowing non-HTTPS geo requests on all the release
-// channels, for now.
-// TODO: default to false (or remove altogether) for #1072859.
-pref("geo.security.allowinsecure", true);
 
 // Necko IPC security checks only needed for app isolation for cookies/cache/etc:
 // currently irrelevant for desktop e10s
