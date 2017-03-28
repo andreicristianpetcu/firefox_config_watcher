@@ -1624,6 +1624,10 @@ pref("network.http.keep_empty_response_headers_as_empty_string", true);
 // Max size, in bytes, for received HTTP response header.
 pref("network.http.max_response_header_size", 393216);
 
+// The ratio of the transaction count for the focused window and the count of
+// all available active connections.
+pref("network.http.focused_window_transaction_ratio", "0.9");
+
 // default values for FTP
 // in a DSCP environment this should be 40 (0x28, or AF11), per RFC-4594,
 // Section 4.8 "High-Throughput Data Service Class", and 80 (0x50, or AF22)
@@ -5669,5 +5673,8 @@ pref("fuzzing.enabled", false);
 // turn these on and off, instead use the conditional-pref code in gfxPrefs.h
 // to do that.
 pref("layers.advanced.border-layers", 2);
+pref("layers.advanced.boxshadow-inset-layers", 2);
 pref("layers.advanced.boxshadow-outer-layers", 2);
 pref("layers.advanced.caret-layers", 2);
+pref("layers.advanced.displaybuttonborder-layers", 2);
+pref("layers.advanced.outline-layers", 2);
