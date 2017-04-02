@@ -514,6 +514,7 @@ pref("media.getusermedia.playout_delay", 100);
 pref("media.navigator.audio.full_duplex", true);
 // Whether to enable Webrtc Hardware acceleration support
 pref("media.navigator.hardware.vp8_encode.acceleration_enabled", false);
+pref("media.navigator.hardware.vp8_encode.acceleration_remote_enabled", false);
 pref("media.navigator.hardware.vp8_decode.acceleration_enabled", false);
 #elif defined(XP_LINUX)
 pref("media.peerconnection.capture_delay", 70);
@@ -824,6 +825,9 @@ pref("gfx.ycbcr.accurate-conversion", false);
 pref("gfx.webrender.enabled", true);
 #else
 pref("gfx.webrender.enabled", false);
+#endif
+#ifdef XP_WIN
+pref("gfx.webrender.force-angle", true);
 #endif
 
 pref("accessibility.browsewithcaret", false);
@@ -2832,6 +2836,8 @@ pref("plugins.click_to_play", false);
 #ifdef NIGHTLY_BUILD
 // This only supports one hidden ctp plugin, edit nsPluginArray.cpp if adding a second
 pref("plugins.navigator.hidden_ctp_plugin", "Shockwave Flash");
+#else
+pref("plugins.navigator.hidden_ctp_plugin", "");
 #endif
 // The default value for nsIPluginTag.enabledState (STATE_ENABLED = 2)
 pref("plugin.default.state", 2);
@@ -3276,12 +3282,12 @@ pref("ui.mouse.radius.inputSource.touchOnly", true);
 pref("font.name.serif.ar", "Times New Roman");
 pref("font.name.sans-serif.ar", "Segoe UI");
 pref("font.name-list.sans-serif.ar", "Segoe UI, Tahoma, Arial");
-pref("font.name.monospace.ar", "Consolas");
+pref("font.name.monospace.ar", "Courier New");
 pref("font.name.cursive.ar", "Comic Sans MS");
 
 pref("font.name.serif.el", "Times New Roman");
 pref("font.name.sans-serif.el", "Arial");
-pref("font.name.monospace.el", "Consolas");
+pref("font.name.monospace.el", "Courier New");
 pref("font.name.cursive.el", "Comic Sans MS");
 
 pref("font.name.serif.he", "Narkisim");
@@ -3316,17 +3322,17 @@ pref("font.name.cursive.th", "Tahoma");
 
 pref("font.name.serif.x-cyrillic", "Times New Roman");
 pref("font.name.sans-serif.x-cyrillic", "Arial");
-pref("font.name.monospace.x-cyrillic", "Consolas");
+pref("font.name.monospace.x-cyrillic", "Courier New");
 pref("font.name.cursive.x-cyrillic", "Comic Sans MS");
 
 pref("font.name.serif.x-unicode", "Times New Roman");
 pref("font.name.sans-serif.x-unicode", "Arial");
-pref("font.name.monospace.x-unicode", "Consolas");
+pref("font.name.monospace.x-unicode", "Courier New");
 pref("font.name.cursive.x-unicode", "Comic Sans MS");
 
 pref("font.name.serif.x-western", "Times New Roman");
 pref("font.name.sans-serif.x-western", "Arial");
-pref("font.name.monospace.x-western", "Consolas");
+pref("font.name.monospace.x-western", "Courier New");
 pref("font.name.cursive.x-western", "Comic Sans MS");
 
 pref("font.name.serif.zh-CN", "SimSun");
@@ -3471,7 +3477,7 @@ pref("font.default.x-devanagari", "sans-serif");
 pref("font.name.serif.x-math", "Latin Modern Math");
 pref("font.name-list.serif.x-math", "Latin Modern Math, STIX Two Math, XITS Math, Cambria Math, Libertinus Math, DejaVu Math TeX Gyre, TeX Gyre Bonum Math, TeX Gyre Pagella Math, TeX Gyre Schola, TeX Gyre Termes Math, STIX Math, Asana Math, STIXGeneral, DejaVu Serif, DejaVu Sans, Times New Roman");
 pref("font.name.sans-serif.x-math", "Arial");
-pref("font.name.monospace.x-math", "Consolas");
+pref("font.name.monospace.x-math", "Courier New");
 pref("font.name.cursive.x-math", "Comic Sans MS");
 
 // ClearType tuning parameters for directwrite/d2d.
@@ -5065,9 +5071,8 @@ pref("dom.vr.osvr.enabled", false);
 pref("dom.vr.openvr.enabled", false);
 // Pose prediction reduces latency effects by returning future predicted HMD
 // poses to callers of the WebVR API.  This currently only has an effect for
-// Oculus Rift on SDK 0.8 or greater.  It is disabled by default for now due to
-// frame uniformity issues with e10s.
-pref("dom.vr.poseprediction.enabled", false);
+// Oculus Rift on SDK 0.8 or greater.
+pref("dom.vr.poseprediction.enabled", true);
 // Starting VR presentation is only allowed within a user gesture or event such
 // as VRDisplayActivate triggered by the system.  dom.vr.require-gesture allows
 // this requirement to be disabled for special cases such as during automated
@@ -5400,14 +5405,6 @@ pref("intl.allow-insecure-text-input", false);
 // Enable meta-viewport support in remote APZ-enabled frames.
 pref("dom.meta-viewport.enabled", false);
 
-// The interval at which to check for slow running addons
-#ifdef NIGHTLY_BUILD
-pref("browser.addon-watch.interval", 15000);
-#else
-pref("browser.addon-watch.interval", -1);
-#endif
-pref("browser.addon-watch.ignore", "[\"mochikit@mozilla.org\",\"special-powers@mozilla.org\",\"fxdevtools-adapters@mozilla.org\",\"fx-devtools\",\"webcompat-reporter@mozilla.org\"]");
-
 // Search service settings
 pref("browser.search.log", false);
 pref("browser.search.update", true);
@@ -5612,7 +5609,11 @@ pref("dom.webkitBlink.dirPicker.enabled", true);
 pref("dom.webkitBlink.filesystem.enabled", true);
 #endif
 
+#ifdef RELEASE_OR_BETA
+pref("media.block-autoplay-until-in-foreground", false);
+#else
 pref("media.block-autoplay-until-in-foreground", true);
+#endif
 
 #ifdef MOZ_STYLO
 // Is the Servo-backed style system enabled?
