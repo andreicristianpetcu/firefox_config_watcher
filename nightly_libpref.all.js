@@ -2778,9 +2778,6 @@ pref("layout.css.unset-value.enabled", true);
 // Is support for the "all" shorthand enabled?
 pref("layout.css.all-shorthand.enabled", true);
 
-// Is support for CSS variables enabled?
-pref("layout.css.variables.enabled", true);
-
 // Is support for CSS overflow-clip-box enabled for non-UA sheets?
 pref("layout.css.overflow-clip-box.enabled", false);
 
@@ -5031,6 +5028,13 @@ pref("dom.vr.enabled", false);
 #else
 pref("dom.vr.enabled", true);
 #endif
+// Maximum number of milliseconds the browser will wait for content to call
+// VRDisplay.requestPresent after emitting vrdisplayactivate during VR
+// link traversal.  This prevents a long running event handler for
+// vrdisplayactivate from later calling VRDisplay.requestPresent, which would
+// result in a non-responsive browser in the VR headset.
+pref("dom.vr.navigation.timeout", 5000);
+// Oculus device
 pref("dom.vr.oculus.enabled", true);
 // OSVR device
 pref("dom.vr.osvr.enabled", false);
@@ -5629,7 +5633,7 @@ pref("prompts.authentication_dialog_abuse_limit", 3);
 pref("browser.storageManager.enabled", false);
 pref("browser.storageManager.pressureNotification.minIntervalMS", 1200000);
 pref("browser.storageManager.pressureNotification.usageThresholdGB", 5);
-pref("dom.IntersectionObserver.enabled", true);
+pref("dom.IntersectionObserver.enabled", false);
 
 // Whether module scripts (<script type="module">) are enabled for content.
 pref("dom.moduleScripts.enabled", false);
