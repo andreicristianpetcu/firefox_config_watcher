@@ -1162,6 +1162,7 @@ pref("editor.use_css",                       false);
 pref("editor.css.default_length_unit",       "px");
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
+pref("editor.use_div_for_default_newlines",  true);
 
 // Scripts & Windows prefs
 pref("dom.disable_beforeunload",            false);
@@ -2899,18 +2900,6 @@ pref("layout.frame_rate", -1);
 // pref to dump the display list to the log. Useful for debugging drawing.
 pref("layout.display-list.dump", false);
 pref("layout.display-list.dump-content", false);
-
-// pref to control precision of the frame rate timer. When true,
-// we use a "precise" timer, which means each notification fires
-// Nms after the start of the last notification. That means if the
-// processing of the notification is slow, the timer can fire immediately
-// after we've just finished processing the last notification, which might
-// lead to starvation problems.
-// When false, we use a "slack" timer which fires Nms after the *end*
-// of the last notification. This can give less tight frame rates
-// but provides more time for other operations when the browser is
-// heavily loaded.
-pref("layout.frame_rate.precise", false);
 
 // pref to control whether layout warnings that are hit quite often are enabled
 pref("layout.spammy_warnings.enabled", false);
@@ -4753,6 +4742,8 @@ pref("layers.force-active", false);
 // platform and are the optimal surface type.
 pref("layers.gralloc.disable", false);
 
+pref("webrender.highlight-painted-layers", false);
+
 // Enable/Disable the geolocation API for content
 pref("geo.enabled", true);
 
@@ -4787,6 +4778,7 @@ pref("xpinstall.signatures.required", false);
 pref("extensions.alwaysUnpack", false);
 pref("extensions.minCompatiblePlatformVersion", "2.0");
 pref("extensions.webExtensionsMinPlatformVersion", "42.0a1");
+pref("extensions.allow-non-mpc-extensions", true);
 
 // Other webextensions prefs
 pref("extensions.webextensions.keepStorageOnUninstall", false);
@@ -5180,24 +5172,12 @@ pref("urlclassifier.phishTable", "googpub-phish-shavar,test-phish-simple");
 
 // Tables for application reputation.
 #ifdef NIGHTLY_BUILD
+pref("urlclassifier.downloadAllowTable", "goog-downloadwhite-digest256,goog-downloadwhite-proto");
 pref("urlclassifier.downloadBlockTable", "goog-badbinurl-shavar,goog-badbinurl-proto");
 #else
-pref("urlclassifier.downloadBlockTable", "goog-badbinurl-shavar");
-#endif
-
-#ifdef XP_WIN
- // Only download the whitelist on Windows, since the whitelist is
- // only useful for suppressing remote lookups for signed binaries which we can
- // only verify on Windows (Bug 974579). Other platforms always do remote lookups.
-#ifdef NIGHTLY_BUILD
-pref("urlclassifier.downloadAllowTable", "goog-downloadwhite-digest256,goog-downloadwhite-proto");
-#else
 pref("urlclassifier.downloadAllowTable", "goog-downloadwhite-digest256");
+pref("urlclassifier.downloadBlockTable", "goog-badbinurl-shavar");
 #endif // NIGHTLY_BUILD
-
-#else
-pref("urlclassifier.downloadAllowTable", "");
-#endif // XP_WIN
 
 pref("urlclassifier.disallow_completions", "test-malware-simple,test-phish-simple,test-unwanted-simple,test-track-simple,test-trackwhite-simple,test-block-simple,test-flashallow-simple,testexcept-flashallow-simple,test-flash-simple,testexcept-flash-simple,test-flashsubdoc-simple,testexcept-flashsubdoc-simple,goog-downloadwhite-digest256,base-track-digest256,mozstd-trackwhite-digest256,content-track-digest256,mozplugin-block-digest256,mozplugin2-block-digest256,block-flash-digest256,except-flash-digest256,allow-flashallow-digest256,except-flashallow-digest256,block-flashsubdoc-digest256,except-flashsubdoc-digest256");
 
@@ -5300,7 +5280,11 @@ pref("browser.safebrowsing.id", "navclient-auto-ffox");
 pref("browser.safebrowsing.id", "Firefox");
 #endif
 
+#ifdef NIGHTLY_BUILD
+pref("browser.safebrowsing.temporary.take_v4_completion_result", true);
+#else
 pref("browser.safebrowsing.temporary.take_v4_completion_result", false);
+#endif
 
 // Turn off Spatial navigation by default.
 pref("snav.enabled", false);
@@ -5654,6 +5638,9 @@ pref("dom.storageManager.enabled", true);
 #else
 pref("dom.storageManager.enabled", false);
 #endif
+
+pref("dom.storageManager.prompt.testing", false);
+pref("dom.storageManager.prompt.testing.allow", false);
 
 // Enable the Storage management in about:preferences and persistent-storage permission request
 // To enable the DOM implementation, turn on "dom.storageManager.enabled"
