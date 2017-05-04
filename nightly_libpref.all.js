@@ -1548,9 +1548,6 @@ pref("network.http.referer.XOriginTrimmingPolicy", 0);
 // 0=always send, 1=send iff base domains match, 2=send iff hosts match
 pref("network.http.referer.XOriginPolicy", 0);
 
-// Controls whether referrer attributes in <a>, <img>, <area>, <iframe>, and <link> are honoured
-pref("network.http.enablePerElementReferrer", true);
-
 // Maximum number of consecutive redirects before aborting.
 pref("network.http.redirection-limit", 20);
 
@@ -1917,6 +1914,11 @@ pref("network.dns.blockDotOnion", true);
 
 // These domains are treated as localhost equivalent
 pref("network.dns.localDomains", "");
+
+// When non empty all non-localhost DNS queries (including IP addresses)
+// resolve to this value. The value can be a name or an IP address.
+// domains mapped to localhost with localDomains stay localhost.
+pref("network.dns.forceResolve", "");
 
 // Contols whether or not "localhost" should resolve when offline
 pref("network.dns.offline-localhost", true);
@@ -5205,6 +5207,10 @@ pref("urlclassifier.gethashnoise", 4);
 
 // Gethash timeout for Safebrowsing.
 pref("urlclassifier.gethash.timeout_ms", 5000);
+// Update server response timeout for Safebrowsing.
+pref("urlclassifier.update.response_timeout_ms", 5000);
+// Download update timeout for Safebrowsing.
+pref("urlclassifier.update.timeout_ms", 60000);
 
 // If an urlclassifier table has not been updated in this number of seconds,
 // a gethash request will be forced to check that the result is still in
