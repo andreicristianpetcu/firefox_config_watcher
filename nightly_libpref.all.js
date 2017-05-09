@@ -2028,6 +2028,13 @@ pref("network.generic-ntlm-auth.workstation", "WORKSTATION");
 //   2 - allow the cross-origin authentication as well.
 pref("network.auth.subresource-http-auth-allow", 2);
 
+// Sub-resources HTTP-authentication for cross-origin images:
+// true - it is allowed to present http auth. dialog for cross-origin images.
+// false - it is not allowed.
+// If network.auth.subresource-http-auth-allow has values 0 or 1 this pref does not
+// have any effect.
+pref("network.auth.subresource-img-cross-origin-http-auth-allow", true);
+
 // This preference controls whether to allow sending default credentials (SSO) to
 // NTLM/Negotiate servers allowed in the "trusted uri" list when navigating them
 // in a Private Browsing window.
@@ -2391,6 +2398,7 @@ pref("security.ssl.enable_ocsp_must_staple", true);
 
 // Insecure Form Field Warning
 pref("security.insecure_field_warning.contextual.enabled", false);
+pref("security.insecure_field_warning.ignore_local_ip_address", true);
 
 // Disable pinning checks by default.
 pref("security.cert_pinning.enforcement_level", 0);
@@ -4434,6 +4442,8 @@ pref("signon.storeWhenAutocompleteOff",     true);
 pref("signon.debug",                        false);
 pref("signon.recipes.path",                 "chrome://passwordmgr/content/recipes.json");
 pref("signon.schemeUpgrades",               false);
+// This temporarily prevents the master password to reprompt for autocomplete.
+pref("signon.masterPasswordReprompt.timeout_ms", 900000); // 15 Minutes
 
 // Satchel (Form Manager) prefs
 pref("browser.formfill.debug",            false);
