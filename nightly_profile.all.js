@@ -238,7 +238,7 @@ pref("browser.shell.skipDefaultBrowserCheckOnFirstRun", false);
 #else
 pref("browser.shell.skipDefaultBrowserCheckOnFirstRun", true);
 #endif
-pref("browser.shell.skipDefaultBrowserCheck", true);
+pref("browser.shell.didSkipDefaultBrowserCheckOnFirstRun", false);
 pref("browser.shell.defaultBrowserCheckCount", 0);
 pref("browser.defaultbrowser.notificationbar", false);
 
@@ -1219,7 +1219,7 @@ pref("browser.newtabpage.introShown", false);
 // Toggles the content of 'about:newtab'. Shows the grid when enabled.
 pref("browser.newtabpage.enabled", true);
 
-// Toggles the enhanced content of 'about:newtab'. Shows sponsored tiles.
+// Toggles the directory tiles content of 'about:newtab'.
 sticky_pref("browser.newtabpage.enhanced", true);
 
 // enables Activity Stream inspired layout
@@ -1236,9 +1236,6 @@ pref("browser.newtabpage.columns", 5);
 
 // directory tiles download URL
 pref("browser.newtabpage.directory.source", "https://tiles.services.mozilla.com/v3/links/fetch/%LOCALE%/%CHANNEL%");
-
-// endpoint to send newtab click and view pings
-pref("browser.newtabpage.directory.ping", "https://tiles.services.mozilla.com/v3/links/");
 
 // activates Activity Stream
 pref("browser.newtabpage.activity-stream.enabled", false);
@@ -1636,7 +1633,11 @@ pref("browser.crashReports.unsubmittedCheck.chancesUntilSuppress", 4);
 pref("browser.crashReports.unsubmittedCheck.autoSubmit", false);
 
 // Preferences for the form autofill system extension
+#ifdef NIGHTLY_BUILD
+pref("browser.formautofill.experimental", true);
+#else
 pref("browser.formautofill.experimental", false);
+#endif
 pref("browser.formautofill.enabled", true);
 pref("browser.formautofill.loglevel", "Warn");
 
