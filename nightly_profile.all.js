@@ -69,6 +69,8 @@ pref("extensions.screenshots.system-disabled", true);
 // Disable add-ons that are not installed by the user in all scopes by default.
 // See the SCOPE constants in AddonManager.jsm for values to use here.
 pref("extensions.autoDisableScopes", 15);
+// Scopes to scan for changes at startup.
+pref("extensions.startupScanScopes", 0);
 
 // This is where the profiler WebExtension API will look for breakpad symbols.
 // NOTE: deliberately http right now since https://symbols.mozilla.org is not supported.
@@ -1649,3 +1651,5 @@ pref("browser.sessionstore.restore_tabs_lazily", true);
 pref("urlclassifier.malwareTable", "goog-malware-shavar,goog-unwanted-shavar,goog-malware-proto,goog-unwanted-proto,test-malware-simple,test-unwanted-simple");
 pref("urlclassifier.phishTable", "goog-phish-shavar,goog-phish-proto,test-phish-simple");
 #endif
+
+pref("browser.suppress_first_window_animation", true);
