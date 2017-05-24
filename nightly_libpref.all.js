@@ -197,7 +197,7 @@ pref("dom.gamepad.non_standard_events.enabled", false);
 #else
 pref("dom.gamepad.non_standard_events.enabled", true);
 #endif
-pref("dom.gamepad.extensions.enabled", false);
+pref("dom.gamepad.extensions.enabled", true);
 
 // If this is true, TextEventDispatcher dispatches keydown and keyup events
 // even during composition (keypress events are never fired during composition
@@ -1221,6 +1221,14 @@ pref("dom.send_after_paint_to_content", false);
 pref("dom.min_timeout_value", 4);
 // And for background windows
 pref("dom.min_background_timeout_value", 1000);
+// Timeout clamp in ms for tracking timeouts we clamp
+// Note that this requires the privacy.trackingprotection.annotate_channels pref to be on in order to have any effect.
+pref("dom.min_tracking_timeout_value", 4);
+// And for background windows
+// Note that this requires the privacy.trackingprotection.annotate_channels pref to be on in order to have any effect.
+pref("dom.min_tracking_background_timeout_value", 10000);
+// Delay in ms from document load until we start throttling tracking timeouts.
+pref("dom.timeout.tracking_throttling_delay", 30000);
 
 // Don't use new input types
 pref("dom.experimental_forms", false);
@@ -2793,11 +2801,7 @@ pref("layout.css.prefixes.box-sizing", true);
 pref("layout.css.prefixes.font-features", true);
 
 // Is -moz-prefixed gradient functions enabled?
-#ifdef NIGHTLY_BUILD
-pref("layout.css.prefixes.gradients", false);
-#else
 pref("layout.css.prefixes.gradients", true);
-#endif
 
 // Are webkit-prefixed properties & property-values supported?
 pref("layout.css.prefixes.webkit", true);
@@ -2812,9 +2816,6 @@ pref("layout.css.scope-pseudo.enabled", true);
 
 // Is support for background-blend-mode enabled?
 pref("layout.css.background-blend-mode.enabled", true);
-
-// Is support for background-clip:text enabled?
-pref("layout.css.background-clip-text.enabled", true);
 
 // Is support for CSS text-combine-upright (tate-chu-yoko) enabled?
 pref("layout.css.text-combine-upright.enabled", true);
@@ -2849,10 +2850,6 @@ pref("layout.css.contain.enabled", false);
 
 // Is support for CSS display:flow-root enabled?
 pref("layout.css.display-flow-root.enabled", true);
-
-// Is support for CSS [-moz-]appearance enabled for web content?
-pref("layout.css.appearance.enabled", true);
-pref("layout.css.moz-appearance.enabled", true);
 
 // Is support for CSS box-decoration-break enabled?
 pref("layout.css.box-decoration-break.enabled", true);
@@ -5072,12 +5069,6 @@ pref("dom.idle-observers-api.fuzz_time.disabled", true);
 // a restart is required to enable a new value.
 pref("network.activity.blipIntervalMilliseconds", 0);
 
-// If true, reuse the same global for everything loaded by the component loader
-// (JS components, JSMs, etc).  This saves memory, but makes it possible for
-// the scripts to interfere with each other.  A restart is required for this
-// to take effect.
-pref("jsloader.reuseGlobal", false);
-
 // When we're asked to take a screenshot, don't wait more than 2000ms for the
 // event loop to become idle before actually taking the screenshot.
 pref("dom.browserElement.maxScreenshotDelayMS", 2000);
@@ -5244,7 +5235,7 @@ pref("urlclassifier.gethashnoise", 4);
 // Gethash timeout for Safebrowsing.
 pref("urlclassifier.gethash.timeout_ms", 5000);
 // Update server response timeout for Safebrowsing.
-pref("urlclassifier.update.response_timeout_ms", 5000);
+pref("urlclassifier.update.response_timeout_ms", 15000);
 // Download update timeout for Safebrowsing.
 pref("urlclassifier.update.timeout_ms", 60000);
 
@@ -5562,8 +5553,6 @@ pref("narrate.filter-voices", true);
 pref("media.gmp.insecure.allow", false);
 #endif
 
-pref("dom.audiochannel.mutedByDefault", false);
-
 // HTML <dialog> element
 pref("dom.dialog_element.enabled", false);
 
@@ -5677,14 +5666,17 @@ pref("security.mixed_content.send_hsts_priming", true);
 pref("security.mixed_content.use_hsts", true);
 #endif
 // Approximately 1 week default cache for HSTS priming failures, in seconds
-pref ("security.mixed_content.hsts_priming_cache_timeout", 604800);
+pref("security.mixed_content.hsts_priming_cache_timeout", 604800);
 // Force the channel to timeout in 3 seconds if we have not received
 // expects a time in milliseconds
-pref ("security.mixed_content.hsts_priming_request_timeout", 3000);
+pref("security.mixed_content.hsts_priming_request_timeout", 3000);
 
-// If true, data: URIs inherit the principal (security context) of the parent.
-// If false, data: URIs use a NullPrincipal as the security context.
-pref ("security.data_uri.inherit_security_context", true);
+// TODO: Bug 1324406: Treat 'data:' documents as unique, opaque origins
+// If true, data: URIs will be treated as unique opaque origins, hence will use
+// a NullPrincipal as the security context.
+// Otherwise it will inherit the origin from parent node, this is the legacy
+// behavior of Firefox.
+pref("security.data_uri.unique_opaque_origin", false);
 
 // Disable Storage api in release builds.
 #if defined(NIGHTLY_BUILD) && !defined(MOZ_WIDGET_ANDROID)
