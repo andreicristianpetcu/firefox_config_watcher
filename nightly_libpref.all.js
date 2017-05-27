@@ -312,6 +312,18 @@ pref("media.cache_resume_threshold", 30);
 // amounts of network bandwidth prefetching huge videos.
 pref("media.cache_readahead_limit", 60);
 
+// We'll throttle the download if the download rate is throttle-factor times
+// the estimated playback rate, AND we satisfy the cache readahead_limit
+// above. The estimated playback rate is time_duration/length_in_bytes.
+// This means we'll only throttle the download if there's no concern that
+// throttling would cause us to stop and buffer.
+pref("media.throttle-factor", 2);
+// By default, we'll throttle media download once we've reached the the
+// readahead_limit if the download is fast. This pref toggles the "and the
+// download is fast" check off, so that we can always throttle the download
+// once the readaheadd limit is reached even on a slow network.
+pref("media.throttle-regardless-of-download-rate", false);
+
 // Master HTML5 media volume scale.
 pref("media.volume_scale", "1.0");
 
@@ -1683,7 +1695,7 @@ pref("network.http.keep_empty_response_headers_as_empty_string", true);
 pref("network.http.max_response_header_size", 393216);
 
 // If we should attempt to race the cache and network
-pref("network.http.rcwn.enabled", true);
+pref("network.http.rcwn.enabled", false);
 pref("network.http.rcwn.cache_queue_normal_threshold", 8);
 pref("network.http.rcwn.cache_queue_priority_threshold", 2);
 // We might attempt to race the cache with the network only if a resource
@@ -3114,21 +3126,10 @@ pref("dom.ipc.plugins.unloadTimeoutSecs", 30);
 // Asynchronous plugin initialization is on hold.
 pref("dom.ipc.plugins.asyncInit.enabled", false);
 
-#ifdef RELEASE_OR_BETA
-#ifdef _AMD64_
 // Allow Flash async drawing mode in 64-bit release builds
 pref("dom.ipc.plugins.asyncdrawing.enabled", true);
 // Force the accelerated direct path for a subset of Flash wmode values
 pref("dom.ipc.plugins.forcedirect.enabled", true);
-#else
-// Disable async drawing for 32-bit release builds
-pref("dom.ipc.plugins.asyncdrawing.enabled", false);
-#endif // _AMD64_
-#else
-// Enable in dev channels
-pref("dom.ipc.plugins.asyncdrawing.enabled", true);
-pref("dom.ipc.plugins.forcedirect.enabled", true);
-#endif
 
 #ifdef RELEASE_OR_BETA
 pref("dom.ipc.processCount", 1);
@@ -5724,6 +5725,9 @@ pref("dom.moduleScripts.enabled", false);
 // Maximum amount of time in milliseconds consecutive setTimeout()/setInterval()
 // callback are allowed to run before yielding the event loop.
 pref("dom.timeout.max_consecutive_callbacks_ms", 4);
+
+// Use this preference to house "Payment Request API" during development
+pref("dom.payments.request.enabled", false);
 
 #ifdef FUZZING
 pref("fuzzing.enabled", false);
