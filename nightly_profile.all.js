@@ -72,7 +72,7 @@ pref("extensions.startupScanScopes", 0);
 // This is where the profiler WebExtension API will look for breakpad symbols.
 // NOTE: deliberately http right now since https://symbols.mozilla.org is not supported.
 pref("extensions.geckoProfiler.symbols.url", "http://symbols.mozilla.org/");
-pref("extensions.geckoProfiler.acceptedExtensionIds", "geckoprofiler@mozilla.com");
+pref("extensions.geckoProfiler.acceptedExtensionIds", "geckoprofiler@mozilla.com,quantum-foxfooding@mozilla.com");
 #if defined(XP_LINUX) || defined (XP_MACOSX)
 pref("extensions.geckoProfiler.getSymbolRules", "localBreakpad,remoteBreakpad,nm");
 #else // defined(XP_WIN)
@@ -1628,15 +1628,12 @@ pref("signon.schemeUpgrades", true);
 // in toolkit.
 //
 // This feature is only enabled on Nightly for Linux until bug 1306295 is fixed.
-// For non-Linux, this feature is only enabled up to early Beta.
 #ifdef UNIX_BUT_NOT_MAC
 #if defined(NIGHTLY_BUILD)
 pref("print.use_simplify_page", true);
 #endif
 #else
-#if defined(EARLY_BETA_OR_EARLIER)
 pref("print.use_simplify_page", true);
-#endif
 #endif
 
 // Space separated list of URLS that are allowed to send objects (instead of
