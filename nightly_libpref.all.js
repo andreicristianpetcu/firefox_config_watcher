@@ -413,7 +413,7 @@ pref("media.wave.enabled", true);
 pref("media.webm.enabled", true);
 
 pref("media.eme.chromium-api.enabled", true);
-pref("media.eme.chromium-api.video-shmems", 4);
+pref("media.eme.chromium-api.video-shmems", 6);
 
 #ifdef MOZ_APPLEMEDIA
 #ifdef MOZ_WIDGET_UIKIT
@@ -934,6 +934,9 @@ pref("accessibility.AOM.enabled", false);
 // See bug 781791.
 pref("accessibility.delay_plugins", false);
 pref("accessibility.delay_plugin_time", 10000);
+
+// The COM handler used for Windows e10s performance and live regions
+pref("accessibility.handler.enabled", true);
 #endif
 
 pref("focusmanager.testmode", false);
@@ -4778,6 +4781,8 @@ pref("widget.chrome.allow-gtk-dark-theme", false);
 pref("widget.content.allow-gtk-dark-theme", false);
 #endif
 #endif
+
+pref("widget.window-transforms.disabled", false);
 
 #ifdef XP_WIN
 // Whether to disable the automatic detection and use of direct2d.
