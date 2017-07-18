@@ -366,11 +366,6 @@ pref("media.wmf.enabled", true);
 pref("media.wmf.decoder.thread-count", -1);
 pref("media.wmf.low-latency.enabled", false);
 pref("media.wmf.skip-blacklist", false);
-#ifdef NIGHTLY_BUILD
-pref("media.wmf.vp9.force.enabled", true);
-#else
-pref("media.wmf.vp9.force.enabled", false);
-#endif
 pref("media.wmf.vp9.enabled", true);
 pref("media.wmf.allow-unsupported-resolutions", false);
 pref("media.windows-media-foundation.allow-d3d11-dxva", true);
@@ -704,6 +699,7 @@ pref("apz.max_velocity_queue_size", 5);
 pref("apz.min_skate_speed", "1.0");
 pref("apz.minimap.enabled", false);
 pref("apz.minimap.visibility.enabled", false);
+pref("apz.one_touch_pinch.enabled", true);
 pref("apz.overscroll.enabled", false);
 pref("apz.overscroll.min_pan_distance_ratio", "1.0");
 pref("apz.overscroll.spring_friction", "0.015");
@@ -1678,7 +1674,7 @@ pref("network.http.altsvc.oe", true);
 pref("security.tls.enable_0rtt_data", true);
 
 // the origin extension impacts h2 coalescing
-pref("network.http.originextension", true);
+pref("network.http.originextension", false);
 
 pref("network.http.diagnostics", false);
 
@@ -2831,6 +2827,13 @@ pref("layout.css.font-display.enabled", false);
 // Is support for variation fonts enabled?
 pref("layout.css.font-variations.enabled", false);
 
+// Is support for the frames() timing function enabled?
+#ifdef RELEASE_OR_BETA
+pref("layout.css.frames-timing.enabled", false);
+#else
+pref("layout.css.frames-timing.enabled", true);
+#endif
+
 // Are sets of prefixed properties supported?
 pref("layout.css.prefixes.border-image", true);
 pref("layout.css.prefixes.transforms", true);
@@ -2849,6 +2852,12 @@ pref("layout.css.prefixes.webkit", true);
 // (Note: this pref has no effect if the master 'layout.css.prefixes.webkit'
 // pref is set to false.)
 pref("layout.css.prefixes.device-pixel-ratio-webkit", false);
+
+// Is support for <style scoped> enabled in content documents?
+//
+// If disabled, this will also disable the DOM API (HTMLStyleElement.scoped)
+// in chrome documents.
+pref("layout.css.scoped-style.enabled", false);
 
 // Is support for the :scope selector enabled?
 pref("layout.css.scope-pseudo.enabled", true);

@@ -1,4 +1,3 @@
-
 /* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -180,6 +179,9 @@ pref("dom.performance.enable_notify_performance_timing", false);
 
 // Enable Permission API's .revoke() method
 pref("dom.permissions.revoke.enable", false);
+
+// Enable exposing timeToNonBlankPaint
+pref("dom.performance.time_to_non_blank_paint.enabled", false);
 
 // Enable Performance Observer API
 #ifdef NIGHTLY_BUILD
@@ -376,11 +378,6 @@ pref("media.wmf.enabled", true);
 pref("media.wmf.decoder.thread-count", -1);
 pref("media.wmf.low-latency.enabled", false);
 pref("media.wmf.skip-blacklist", false);
-#ifdef NIGHTLY_BUILD
-pref("media.wmf.vp9.force.enabled", true);
-#else
-pref("media.wmf.vp9.force.enabled", false);
-#endif
 pref("media.wmf.vp9.enabled", true);
 pref("media.wmf.allow-unsupported-resolutions", false);
 pref("media.windows-media-foundation.allow-d3d11-dxva", true);
@@ -437,8 +434,8 @@ pref("media.decoder-doctor.notifications-allowed", "MediaWMFNeeded,MediaWidevine
 #else
 pref("media.decoder-doctor.notifications-allowed", "MediaWMFNeeded,MediaWidevineNoWMF,MediaCannotInitializePulseAudio,MediaCannotPlayNoDecoders,MediaUnsupportedLibavcodec");
 #endif
-pref("media.decoder-doctor.decode-errors-allowed", "NS_ERROR_DOM_MEDIA_DEMUXER_ERR, NS_ERROR_DOM_MEDIA_METADATA_ERR");
-pref("media.decoder-doctor.decode-warnings-allowed", "NS_ERROR_DOM_MEDIA_DEMUXER_ERR, NS_ERROR_DOM_MEDIA_METADATA_ERR");
+pref("media.decoder-doctor.decode-errors-allowed", "");
+pref("media.decoder-doctor.decode-warnings-allowed", "");
 // Whether we report partial failures.
 pref("media.decoder-doctor.verbose", false);
 // Whether DD should consider WMF-disabled a WMF failure, useful for testing.
@@ -489,6 +486,7 @@ pref("media.peerconnection.video.h264_enabled", false);
 pref("media.peerconnection.video.vp9_enabled", true);
 pref("media.getusermedia.aec", 1);
 pref("media.getusermedia.browser.enabled", false);
+pref("media.getusermedia.channels", 0);
 // Desktop is typically VGA capture or more; and qm_select will not drop resolution
 // below 1/2 in each dimension (or so), so QVGA (320x200) is the lowest here usually.
 pref("media.peerconnection.video.min_bitrate", 0);
@@ -565,6 +563,9 @@ pref("media.peerconnection.capture_delay", 50);
 pref("media.getusermedia.playout_delay", 50);
 pref("media.navigator.audio.full_duplex", false);
 #endif
+// Use MediaDataDecoder API for WebRTC, this includes hardware acceleration for
+// decoding.
+pref("media.navigator.mediadatadecoder_enabled", false);
 #endif
 
 pref("dom.webaudio.enabled", true);
@@ -641,7 +642,7 @@ pref("media.decoder.skip-to-next-key-frame.enabled", true);
 
 // Log level for cubeb, the audio input/output system. Valid values are
 // "verbose", "normal" and "" (log disabled).
-pref("media.cubeb.log_level", "");
+pref("media.cubeb.logging_level", "");
 
 // Set to true to force demux/decode warnings to be treated as errors.
 pref("media.playback.warnings-as-errors", false);
@@ -700,12 +701,15 @@ pref("apz.fling_friction", "0.002");
 pref("apz.fling_min_velocity_threshold", "0.5");
 pref("apz.fling_stop_on_tap_threshold", "0.05");
 pref("apz.fling_stopped_threshold", "0.01");
+pref("apz.frame_delay.enabled", false);
 pref("apz.highlight_checkerboarded_areas", false);
+pref("apz.keyboard.enabled", false);
 pref("apz.max_velocity_inches_per_ms", "-1.0");
 pref("apz.max_velocity_queue_size", 5);
 pref("apz.min_skate_speed", "1.0");
 pref("apz.minimap.enabled", false);
 pref("apz.minimap.visibility.enabled", false);
+pref("apz.one_touch_pinch.enabled", true);
 pref("apz.overscroll.enabled", false);
 pref("apz.overscroll.min_pan_distance_ratio", "1.0");
 pref("apz.overscroll.spring_friction", "0.015");
@@ -716,6 +720,7 @@ pref("apz.overscroll.stretch_factor", "0.35");
 pref("apz.paint_skipping.enabled", true);
 // Fetch displayport updates early from the message queue
 pref("apz.peek_messages.enabled", true);
+pref("apz.popups.enabled", false);
 
 // Whether to print the APZC tree for debugging
 pref("apz.printtree", false);
@@ -1013,22 +1018,33 @@ pref("toolkit.asyncshutdown.log", false);
 // Enable deprecation warnings.
 pref("devtools.errorconsole.deprecation_warnings", true);
 
+#ifdef NIGHTLY_BUILD
+// Don't show the Browser Toolbox prompt on local builds / nightly
+pref("devtools.debugger.prompt-connection", false);
+#else
+pref("devtools.debugger.prompt-connection", true);
+#endif
+
+#ifdef MOZILLA_OFFICIAL
 // Disable debugging chrome
 pref("devtools.chrome.enabled", false);
+// Disable remote debugging connections
+pref("devtools.debugger.remote-enabled", false);
+#else
+// In local builds, enable the browser toolbox by default
+pref("devtools.chrome.enabled", true);
+pref("devtools.debugger.remote-enabled", true);
+#endif
+
 
 // Disable remote debugging protocol logging
 pref("devtools.debugger.log", false);
 pref("devtools.debugger.log.verbose", false);
 
-// Disable remote debugging connections
-pref("devtools.debugger.remote-enabled", false);
-
 pref("devtools.debugger.remote-port", 6000);
 pref("devtools.debugger.remote-websocket", false);
 // Force debugger server binding on the loopback interface
 pref("devtools.debugger.force-local", true);
-// Display a prompt when a new connection starts to accept/reject it
-pref("devtools.debugger.prompt-connection", true);
 // Block tools from seeing / interacting with certified apps
 pref("devtools.debugger.forbid-certified-apps", true);
 
@@ -1256,8 +1272,23 @@ pref("dom.min_tracking_timeout_value", 4);
 // And for background windows
 // Note that this requires the privacy.trackingprotection.annotate_channels pref to be on in order to have any effect.
 pref("dom.min_tracking_background_timeout_value", 10000);
-// Delay in ms from document load until we start throttling tracking timeouts.
-pref("dom.timeout.tracking_throttling_delay", 30000);
+// Delay in ms from document load until we start throttling background timeouts.
+pref("dom.timeout.throttling_delay", 30000);
+
+// Time (in ms) that it takes to regenerate 1ms.
+pref("dom.timeout.background_budget_regeneration_rate", 100);
+// Maximum value (in ms) for the background budget. Only valid for
+// values greater than 0.
+pref("dom.timeout.background_throttling_max_budget", 50);
+// Time (in ms) that it takes to regenerate 1ms.
+pref("dom.timeout.foreground_budget_regeneration_rate", 1);
+// Maximum value (in ms) for the background budget. Only valid for
+// values greater than 0.
+pref("dom.timeout.foreground_throttling_max_budget", -1);
+// The maximum amount a timeout can be delayed by budget throttling
+pref("dom.timeout.budget_throttling_max_delay", 15000);
+// Turn off budget throttling by default
+pref("dom.timeout.enable_budget_timer_throttling", false);
 
 // Don't use new input types
 pref("dom.experimental_forms", false);
@@ -1723,6 +1754,8 @@ pref("network.http.rcwn.cache_queue_priority_threshold", 2);
 // is smaller than this size.
 pref("network.http.rcwn.small_resource_size_kb", 256);
 
+pref("network.http.rcwn.max_wait_before_racing_ms", 500);
+
 // The ratio of the transaction count for the focused window and the count of
 // all available active connections.
 pref("network.http.focused_window_transaction_ratio", "0.9");
@@ -1979,6 +2012,10 @@ pref("network.standard-url.max-length", 1048576);
 // C++ implementation. Requires restart for changes to take effect.
 pref("network.standard-url.enable-rust", false);
 
+// Whether nsIURI.host/.hostname/.spec should return a punycode string
+// If set to false we will revert to previous behaviour and return a unicode string.
+pref("network.standard-url.punycode-host", false);
+
 // Idle timeout for ftp control connections - 5 minute default
 pref("network.ftp.idleConnectionTimeout", 300);
 
@@ -1988,8 +2025,11 @@ pref("network.ftp.idleConnectionTimeout", 300);
 // all other values are treated like 2
 pref("network.dir.format", 2);
 
-// enables the prefetch service (i.e., prefetching of <link rel="next"> URLs).
+// enables the prefetch service (i.e., prefetching of <link rel="next"> and
+// <link rel="prefetch"> URLs).
 pref("network.prefetch-next", true);
+// enables the preloading (i.e., preloading of <link rel="preload"> URLs).
+pref("network.preload", true);
 
 // enables the predictive service
 pref("network.predictor.enabled", true);
@@ -2114,6 +2154,10 @@ pref("network.http.throttle.resume-for", 100);
 // at which sub-resource reqeusts quickly come and go.
 pref("network.http.throttle.resume-background-in", 1000);
 
+// Give higher priority to requests resulting from a user interaction event
+// like click-to-play, image fancy-box zoom, navigation.
+pref("network.http.on_click_priority", true);
+
 pref("permissions.default.image",           1); // 1-Accept, 2-Deny, 3-dontAcceptForeign
 
 pref("network.proxy.type",                  5);
@@ -2173,6 +2217,10 @@ pref("intl.charset.fallback.override",      "");
 pref("intl.charset.fallback.tld",           true);
 pref("intl.ellipsis",                       "chrome://global-platform/locale/intl.properties");
 pref("intl.locale.matchOS",                 false);
+// this pref allows user to request that all internationalization formatters
+// like date/time formatting, unit formatting, calendars etc. should use
+// OS locale set instead of the app locale set.
+pref("intl.regional_prefs.use_os_locales",  false);
 // fallback charset list for Unicode conversion (converting from Unicode)
 // currently used for mail send only to handle symbol characters (e.g Euro, trademark, smartquotes)
 // for ISO-8859-1
@@ -2837,6 +2885,13 @@ pref("layout.css.font-display.enabled", false);
 // Is support for variation fonts enabled?
 pref("layout.css.font-variations.enabled", false);
 
+// Is support for the frames() timing function enabled?
+#ifdef RELEASE_OR_BETA
+pref("layout.css.frames-timing.enabled", false);
+#else
+pref("layout.css.frames-timing.enabled", true);
+#endif
+
 // Are sets of prefixed properties supported?
 pref("layout.css.prefixes.border-image", true);
 pref("layout.css.prefixes.transforms", true);
@@ -3146,9 +3201,6 @@ pref("dom.ipc.plugins.reportCrashURL", true);
 // How long we wait before unloading an idle plugin process.
 // Defaults to 30 seconds.
 pref("dom.ipc.plugins.unloadTimeoutSecs", 30);
-
-// Asynchronous plugin initialization is on hold.
-pref("dom.ipc.plugins.asyncInit.enabled", false);
 
 // Allow Flash async drawing mode in 64-bit release builds
 pref("dom.ipc.plugins.asyncdrawing.enabled", true);
@@ -4611,6 +4663,7 @@ pref("gl.require-hardware", false);
 pref("gl.multithreaded", true);
 #endif
 pref("gl.ignore-dx-interop2-blacklist", false);
+pref("gl.use-tls-is-current", 0);
 
 pref("webgl.force-enabled", false);
 pref("webgl.disabled", false);
@@ -4637,6 +4690,7 @@ pref("webgl.webgl2-compat-mode", false);
 
 pref("webgl.perf.max-warnings", 0);
 pref("webgl.perf.max-acceptable-fb-status-invals", 0);
+pref("webgl.perf.spew-frame-allocs", true);
 
 pref("webgl.enable-webgl2", true);
 
@@ -4684,7 +4738,7 @@ pref("network.tcp.keepalive.retry_interval", 1); // seconds
 pref("network.tcp.keepalive.probe_count", 4);
 #endif
 
-pref("network.tcp.tcp_fastopen_enable", false);
+pref("network.tcp.tcp_fastopen_enable", true);
 pref("network.tcp.tcp_fastopen_consecutive_failure_limit", 5);
 
 // Whether to disable acceleration for all widgets.
@@ -4804,6 +4858,9 @@ pref("gfx.direct2d.disabled", false);
 // blacklisting
 pref("gfx.direct2d.force-enabled", false);
 
+pref("gfx.direct3d11.enable-debug-layer", false);
+pref("gfx.direct3d11.break-on-error", false);
+
 pref("layers.prefer-opengl", false);
 #endif
 
@@ -4827,6 +4884,7 @@ pref("layers.force-active", false);
 pref("layers.gralloc.disable", false);
 
 pref("webrender.highlight-painted-layers", false);
+pref("gfx.webrender.layers-free", false);
 
 // Enable/Disable the geolocation API for content
 pref("geo.enabled", true);
@@ -4874,8 +4932,8 @@ pref("extensions.webextensions.identity.redirectDomain", "extensions.allizom.org
 pref("extensions.webextensions.themes.enabled", false);
 pref("extensions.webextensions.themes.icons.enabled", false);
 pref("extensions.webextensions.remote", false);
-
-pref("layers.popups.compositing.enabled", false);
+// Whether or not the moz-extension resource loads are remoted
+pref("extensions.webextensions.protocol.remote", true);
 
 // Report Site Issue button
 pref("extensions.webcompat-reporter.newIssueEndpoint", "https://webcompat.com/issues/new");
@@ -5144,6 +5202,22 @@ pref("dom.vr.controller_trigger_threshold", "0.1");
 pref("dom.vr.navigation.timeout", 5000);
 // Oculus device
 pref("dom.vr.oculus.enabled", true);
+// Minimum number of milliseconds after content has stopped VR presentation
+// before the Oculus session is re-initialized to an invisible / tracking
+// only mode.  If this value is too high, users will need to wait longer
+// after stopping WebVR presentation before automatically returning to the
+// Oculus home interface.  (They can immediately return to the Oculus Home
+// interface through the Oculus HUD without waiting this duration)
+// If this value is too low, the Oculus Home interface may be visible
+// momentarily during VR link navigation.
+pref("dom.vr.oculus.present.timeout", 10000);
+// Minimum number of milliseconds that the browser will wait before
+// reloading the Oculus OVR library after seeing a "ShouldQuit" flag set.
+// Oculus requests that we shut down and unload the OVR library, by setting
+// a "ShouldQuit" flag.  To ensure that we don't interfere with
+// Oculus software auto-updates, we will not attempt to re-load the
+// OVR library until this timeout has elapsed.
+pref("dom.vr.oculus.quit.timeout", 30000);
 // OSVR device
 pref("dom.vr.osvr.enabled", false);
 // OpenVR device
@@ -5601,9 +5675,6 @@ pref("dom.input.fallbackUploadDir", "");
 // Turn rewriting of youtube embeds on/off
 pref("plugins.rewrite_youtube_embeds", true);
 
-// Don't hide Flash from navigator.plugins when it is click-to-activate
-pref("plugins.navigator_hide_disabled_flash", false);
-
 // Disable browser frames by default
 pref("dom.mozBrowserFramesEnabled", false);
 
@@ -5723,11 +5794,16 @@ pref("fuzzing.enabled", false);
 #endif
 
 #if defined(XP_WIN)
-pref("layers.mlgpu.dev-enabled", false);
+#if defined(NIGHTLY_BUILD)
+pref("layers.mlgpu.dev-enabled", true);
 
-// Both this and the master "enabled" pref must be on to use Advanced LAyers
+// Both this and the master "enabled" pref must be on to use Advanced Layers
 // on Windows 7.
+pref("layers.mlgpu.enable-on-windows7", true);
+#else
+pref("layers.mlgpu.dev-enabled", false);
 pref("layers.mlgpu.enable-on-windows7", false);
+#endif
 #endif
 
 // Set advanced layers preferences here to have them show up in about:config or
