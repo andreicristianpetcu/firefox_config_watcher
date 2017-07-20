@@ -675,7 +675,7 @@ pref("plugins.click_to_play", true);
 pref("plugins.testmode", false);
 
 // Should plugins that are hidden show the infobar UI?
-pref("plugins.show_infobar", true);
+pref("plugins.show_infobar", false);
 
 // Should dismissing the hidden plugin infobar suppress it permanently?
 pref("plugins.remember_infobar_dismissal", true);
@@ -1610,7 +1610,7 @@ pref("browser.esedbreader.loglevel", "Error");
 
 pref("browser.laterrun.enabled", false);
 
-pref("dom.ipc.processPrelaunch.enabled", true);
+pref("dom.ipc.processPrelaunch.enabled", false);
 
 #ifdef EARLY_BETA_OR_EARLIER
 pref("browser.migrate.automigrate.enabled", true);
