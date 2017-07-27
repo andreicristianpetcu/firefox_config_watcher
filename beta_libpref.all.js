@@ -432,7 +432,11 @@ pref("media.decoder-doctor.wmf-disabled-is-failure", false);
 pref("media.decoder-doctor.new-issue-endpoint", "https://webcompat.com/issues/new");
 
 // Whether to suspend decoding of videos in background tabs.
+#ifdef RELEASE_OR_BETA
+pref("media.suspend-bkgnd-video.enabled", false);
+#else
 pref("media.suspend-bkgnd-video.enabled", true);
+#endif
 // Delay, in ms, from time window goes to background to suspending
 // video decoders. Defaults to 10 seconds.
 pref("media.suspend-bkgnd-video.delay-ms", 10000);
@@ -5140,7 +5144,12 @@ pref("dom.vr.controller_trigger_threshold", "0.1");
 // result in a non-responsive browser in the VR headset.
 pref("dom.vr.navigation.timeout", 5000);
 // Oculus device
+#if defined(HAVE_64BIT_BUILD)
+// We are only enabling WebVR by default on 64-bit builds (Bug 1384459)
 pref("dom.vr.oculus.enabled", true);
+#else
+pref("dom.vr.oculus.enabled", false);
+#endif
 // Minimum number of milliseconds after content has stopped VR presentation
 // before the Oculus session is re-initialized to an invisible / tracking
 // only mode.  If this value is too high, users will need to wait longer
@@ -5160,7 +5169,8 @@ pref("dom.vr.oculus.quit.timeout", 30000);
 // OSVR device
 pref("dom.vr.osvr.enabled", false);
 // OpenVR device
-#ifdef XP_WIN
+#if defined(XP_WIN) && defined(HAVE_64BIT_BUILD)
+// We are only enabling WebVR by default on 64-bit builds (Bug 1384459)
 pref("dom.vr.openvr.enabled", true);
 #else
 // See Bug 1310663 (Linux) and Bug 1310665 (macOS)

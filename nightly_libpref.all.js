@@ -1031,20 +1031,20 @@ pref("devtools.errorconsole.deprecation_warnings", true);
 
 #ifdef NIGHTLY_BUILD
 // Don't show the Browser Toolbox prompt on local builds / nightly
-pref("devtools.debugger.prompt-connection", false);
+sticky_pref("devtools.debugger.prompt-connection", false);
 #else
-pref("devtools.debugger.prompt-connection", true);
+sticky_pref("devtools.debugger.prompt-connection", true);
 #endif
 
 #ifdef MOZILLA_OFFICIAL
 // Disable debugging chrome
-pref("devtools.chrome.enabled", false);
+sticky_pref("devtools.chrome.enabled", false);
 // Disable remote debugging connections
-pref("devtools.debugger.remote-enabled", false);
+sticky_pref("devtools.debugger.remote-enabled", false);
 #else
 // In local builds, enable the browser toolbox by default
-pref("devtools.chrome.enabled", true);
-pref("devtools.debugger.remote-enabled", true);
+sticky_pref("devtools.chrome.enabled", true);
+sticky_pref("devtools.debugger.remote-enabled", true);
 #endif
 
 
@@ -1279,7 +1279,11 @@ pref("dom.min_timeout_value", 4);
 pref("dom.min_background_timeout_value", 1000);
 // Timeout clamp in ms for tracking timeouts we clamp
 // Note that this requires the privacy.trackingprotection.annotate_channels pref to be on in order to have any effect.
+#ifdef NIGHTLY_BUILD
+pref("dom.min_tracking_timeout_value", 10000);
+#else
 pref("dom.min_tracking_timeout_value", 4);
+#endif
 // And for background windows
 // Note that this requires the privacy.trackingprotection.annotate_channels pref to be on in order to have any effect.
 pref("dom.min_tracking_background_timeout_value", 10000);
@@ -1440,6 +1444,7 @@ pref("javascript.options.discardSystemSource", false);
 // Comment 32 and Bug 613551.
 pref("javascript.options.mem.high_water_mark", 128);
 pref("javascript.options.mem.max", -1);
+pref("javascript.options.mem.nursery.max_kb", -1);
 pref("javascript.options.mem.gc_per_zone", true);
 pref("javascript.options.mem.gc_incremental", true);
 pref("javascript.options.mem.gc_incremental_slice_ms", 5);
@@ -5236,7 +5241,12 @@ pref("dom.vr.controller_trigger_threshold", "0.1");
 // result in a non-responsive browser in the VR headset.
 pref("dom.vr.navigation.timeout", 5000);
 // Oculus device
+#if defined(HAVE_64BIT_BUILD)
+// We are only enabling WebVR by default on 64-bit builds (Bug 1384459)
 pref("dom.vr.oculus.enabled", true);
+#else
+pref("dom.vr.oculus.enabled", false);
+#endif
 // Minimum number of milliseconds after content has stopped VR presentation
 // before the Oculus session is re-initialized to an invisible / tracking
 // only mode.  If this value is too high, users will need to wait longer
@@ -5256,7 +5266,8 @@ pref("dom.vr.oculus.quit.timeout", 30000);
 // OSVR device
 pref("dom.vr.osvr.enabled", false);
 // OpenVR device
-#ifdef XP_WIN
+#if defined(XP_WIN) && defined(HAVE_64BIT_BUILD)
+// We are only enabling WebVR by default on 64-bit builds (Bug 1384459)
 pref("dom.vr.openvr.enabled", true);
 #else
 // See Bug 1310663 (Linux) and Bug 1310665 (macOS)
