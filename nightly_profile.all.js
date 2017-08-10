@@ -248,11 +248,7 @@ pref("browser.stopReloadAnimation.enabled", true);
 pref("browser.uidensity", 0);
 // Whether Firefox will automatically override the uidensity to "touch"
 // while the user is in a touch environment (such as Windows tablet mode).
-#ifdef MOZ_PHOTON_THEME
 pref("browser.touchmode.auto", true);
-#else
-pref("browser.touchmode.auto", false);
-#endif
 
 // At startup, check if we're the default browser and prompt user if not.
 pref("browser.shell.checkDefaultBrowser", true);
@@ -1100,7 +1096,11 @@ pref("security.sandbox.content.level", 3);
 //
 // This setting may not be required anymore once we decide to permanently
 // enable the content sandbox.
+#ifdef NIGHTLY_BUILD
 pref("security.sandbox.content.level", 3);
+#else
+pref("security.sandbox.content.level", 2);
+#endif
 pref("security.sandbox.content.write_path_whitelist", "");
 pref("security.sandbox.content.read_path_whitelist", "");
 pref("security.sandbox.content.syscall_whitelist", "");
