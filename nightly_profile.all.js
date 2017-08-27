@@ -317,6 +317,9 @@ pref("browser.urlbar.maxRichResults", 10);
 // autocomplete.xml.
 pref("browser.urlbar.delay", 50);
 
+// The maximum number of historical search results to show.
+pref("browser.urlbar.maxHistoricalSearchSuggestions", 1);
+
 // The default behavior for the urlbar can be configured to use any combination
 // of the match filters with each additional filter adding more results (union).
 pref("browser.urlbar.suggest.history",              true);
@@ -1169,6 +1172,8 @@ pref("services.sync.prefs.sync.browser.newtabpage.pinned", true);
 pref("services.sync.prefs.sync.browser.offline-apps.notify", true);
 pref("services.sync.prefs.sync.browser.safebrowsing.phishing.enabled", true);
 pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", true);
+pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", true);
+pref("services.sync.prefs.sync.browser.safebrowsing.passwords.enabled", true);
 pref("services.sync.prefs.sync.browser.search.update", true);
 pref("services.sync.prefs.sync.browser.sessionstore.restore_on_demand", true);
 pref("services.sync.prefs.sync.browser.startup.homepage", true);
@@ -1279,6 +1284,8 @@ pref("browser.newtabpage.activity-stream.enabled", true);
 #else
 pref("browser.newtabpage.activity-stream.enabled", false);
 #endif
+
+pref("browser.newtabpage.activity-stream.aboutHome.enabled", false);
 
 // Enable the DOM fullscreen API.
 pref("full-screen-api.enabled", true);
@@ -1507,6 +1514,16 @@ pref("experiments.manifest.uri", "https://telemetry-experiment.cdn.mozilla.net/m
 // Whether experiments are supported by the current application profile.
 pref("experiments.supported", true);
 
+// Ping Centre Telemetry settings.
+#ifdef NIGHTLY_BUILD
+pref("browser.ping-centre.telemetry", true);
+#else
+pref("browser.ping-centre.telemetry", false);
+#endif
+pref("browser.ping-centre.log", false);
+pref("browser.ping-centre.staging.endpoint", "https://onyx_tiles.stage.mozaws.net/v3/links/ping-centre");
+pref("browser.ping-centre.production.endpoint", "https://tiles.services.mozilla.com/v3/links/ping-centre");
+
 // Enable GMP support in the addon manager.
 pref("media.gmp-provider.enabled", true);
 
@@ -1546,6 +1563,12 @@ pref("browser.tabs.remote.desktopbehavior", true);
 pref("browser.tabs.remote.autostart.1", false);
 pref("browser.tabs.remote.autostart.2", true);
 #endif
+
+// For speculatively warming up tabs to improve perceived
+// performance while using the async tab switcher.
+pref("browser.tabs.remote.warmup.enabled", true);
+pref("browser.tabs.remote.warmup.maxTabs", 3);
+pref("browser.tabs.remote.warmup.unloadDelayMs", 2000);
 
 // For the about:tabcrashed page
 pref("browser.tabs.crashReporting.sendReport", true);
@@ -1699,6 +1722,8 @@ pref("browser.sessionstore.restore_tabs_lazily", true);
 // Enable safebrowsing v4 tables (suffixed by "-proto") update.
 pref("urlclassifier.malwareTable", "goog-malware-proto,goog-unwanted-proto,test-malware-simple,test-unwanted-simple,test-harmful-simple");
 pref("urlclassifier.phishTable", "goog-phish-proto,test-phish-simple");
+pref("urlclassifier.downloadAllowTable", "goog-downloadwhite-proto");
+pref("urlclassifier.downloadBlockTable", "goog-badbinurl-proto");
 
 pref("browser.suppress_first_window_animation", true);
 
