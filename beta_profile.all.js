@@ -474,10 +474,12 @@ pref("browser.tabs.drawInTitlebar", false);
 pref("browser.tabs.drawInTitlebar", true);
 #endif
 
-// false - disable the tabbar session restore button
-// true - enable the tabbar session restore button
-// To be enabled with shield
-pref("browser.tabs.restorebutton", false);
+// 0 - Disable the tabbar session restore button.
+// 1 - Enable the tabbar session restore button.
+// 2 - Control group. The tabbar session restore button is disabled,
+// but we will record data on other session restore usage.
+// To be enabled with shield.
+pref("browser.tabs.restorebutton", 0);
 
 // When tabs opened by links in other tabs via a combination of
 // browser.link.open_newwindow being set to 3 and target="_blank" etc are
@@ -1709,7 +1711,11 @@ pref("browser.sessionstore.restore_tabs_lazily", true);
 
 // Enable safebrowsing v4 tables (suffixed by "-proto") update.
 pref("urlclassifier.malwareTable", "goog-malware-proto,goog-unwanted-proto,test-malware-simple,test-unwanted-simple");
+#ifdef MOZILLA_OFFICIAL
 pref("urlclassifier.phishTable", "goog-phish-proto,test-phish-simple");
+#else
+pref("urlclassifier.phishTable", "googpub-phish-proto,test-phish-simple");
+#endif
 
 pref("browser.suppress_first_window_animation", true);
 
