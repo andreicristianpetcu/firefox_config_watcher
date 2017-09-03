@@ -495,6 +495,7 @@ pref("media.peerconnection.video.min_bitrate_estimate", 0);
 pref("media.peerconnection.video.denoising", false);
 pref("media.navigator.audio.fake_frequency", 1000);
 pref("media.navigator.permission.disabled", false);
+pref("media.navigator.streams.fake", false);
 pref("media.peerconnection.simulcast", true);
 pref("media.peerconnection.default_iceservers", "[]");
 pref("media.peerconnection.ice.loopback", false); // Set only for testing in offline environments.
@@ -663,11 +664,7 @@ pref("layers.geometry.d3d11.enabled", true);
 pref("apz.allow_checkerboarding", true);
 pref("apz.allow_immediate_handoff", true);
 pref("apz.allow_zooming", false);
-#ifdef NIGHTLY_BUILD
 pref("apz.autoscroll.enabled", true);
-#else
-pref("apz.autoscroll.enabled", false);
-#endif
 
 // Whether to lock touch scrolling to one axis at a time
 // 0 = FREE (No locking at all)
@@ -704,7 +701,7 @@ pref("apz.frame_delay.enabled", true);
 #else
 pref("apz.frame_delay.enabled", false);
 #endif
-#if defined(NIGHTLY_BUILD) && !defined(MOZ_WIDGET_ANDROID)
+#if !defined(MOZ_WIDGET_ANDROID)
 pref("apz.keyboard.enabled", true);
 pref("apz.keyboard.passive-listeners", true);
 #else
@@ -1051,10 +1048,13 @@ sticky_pref("devtools.debugger.prompt-connection", true);
 sticky_pref("devtools.chrome.enabled", false);
 // Disable remote debugging connections
 sticky_pref("devtools.debugger.remote-enabled", false);
+// enable JS dump() function.
+sticky_pref("browser.dom.window.dump.enabled", false);
 #else
 // In local builds, enable the browser toolbox by default
 sticky_pref("devtools.chrome.enabled", true);
 sticky_pref("devtools.debugger.remote-enabled", true);
+sticky_pref("browser.dom.window.dump.enabled", true);
 #endif
 
 
@@ -1418,7 +1418,11 @@ pref("privacy.trackingprotection.lower_network_priority", false);
 pref("dom.event.contextmenu.enabled",       true);
 pref("dom.event.clipboardevents.enabled",   true);
 pref("dom.event.highrestimestamp.enabled",  true);
+#ifdef NIGHTLY_BUILD
+pref("dom.event.coalesce_mouse_move",       true);
+#else
 pref("dom.event.coalesce_mouse_move",       false);
+#endif
 
 pref("dom.webcomponents.enabled",           false);
 pref("dom.webcomponents.customelements.enabled", false);
@@ -3704,7 +3708,7 @@ pref("font.name-list.sans-serif.ja", "Meiryo, Yu Gothic, MS PGothic, MS Gothic, 
 pref("font.name-list.monospace.ja", "MS Gothic, MS Mincho, Meiryo, Yu Gothic, Yu Mincho, MS PGothic, MS PMincho");
 
 pref("font.name-list.serif.ko", "Batang, Gulim");
-pref("font.name-list.sans-serif.ko", "Gulim");
+pref("font.name-list.sans-serif.ko", "Gulim, Malgun Gothic");
 pref("font.name-list.monospace.ko", "GulimChe");
 pref("font.name-list.cursive.ko", "Gungsuh");
 
@@ -5177,9 +5181,6 @@ pref("layout.css.touch_action.enabled", true);
 // This only has an effect in DEBUG-builds.
 pref("layout.css.expensive-style-struct-assertions.enabled", false);
 
-// enable JS dump() function.
-pref("browser.dom.window.dump.enabled", false);
-
 #if defined(MOZ_WIDGET_ANDROID)
 // Network Information API
 pref("dom.netinfo.enabled", true);
@@ -5373,7 +5374,7 @@ pref("dom.flyweb.enabled", false);
 pref("dom.mapped_arraybuffer.enabled", true);
 
 // The tables used for Safebrowsing phishing and malware checks
-pref("urlclassifier.malwareTable", "goog-malware-shavar,goog-unwanted-shavar,test-malware-simple,test-unwanted-simple,test-harmful-simple");
+pref("urlclassifier.malwareTable", "goog-malware-shavar,goog-unwanted-shavar,test-harmful-simple,test-malware-simple,test-unwanted-simple");
 #ifdef MOZILLA_OFFICIAL
 // In the official build, we are allowed to use google's private
 // phishing list "goog-phish-shavar". See Bug 1288840.
