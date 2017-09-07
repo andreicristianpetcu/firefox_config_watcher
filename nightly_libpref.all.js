@@ -176,11 +176,7 @@ pref("dom.permissions.revoke.enable", false);
 pref("dom.performance.time_to_non_blank_paint.enabled", false);
 
 // Enable Performance Observer API
-#ifdef NIGHTLY_BUILD
 pref("dom.enable_performance_observer", true);
-#else
-pref("dom.enable_performance_observer", false);
-#endif
 
 // Enable requestIdleCallback API
 pref("dom.requestIdleCallback.enabled", true);
@@ -5081,13 +5077,10 @@ pref("dom.battery.enabled", true);
 pref("dom.streams.enabled", false);
 
 // Abort API
-#ifdef NIGHTLY_BUILD
 pref("dom.abortController.enabled", true);
+
+// Fetch + Abort API
 pref("dom.abortController.fetch.enabled", true);
-#else
-pref("dom.abortController.enabled", false);
-pref("dom.abortController.fetch.enabled", false);
-#endif
 
 // Push
 
@@ -5428,7 +5421,11 @@ pref("browser.safebrowsing.id", "Firefox");
 #endif
 
 // Download protection
+#ifdef MOZILLA_OFFICIAL
 pref("browser.safebrowsing.downloads.enabled", true);
+#else
+pref("browser.safebrowsing.downloads.enabled", false);
+#endif
 pref("browser.safebrowsing.downloads.remote.enabled", true);
 pref("browser.safebrowsing.downloads.remote.timeout_ms", 10000);
 pref("browser.safebrowsing.downloads.remote.url", "https://sb-ssl.google.com/safebrowsing/clientreport/download?key=%GOOGLE_API_KEY%");
