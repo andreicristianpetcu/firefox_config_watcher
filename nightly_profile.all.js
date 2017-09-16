@@ -368,6 +368,10 @@ pref("browser.download.animateNotifications", true);
 // This records whether or not the panel has been shown at least once.
 pref("browser.download.panel.shown", false);
 
+// This controls whether the button is automatically shown/hidden depending
+// on whether there are downloads to show.
+pref("browser.download.autohideButton", true);
+
 #ifndef XP_MACOSX
 pref("browser.helperApps.deleteTempFileOnExit", true);
 #endif
@@ -460,6 +464,10 @@ pref("browser.tabs.drawInTitlebar", false);
 pref("browser.tabs.drawInTitlebar", true);
 #endif
 
+// Offer additional drag space to the user. The drag space
+// will only be shown if browser.tabs.drawInTitlebar is true.
+pref("browser.tabs.extraDragSpace", false);
+
 // 0 - Disable the tabbar session restore button.
 // 1 - Enable the tabbar session restore button.
 // 2 - Control group. The tabbar session restore button is disabled,
@@ -493,12 +501,17 @@ pref("browser.bookmarks.max_backups",             15);
 
 pref("browser.bookmarks.showRecentlyBookmarked",  true);
 
+// Whether menu should close after Ctrl-click, middle-click, etc.
+pref("browser.bookmarks.openInTabClosesMenu", true);
+
 // Scripts & Windows prefs
 pref("dom.disable_open_during_load",              true);
 pref("javascript.options.showInConsole",          true);
 #ifdef DEBUG
 pref("general.warnOnAboutConfig",                 false);
 #endif
+
+pref("jsloader.shareGlobal", true);
 
 // This is the pref to control the location bar, change this to true to
 // force this - this makes the origin of popup windows more obvious to avoid
@@ -575,7 +588,7 @@ pref("browser.gesture.pinch.threshold", 150);
 pref("browser.gesture.pinch.latched", false);
 pref("browser.gesture.pinch.threshold", 25);
 #endif
-#ifdef XP_WIN
+#if defined(XP_WIN) || defined(MOZ_WIDGET_GTK)
 // Enabled for touch input display zoom.
 pref("browser.gesture.pinch.out", "cmd_fullZoomEnlarge");
 pref("browser.gesture.pinch.in", "cmd_fullZoomReduce");
@@ -714,15 +727,9 @@ pref("browser.preferences.instantApply", true);
 // Toggling Search bar on and off in about:preferences
 pref("browser.preferences.search", true);
 
-// Once the Storage Management is completed.
-// (The Storage Management-related prefs are browser.storageManager.* )
-// The Offline(Appcache) Group section in about:preferences will be hidden.
-// And the task to clear appcache will be done by Storage Management.
-#if defined(NIGHTLY_BUILD)
+// We prefer the storage manager (see browser.storageManager.enabled)
+// over the old offlineGroup UI. Removing the offline group UI is bug 1399808.
 pref("browser.preferences.offlineGroup.enabled", false);
-#else
-pref("browser.preferences.offlineGroup.enabled", true);
-#endif
 
 pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 
@@ -1266,7 +1273,8 @@ pref("browser.newtabpage.directory.source", "https://tiles.services.mozilla.com/
 
 // activates Activity Stream
 pref("browser.newtabpage.activity-stream.enabled", true);
-pref("browser.newtabpage.activity-stream.aboutHome.enabled", false);
+pref("browser.newtabpage.activity-stream.prerender", true);
+pref("browser.newtabpage.activity-stream.aboutHome.enabled", true);
 
 // Enable the DOM fullscreen API.
 pref("full-screen-api.enabled", true);
@@ -1481,6 +1489,8 @@ pref("toolkit.telemetry.archive.enabled", true);
 pref("toolkit.telemetry.shutdownPingSender.enabled", true);
 // Enables sending the shutdown ping using the pingsender from the first session.
 pref("toolkit.telemetry.shutdownPingSender.enabledFirstSession", false);
+// Enables sending a duplicate of the first shutdown ping from the first session.
+pref("toolkit.telemetry.firstShutdownPing.enabled", true);
 // Enables sending the 'new-profile' ping on new profiles.
 pref("toolkit.telemetry.newProfilePing.enabled", true);
 // Enables sending 'update' pings on Firefox updates.
@@ -1681,14 +1691,22 @@ pref("browser.crashReports.unsubmittedCheck.chancesUntilSuppress", 4);
 pref("browser.crashReports.unsubmittedCheck.autoSubmit", false);
 
 // Preferences for the form autofill system extension
-// The value of "extensions.formautofill.available" can be "on", "off" and "detect".
-// The "detect" means it's enabled if conditions defined in the extension are met.
+// The truthy values of "extensions.formautofill.available" are "on" and "detect",
+// any other value means autofill isn't available.
+// "detect" means it's enabled if conditions defined in the extension are met.
 #ifdef NIGHTLY_BUILD
 pref("extensions.formautofill.available", "on");
+#elif MOZ_UPDATE_CHANNEL == release
+pref("extensions.formautofill.available", "staged-rollout");
 #else
 pref("extensions.formautofill.available", "detect");
 #endif
 pref("extensions.formautofill.addresses.enabled", true);
+#ifdef NIGHTLY_BUILD
+pref("extensions.formautofill.creditCards.available", true);
+#else
+pref("extensions.formautofill.creditCards.available", false);
+#endif
 pref("extensions.formautofill.creditCards.enabled", true);
 pref("extensions.formautofill.firstTimeUse", true);
 pref("extensions.formautofill.heuristics.enabled", true);
@@ -1714,6 +1732,7 @@ pref("browser.suppress_first_window_animation", true);
 pref("browser.onboarding.enabled", true);
 // Mark this as an upgraded profile so we don't offer the initial new user onboarding tour.
 pref("browser.onboarding.tourset-version", 2);
+pref("browser.onboarding.state", "default");
 // On the Activity-Stream page, the snippet's position overlaps with our notification.
 // So use `browser.onboarding.notification.finished` to let the AS page know
 // if our notification is finished and safe to show their snippet.
