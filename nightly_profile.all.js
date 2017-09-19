@@ -1276,6 +1276,8 @@ pref("browser.newtabpage.activity-stream.enabled", true);
 pref("browser.newtabpage.activity-stream.prerender", true);
 pref("browser.newtabpage.activity-stream.aboutHome.enabled", true);
 
+pref("browser.library.activity-stream.enabled", true);
+
 // Enable the DOM fullscreen API.
 pref("full-screen-api.enabled", true);
 
@@ -1538,6 +1540,7 @@ pref("privacy.usercontext.about_newtab_segregation.enabled", false);
 // 0 disables long press, 1 when clicked, the menu is shown, 2 the menu is shown after X milliseconds.
 pref("privacy.userContext.longPressBehavior", 0);
 #endif
+pref("privacy.userContext.extension", "");
 
 // Start the browser in e10s mode
 pref("browser.tabs.remote.autostart", false);

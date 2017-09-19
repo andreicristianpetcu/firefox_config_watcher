@@ -1437,7 +1437,7 @@ pref("javascript.options.asyncstack",       false);
 pref("javascript.options.throw_on_asmjs_validation_failure", false);
 pref("javascript.options.ion.offthread_compilation", true);
 #ifdef DEBUG
-pref("javascript.options.jit.full_debug_checks", true);
+pref("javascript.options.jit.full_debug_checks", false);
 #endif
 // This preference instructs the JS engine to discard the
 // source of any privileged JS after compilation. This saves
@@ -2930,9 +2930,6 @@ pref("layout.css.scroll-snap.prediction-max-velocity", 2000);
 // gestures.
 pref("layout.css.scroll-snap.prediction-sensitivity", "0.750");
 
-// Is support for basic shapes in clip-path enabled?
-pref("layout.css.clip-path-shapes.enabled", true);
-
 // Is support for DOMPoint enabled?
 pref("layout.css.DOMPoint.enabled", true);
 
@@ -3093,6 +3090,9 @@ pref("layout.css.column-span.enabled", false);
 
 // Is effect of xml:base disabled for style attribute?
 pref("layout.css.style-attr-with-xml-base.disabled", true);
+
+// Are inter-character ruby annotations enabled?
+pref("layout.css.ruby.intercharacter.enabled", false);
 
 // pref for which side vertical scrollbars should be on
 // 0 = end-side in UI direction
@@ -5820,11 +5820,14 @@ pref("security.mixed_content.hsts_priming_request_timeout", 2000);
 // behavior of Firefox.
 pref("security.data_uri.unique_opaque_origin", true);
 
-// TODO: Bug 1380959: Block toplevel data: URI navigations
+#ifdef EARLY_BETA_OR_EARLIER
 // If true, all toplevel data: URI navigations will be blocked.
 // Please note that manually entering a data: URI in the
 // URL-Bar will not be blocked when flipping this pref.
+pref("security.data_uri.block_toplevel_data_uri_navigations", true);
+#else
 pref("security.data_uri.block_toplevel_data_uri_navigations", false);
+#endif
 
 // Enable Storage API for all platforms except Android.
 #if !defined(MOZ_WIDGET_ANDROID)
