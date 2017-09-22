@@ -221,9 +221,6 @@ pref("browser.uitour.url", "https://www.mozilla.org/%LOCALE%/firefox/%VERSION%/t
 // How long to show a Hearbeat survey (two hours, in seconds)
 pref("browser.uitour.surveyDuration", 7200);
 
-pref("browser.customizemode.tip0.shown", false);
-pref("browser.customizemode.tip0.learnMoreUrl", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/customize");
-
 pref("keyword.enabled", true);
 pref("browser.fixup.domainwhitelist.localhost", true);
 
@@ -499,8 +496,6 @@ pref("browser.bookmarks.autoExportHTML",          false);
 //  0: no backups created (and deletes all existing backups)
 pref("browser.bookmarks.max_backups",             15);
 
-pref("browser.bookmarks.showRecentlyBookmarked",  true);
-
 // Whether menu should close after Ctrl-click, middle-click, etc.
 pref("browser.bookmarks.openInTabClosesMenu", true);
 
@@ -677,6 +672,10 @@ pref("accessibility.typeaheadfind", false);
 pref("accessibility.typeaheadfind.timeout", 5000);
 pref("accessibility.typeaheadfind.linksonly", false);
 pref("accessibility.typeaheadfind.flashBar", 1);
+
+// Accessibility indicator preferences such as support URL, enabled flag.
+pref("accessibility.support.url", "https://support.mozilla.org/%LOCALE%/kb/accessibility-services");
+pref("accessibility.indicator.enabled", true);
 
 pref("plugins.click_to_play", true);
 pref("plugins.testmode", false);
