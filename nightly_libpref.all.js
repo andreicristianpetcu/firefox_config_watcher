@@ -163,6 +163,9 @@ pref("dom.enable_performance", true);
 // Whether resource timing will be gathered and returned by performance.GetEntries*
 pref("dom.enable_resource_timing", true);
 
+// Whether performance.GetEntries* will contain an entry for the active document
+pref("dom.enable_performance_navigation_timing", true);
+
 // Enable printing performance marks/measures to log
 pref("dom.performance.enable_user_timing_logging", false);
 
@@ -878,7 +881,6 @@ pref("gfx.webrender.force-angle", true);
 #endif
 
 pref("gfx.webrender.highlight-painted-layers", false);
-pref("gfx.webrender.layers-free", true);
 pref("gfx.webrender.blob-images", false);
 
 // WebRender debugging utilities.
@@ -1918,7 +1920,7 @@ pref("network.IDN_show_punycode", false);
 // IDN-safe. Otherwise, they're treated as unsafe and punycode will be used
 // for displaying them in the UI (e.g. URL bar), unless they conform to one of
 // the profiles specified in
-// http://www.unicode.org/reports/tr36/proposed.html#Security_Levels_and_Alerts
+// https://www.unicode.org/reports/tr39/#Restriction_Level_Detection
 // If "network.IDN.restriction_profile" is "high", the Highly Restrictive
 // profile is used.
 // If "network.IDN.restriction_profile" is "moderate", the Moderately
@@ -1927,7 +1929,7 @@ pref("network.IDN_show_punycode", false);
 // Note that these preferences are referred to ONLY when
 // "network.IDN_show_punycode" is false. In other words, all IDNs will be shown
 // in punycode if "network.IDN_show_punycode" is true.
-pref("network.IDN.restriction_profile", "moderate");
+pref("network.IDN.restriction_profile", "high");
 pref("network.IDN.use_whitelist", false);
 
 // ccTLDs
@@ -2655,9 +2657,6 @@ pref("services.blocklist.signing.enforced", true);
 // Enable blocklists via the services settings mechanism
 pref("services.blocklist.update_enabled", true);
 
-// Enable certificate blocklist updates via services settings
-pref("security.onecrl.via.amo", false);
-
 
 // Modifier key prefs: default to Windows settings,
 // menu access key = alt, accelerator key = control.
@@ -2810,6 +2809,14 @@ pref("general.smoothScroll.durationToIntervalRatio", 200);
 // These two prefs determine the timing function.
 pref("general.smoothScroll.currentVelocityWeighting", "0.25");
 pref("general.smoothScroll.stopDecelerationWeighting", "0.4");
+// Alternative smooth scroll physics ("MSD" = Mass-Spring-Damper)
+pref("general.smoothScroll.msdPhysics.enabled", false);
+pref("general.smoothScroll.msdPhysics.continuousMotionMaxDeltaMS", 120);
+pref("general.smoothScroll.msdPhysics.motionBeginSpringConstant", 1250);
+pref("general.smoothScroll.msdPhysics.slowdownMinDeltaMS", 12);
+pref("general.smoothScroll.msdPhysics.slowdownMinDeltaRatio", "1.3");
+pref("general.smoothScroll.msdPhysics.slowdownSpringConstant", 2000);
+pref("general.smoothScroll.msdPhysics.regularSpringConstant", 1000);
 
 pref("profile.confirm_automigration",true);
 // profile.migration_behavior determines how the profiles root is set
@@ -5256,7 +5263,7 @@ pref("dom.placeholder.show_on_focus", true);
 
 // WebVR is enabled by default in beta and release for Windows and for all
 // platforms in nightly and aurora.
-#if defined(XP_WIN) || !defined(RELEASE_OR_BETA)
+#if defined(XP_WIN) || defined(XP_MACOSX) || !defined(RELEASE_OR_BETA)
 pref("dom.vr.enabled", true);
 #else
 pref("dom.vr.enabled", false);
@@ -5303,11 +5310,14 @@ pref("dom.vr.oculus.quit.timeout", 30000);
 // OSVR device
 pref("dom.vr.osvr.enabled", false);
 // OpenVR device
-#if defined(XP_WIN) && defined(HAVE_64BIT_BUILD)
+#if !defined(HAVE_64BIT_BUILD)
 // We are only enabling WebVR by default on 64-bit builds (Bug 1384459)
+pref("dom.vr.openvr.enabled", false);
+#elif defined(XP_WIN) || defined(XP_MACOSX)
+// We enable WebVR by default for Windows and macOS
 pref("dom.vr.openvr.enabled", true);
 #else
-// See Bug 1310663 (Linux) and Bug 1310665 (macOS)
+// See Bug 1310663 (Linux)
 pref("dom.vr.openvr.enabled", false);
 #endif
 // Pose prediction reduces latency effects by returning future predicted HMD
@@ -5878,7 +5888,7 @@ pref("layers.mlgpu.enable-on-windows7", true);
 // it to a boolean as appropriate. In particular, do NOT add ifdefs here to
 // turn these on and off, instead use the conditional-pref code in gfxPrefs.h
 // to do that.
-pref("layers.advanced.background-color", 2);
+pref("layers.advanced.background-color", false);
 pref("layers.advanced.background-image", 2);
 pref("layers.advanced.border-layers", 2);
 pref("layers.advanced.boxshadow-inset-layers", 2);
@@ -5910,5 +5920,10 @@ pref("toolkit.crashreporter.include_context_heap", true);
 // Open noopener links in a new process
 pref("dom.noopener.newprocess.enabled", true);
 
+#ifdef XP_WIN
+pref("layers.omtp.enabled", true);
+#else
 pref("layers.omtp.enabled", false);
+#endif
+pref("layers.omtp.release-capture-on-main-thread", true);
 pref("layers.omtp.force-sync", false);
