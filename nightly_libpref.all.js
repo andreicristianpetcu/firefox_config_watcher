@@ -3138,6 +3138,10 @@ pref("layout.display-list.retain", false);
 pref("layout.display-list.retain", false);
 #endif
 
+// Set the maximum amount of modified frames allowed before doing a full
+// display list rebuild.
+pref("layout.display-list.rebuild-frame-limit", 500);
+
 // pref to control whether layout warnings that are hit quite often are enabled
 pref("layout.spammy_warnings.enabled", false);
 
@@ -5806,7 +5810,8 @@ pref("media.block-autoplay-until-in-foreground", true);
 // Is Stylo CSS support built and enabled?
 // Only define these prefs if Stylo support is actually built in.
 #ifdef MOZ_STYLO
-pref("layout.css.stylo-blocklist.enabled", true);
+// XXX: We should flip this pref to true once the blocked_domains is non-empty.
+pref("layout.css.stylo-blocklist.enabled", false);
 pref("layout.css.stylo-blocklist.blocked_domains", "");
 #ifdef MOZ_STYLO_ENABLE
 pref("layout.css.servo.enabled", true);
