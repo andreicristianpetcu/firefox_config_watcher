@@ -739,10 +739,6 @@ pref("browser.preferences.instantApply", true);
 // Toggling Search bar on and off in about:preferences
 pref("browser.preferences.search", true);
 
-// We prefer the storage manager (see browser.storageManager.enabled)
-// over the old offlineGroup UI. Removing the offline group UI is bug 1399808.
-pref("browser.preferences.offlineGroup.enabled", false);
-
 pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 
 pref("browser.download.show_plugins_in_list", true);
@@ -914,12 +910,7 @@ pref("browser.sessionstore.max_write_failures", 5);
 pref("accessibility.blockautorefresh", false);
 
 // Whether useAsyncTransactions is enabled or not.
-// Currently we only enable them for nightly.
-#ifdef NIGHTLY_BUILD
 pref("browser.places.useAsyncTransactions", true);
-#else
-pref("browser.places.useAsyncTransactions", false);
-#endif
 
 // Whether history is enabled or not.
 pref("places.history.enabled", true);
@@ -1536,11 +1527,7 @@ pref("browser.ping-centre.production.endpoint", "https://tiles.services.mozilla.
 // Enable GMP support in the addon manager.
 pref("media.gmp-provider.enabled", true);
 
-#ifdef NIGHTLY_BUILD
 pref("privacy.trackingprotection.ui.enabled", true);
-#else
-pref("privacy.trackingprotection.ui.enabled", false);
-#endif
 pref("privacy.trackingprotection.introCount", 0);
 pref("privacy.trackingprotection.introURL", "https://www.mozilla.org/%LOCALE%/firefox/%VERSION%/tracking-protection/start/");
 
