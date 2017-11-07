@@ -235,9 +235,6 @@ pref("general.autoScroll", true);
 #endif
 
 pref("browser.stopReloadAnimation.enabled", true);
-pref("browser.schedulePressure.enabled", true);
-pref("browser.schedulePressure.defaultCount", 3);
-pref("browser.schedulePressure.timeoutMs", 1000);
 
 // UI density of the browser chrome. This mostly affects toolbarbutton
 // and urlbar spacing. The possible values are 0=normal, 1=compact, 2=touch.
@@ -321,9 +318,10 @@ pref("browser.urlbar.suggest.history",              true);
 pref("browser.urlbar.suggest.bookmark",             true);
 pref("browser.urlbar.suggest.openpage",             true);
 pref("browser.urlbar.suggest.searches",             true);
-
-// Whether the user made a choice in the old search suggestions opt-in bar.
 pref("browser.urlbar.userMadeSearchSuggestionsChoice", false);
+// The suggestion opt-in notification will be shown on 4 different days.
+pref("browser.urlbar.daysBeforeHidingSuggestionsPrompt", 4);
+pref("browser.urlbar.lastSuggestionsPromptDate", 20160601);
 // The suggestion opt-out hint will be hidden after being shown 4 times.
 pref("browser.urlbar.timesBeforeHidingSuggestionsHint", 4);
 
@@ -343,10 +341,6 @@ pref("browser.urlbar.oneOffSearches", true);
 // If changed to true, copying the entire URL from the location bar will put the
 // human readable (percent-decoded) URL on the clipboard.
 pref("browser.urlbar.decodeURLsOnCopy", false);
-
-// Whether or not to move tabs into the active window when using the "Switch to
-// Tab" feature of the awesomebar.
-pref("browser.urlbar.switchTabs.adoptIntoActiveWindow", false);
 
 pref("browser.altClickSave", false);
 
@@ -422,13 +416,6 @@ pref("browser.sessionhistory.max_entries", 50);
 
 // Built-in default permissions.
 pref("permissions.manager.defaultsUrl", "resource://app/defaults/permissions");
-
-// Set default fallback values for site permissions we want
-// the user to be able to globally change.
-pref("permissions.default.camera", 0);
-pref("permissions.default.microphone", 0);
-pref("permissions.default.geo", 0);
-pref("permissions.default.desktop-notification", 0);
 
 // handle links targeting new windows
 // 1=current window/tab, 2=new window, 3=new tab in most recent window
@@ -621,32 +608,25 @@ pref("browser.snapshots.limit", 0);
 // 1: Scrolling contents
 // 2: Go back or go forward, in your history
 // 3: Zoom in or out.
-// 4: Treat vertical wheel as horizontal scroll
 #ifdef XP_MACOSX
-// On macOS, if the wheel has one axis only, shift+wheel comes through as a
+// On OS X, if the wheel has one axis only, shift+wheel comes through as a
 // horizontal scroll event. Thus, we can't assign anything other than normal
 // scrolling to shift+wheel.
-pref("mousewheel.with_shift.action", 1);
 pref("mousewheel.with_alt.action", 2);
+pref("mousewheel.with_shift.action", 1);
 // On MacOS X, control+wheel is typically handled by system and we don't
 // receive the event.  So, command key which is the main modifier key for
 // acceleration is the best modifier for zoom-in/out.  However, we should keep
 // the control key setting for backward compatibility.
 pref("mousewheel.with_meta.action", 3); // command key on Mac
-// Disable control-/meta-modified horizontal wheel events, since those are
-// used on Mac as part of modified swipe gestures (e.g. Left swipe+Cmd is
-// "go back" in a new tab).
+// Disable control-/meta-modified horizontal mousewheel events, since
+// those are used on Mac as part of modified swipe gestures (e.g.
+// Left swipe+Cmd = go back in a new tab).
 pref("mousewheel.with_control.action.override_x", 0);
 pref("mousewheel.with_meta.action.override_x", 0);
 #else
-// On the other platforms (non-macOS), user may use legacy mouse which supports
-// only vertical wheel but want to scroll horizontally.  For such users, we
-// should provide horizontal scroll with shift+wheel (same as Chrome).
-// However, shift+wheel was used for navigating history.  For users who want
-// to keep using this feature, let's enable it with alt+wheel.  This is better
-// for consistency with macOS users.
-pref("mousewheel.with_shift.action", 4);
-pref("mousewheel.with_alt.action", 2);
+pref("mousewheel.with_alt.action", 1);
+pref("mousewheel.with_shift.action", 2);
 pref("mousewheel.with_meta.action", 1); // win key on Win, Super/Hyper on Linux
 #endif
 pref("mousewheel.with_control.action",3);
@@ -738,6 +718,10 @@ pref("browser.preferences.instantApply", true);
 
 // Toggling Search bar on and off in about:preferences
 pref("browser.preferences.search", true);
+
+// We prefer the storage manager (see browser.storageManager.enabled)
+// over the old offlineGroup UI. Removing the offline group UI is bug 1399808.
+pref("browser.preferences.offlineGroup.enabled", false);
 
 pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 
@@ -903,14 +887,17 @@ pref("browser.sessionstore.debug.no_auto_updates", false);
 pref("browser.sessionstore.cleanup.forget_closed_after", 1209600000);
 // Maximum number of bytes of DOMSessionStorage data we collect per origin.
 pref("browser.sessionstore.dom_storage_limit", 2048);
-// Amount of failed SessionFile writes until we restart the worker.
-pref("browser.sessionstore.max_write_failures", 5);
 
 // allow META refresh by default
 pref("accessibility.blockautorefresh", false);
 
 // Whether useAsyncTransactions is enabled or not.
+// Currently we only enable them for nightly.
+#ifdef NIGHTLY_BUILD
 pref("browser.places.useAsyncTransactions", true);
+#else
+pref("browser.places.useAsyncTransactions", false);
+#endif
 
 // Whether history is enabled or not.
 pref("places.history.enabled", true);
@@ -1280,9 +1267,6 @@ pref("browser.newtabpage.directory.source", "https://tiles.services.mozilla.com/
 pref("browser.newtabpage.activity-stream.enabled", true);
 pref("browser.newtabpage.activity-stream.prerender", true);
 pref("browser.newtabpage.activity-stream.aboutHome.enabled", true);
-#ifndef RELEASE_OR_BETA
-pref("browser.newtabpage.activity-stream.debug", false);
-#endif
 
 pref("browser.library.activity-stream.enabled", true);
 
@@ -1554,8 +1538,16 @@ pref("privacy.userContext.longPressBehavior", 0);
 pref("privacy.userContext.extension", "");
 
 // Start the browser in e10s mode
-pref("browser.tabs.remote.autostart", true);
+pref("browser.tabs.remote.autostart", false);
 pref("browser.tabs.remote.desktopbehavior", true);
+
+#if !defined(RELEASE_OR_BETA) || defined(MOZ_DEV_EDITION)
+// At the moment, autostart.2 is used, while autostart.1 is unused.
+// We leave it here set to false to reset users' defaults and allow
+// us to change everybody to true in the future, when desired.
+pref("browser.tabs.remote.autostart.1", false);
+pref("browser.tabs.remote.autostart.2", true);
+#endif
 
 // For speculatively warming up tabs to improve perceived
 // performance while using the async tab switcher.
@@ -1581,6 +1573,12 @@ pref("extensions.allow-non-mpc-extensions", false);
 #endif
 
 pref("extensions.legacy.enabled", false);
+
+// Enable blocking of e10s and e10s-multi for add-on users on beta/release.
+#if defined(RELEASE_OR_BETA) && !defined(MOZ_DEV_EDITION)
+pref("extensions.e10sBlocksEnabling", true);
+pref("extensions.e10sMultiBlocksEnabling", true);
+#endif
 
 // How often to check for CPOW timeouts. CPOWs are only timed out by
 // the hang monitor.
@@ -1635,7 +1633,10 @@ pref("browser.esedbreader.loglevel", "Error");
 
 pref("browser.laterrun.enabled", false);
 
-pref("dom.ipc.processPrelaunch.enabled", true);
+// Disable prelaunch in the same way activity-stream is enabled addressing
+// bug 1381804 memory usage until bug 1376895 is fixed.
+// Because of frequent crashes on Beta, it is turned off on all channels, see: bug 1363601.
+pref("dom.ipc.processPrelaunch.enabled", false);
 
 pref("browser.migrate.automigrate.enabled", false);
 // 4 here means the suggestion notification will be automatically
@@ -1711,6 +1712,17 @@ pref("extensions.formautofill.loglevel", "Warn");
 
 // Whether or not to restore a session with lazy-browser tabs.
 pref("browser.sessionstore.restore_tabs_lazily", true);
+
+// Enable safebrowsing v4 tables (suffixed by "-proto") update.
+pref("urlclassifier.malwareTable", "goog-malware-proto,goog-unwanted-proto,test-harmful-simple,test-malware-simple,test-unwanted-simple");
+#ifdef MOZILLA_OFFICIAL
+pref("urlclassifier.phishTable", "goog-phish-proto,test-phish-simple");
+#else
+pref("urlclassifier.phishTable", "googpub-phish-proto,test-phish-simple");
+#endif
+
+pref("urlclassifier.downloadAllowTable", "goog-downloadwhite-proto");
+pref("urlclassifier.downloadBlockTable", "goog-badbinurl-proto");
 
 pref("browser.suppress_first_window_animation", true);
 
