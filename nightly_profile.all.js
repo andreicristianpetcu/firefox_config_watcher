@@ -429,6 +429,7 @@ pref("permissions.default.camera", 0);
 pref("permissions.default.microphone", 0);
 pref("permissions.default.geo", 0);
 pref("permissions.default.desktop-notification", 0);
+pref("permissions.default.shortcuts", 0);
 
 // handle links targeting new windows
 // 1=current window/tab, 2=new window, 3=new tab in most recent window
@@ -469,11 +470,7 @@ pref("browser.tabs.loadBookmarksInBackground", false);
 pref("browser.tabs.loadBookmarksInTabs", false);
 pref("browser.tabs.tabClipWidth", 140);
 pref("browser.tabs.tabMinWidth", 76);
-#ifdef UNIX_BUT_NOT_MAC
-pref("browser.tabs.drawInTitlebar", false);
-#else
 pref("browser.tabs.drawInTitlebar", true);
-#endif
 
 // Offer additional drag space to the user. The drag space
 // will only be shown if browser.tabs.drawInTitlebar is true.
@@ -1463,6 +1460,8 @@ pref("media.eme.vp9-in-mp4.enabled", true);
 pref("media.eme.vp9-in-mp4.enabled", false);
 #endif
 
+pref("media.eme.hdcp-policy-check.enabled", false);
+
 // Whether we should run a test-pattern through EME GMPs before assuming they'll
 // decode H.264.
 pref("media.gmp.trial-create.enabled", true);
@@ -1698,6 +1697,14 @@ pref("extensions.formautofill.creditCards.available", true);
 pref("extensions.formautofill.creditCards.available", false);
 #endif
 pref("extensions.formautofill.creditCards.enabled", true);
+// Pref for shield/heartbeat to recognize users who have used Credit Card
+// Autofill. The valid values can be:
+// 0: none
+// 1: submitted a manually-filled credit card form (but didn't see the doorhanger
+//    because of a duplicate profile in the storage)
+// 2: saw the doorhanger
+// 3: submitted an autofill'ed credit card form
+pref("extensions.formautofill.creditCards.used", 0);
 pref("extensions.formautofill.firstTimeUse", true);
 pref("extensions.formautofill.heuristics.enabled", true);
 pref("extensions.formautofill.loglevel", "Warn");

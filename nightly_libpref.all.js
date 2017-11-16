@@ -333,10 +333,6 @@ pref("media.memory_cache_max_size", 8192);
 pref("media.memory_caches_combined_limit_kb", 524288);
 pref("media.memory_caches_combined_limit_pc_sysmem", 5);
 
-// Cache size hint (in bytes) for each MediaResourceIndex.
-// 0 -> no cache. Will use next power of 2, clamped to 32B-128KB.
-pref("media.cache.resource-index", 8192);
-
 // We'll throttle the download if the download rate is throttle-factor times
 // the estimated playback rate, AND we satisfy the cache readahead_limit
 // above. The estimated playback rate is time_duration/length_in_bytes.
@@ -368,7 +364,6 @@ pref("media.mp4.enabled", true);
 pref("media.use-blank-decoder", false);
 #ifdef MOZ_WMF
 pref("media.wmf.enabled", true);
-pref("media.wmf.decoder.thread-count", -1);
 pref("media.wmf.dxva.enabled", true);
 pref("media.wmf.dxva.d3d11.enabled", true);
 pref("media.wmf.dxva.max-videos", 8);
@@ -550,7 +545,7 @@ pref("media.navigator.audio.full_duplex", true);
 pref("media.navigator.hardware.vp8_encode.acceleration_enabled", true);
 pref("media.navigator.hardware.vp8_encode.acceleration_remote_enabled", true);
 pref("media.navigator.hardware.vp8_decode.acceleration_enabled", false);
-#elif defined(XP_LINUX)
+#elif defined(XP_LINUX) || defined(MOZ_SNDIO)
 pref("media.peerconnection.capture_delay", 70);
 pref("media.getusermedia.playout_delay", 50);
 pref("media.navigator.audio.full_duplex", true);
@@ -1032,7 +1027,13 @@ pref("toolkit.telemetry.debugSlowSql", false);
 // Whether to use the unified telemetry behavior, requires a restart.
 pref("toolkit.telemetry.unified", true);
 // AsyncShutdown delay before crashing in case of shutdown freeze
-pref("toolkit.asyncshutdown.crash_timeout", 60000);
+#ifndef MOZ_ASAN
+pref("toolkit.asyncshutdown.crash_timeout", 60000); // 1 minute
+#else
+// MOZ_ASAN builds can be considerably slower. Extending the grace period
+// of both asyncshutdown and the terminator.
+pref("toolkit.asyncshutdown.crash_timeout", 180000); // 3 minutes
+#endif // MOZ_ASAN
 // Extra logging for AsyncShutdown barriers and phases
 pref("toolkit.asyncshutdown.log", false);
 
@@ -2099,10 +2100,6 @@ pref("network.dns.offline-localhost", true);
 // The maximum allowed length for a URL - 1MB default
 pref("network.standard-url.max-length", 1048576);
 
-// The preference controls if the rust URL parser is run in parallel with the
-// C++ implementation. Requires restart for changes to take effect.
-pref("network.standard-url.enable-rust", false);
-
 // Whether nsIURI.host/.hostname/.spec should return a punycode string
 // If set to false we will revert to previous behaviour and return a unicode string.
 pref("network.standard-url.punycode-host", true);
@@ -3131,8 +3128,8 @@ pref("layout.display-list.dump-content", false);
 pref("layout.display-list.dump-parent", false);
 
 // Toggle retaining display lists between paints
-#ifdef ANDROID
-pref("layout.display-list.retain", false);
+#if !defined(ANDROID) && defined(NIGHTLY_BUILD)
+pref("layout.display-list.retain", true);
 #else
 pref("layout.display-list.retain", false);
 #endif
@@ -4935,6 +4932,7 @@ pref("gfx.apitrace.enabled",false);
 pref("gfx.xrender.enabled",false);
 pref("widget.chrome.allow-gtk-dark-theme", false);
 pref("widget.content.allow-gtk-dark-theme", false);
+pref("widget.allow-client-side-decoration", false);
 #endif
 #endif
 
@@ -5811,14 +5809,10 @@ pref("security.mixed_content.hsts_priming_request_timeout", 2000);
 // behavior of Firefox.
 pref("security.data_uri.unique_opaque_origin", true);
 
-#ifdef EARLY_BETA_OR_EARLIER
 // If true, all toplevel data: URI navigations will be blocked.
 // Please note that manually entering a data: URI in the
 // URL-Bar will not be blocked when flipping this pref.
 pref("security.data_uri.block_toplevel_data_uri_navigations", true);
-#else
-pref("security.data_uri.block_toplevel_data_uri_navigations", false);
-#endif
 
 // Enable Storage API for all platforms except Android.
 #if !defined(MOZ_WIDGET_ANDROID)
@@ -5880,14 +5874,10 @@ pref("layers.mlgpu.enable-on-windows7", true);
 pref("layers.advanced.background-color", false);
 pref("layers.advanced.background-image", 2);
 pref("layers.advanced.border-layers", 2);
-pref("layers.advanced.boxshadow-inset-layers", false);
-pref("layers.advanced.boxshadow-outer-layers", false);
 pref("layers.advanced.bullet-layers", 2);
-pref("layers.advanced.button-foreground-layers", 2);
 pref("layers.advanced.canvas-background-color", 2);
 pref("layers.advanced.caret-layers", false);
 pref("layers.advanced.columnRule-layers", 2);
-pref("layers.advanced.displaybuttonborder-layers", 2);
 pref("layers.advanced.image-layers", 2);
 pref("layers.advanced.outline-layers", 2);
 pref("layers.advanced.solid-color", false);
