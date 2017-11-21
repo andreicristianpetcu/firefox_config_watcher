@@ -1046,7 +1046,11 @@ pref("dom.ipc.plugins.sandbox-level.flash", 0);
 // On windows these levels are:
 // See - security/sandbox/win/src/sandboxbroker/sandboxBroker.cpp
 // SetSecurityLevelForContentProcess() for what the different settings mean.
+#if defined(NIGHTLY_BUILD)
+pref("security.sandbox.content.level", 5);
+#else
 pref("security.sandbox.content.level", 4);
+#endif
 
 // This controls the depth of stack trace that is logged when Windows sandbox
 // logging is turned on.  This is only currently available for the content
@@ -1687,17 +1691,15 @@ pref("browser.crashReports.unsubmittedCheck.autoSubmit", false);
 // "detect" means it's enabled if conditions defined in the extension are met.
 #ifdef NIGHTLY_BUILD
 pref("extensions.formautofill.available", "on");
+pref("extensions.formautofill.creditCards.available", true);
 #elif MOZ_UPDATE_CHANNEL == release
 pref("extensions.formautofill.available", "staged-rollout");
+pref("extensions.formautofill.creditCards.available", false);
 #else
 pref("extensions.formautofill.available", "detect");
+pref("extensions.formautofill.creditCards.available", true);
 #endif
 pref("extensions.formautofill.addresses.enabled", true);
-#ifdef NIGHTLY_BUILD
-pref("extensions.formautofill.creditCards.available", true);
-#else
-pref("extensions.formautofill.creditCards.available", false);
-#endif
 pref("extensions.formautofill.creditCards.enabled", true);
 // Pref for shield/heartbeat to recognize users who have used Credit Card
 // Autofill. The valid values can be:

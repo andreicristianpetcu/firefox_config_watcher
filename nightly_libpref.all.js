@@ -234,6 +234,10 @@ pref("browser.sessionhistory.max_total_viewers", -1);
 
 pref("ui.use_native_colors", true);
 pref("ui.click_hold_context_menus", false);
+
+// Pop up context menu on mouseup instead of mousedown, if that's the OS default.
+// Note: ignored on Windows (context menus always use mouseup)
+pref("ui.context_menus.after_mouseup", false);
 // Duration of timeout of incremental search in menus (ms).  0 means infinite.
 pref("ui.menu.incremental_search.timeout", 1000);
 // If true, all popups won't hide automatically on blur
@@ -456,7 +460,6 @@ pref("media.navigator.load_adapt.avg_seconds",3);
 pref("media.navigator.load_adapt.high_load","0.90");
 pref("media.navigator.load_adapt.low_load","0.40");
 pref("media.navigator.video.default_fps",30);
-pref("media.navigator.video.default_minfps",10);
 pref("media.navigator.video.use_remb", true);
 pref("media.navigator.video.use_tmmbr", false);
 pref("media.navigator.audio.use_fec", true);
@@ -532,27 +535,22 @@ pref("media.getusermedia.agc", 1);
 // full_duplex: enable cubeb full-duplex capture/playback
 #if defined(XP_MACOSX)
 pref("media.peerconnection.capture_delay", 50);
-pref("media.getusermedia.playout_delay", 10);
 pref("media.navigator.audio.full_duplex", true);
 #elif defined(XP_WIN)
 pref("media.peerconnection.capture_delay", 50);
-pref("media.getusermedia.playout_delay", 40);
 pref("media.navigator.audio.full_duplex", true);
 #elif defined(ANDROID)
 pref("media.peerconnection.capture_delay", 100);
-pref("media.getusermedia.playout_delay", 100);
 pref("media.navigator.audio.full_duplex", true);
 pref("media.navigator.hardware.vp8_encode.acceleration_enabled", true);
 pref("media.navigator.hardware.vp8_encode.acceleration_remote_enabled", true);
 pref("media.navigator.hardware.vp8_decode.acceleration_enabled", false);
 #elif defined(XP_LINUX) || defined(MOZ_SNDIO)
 pref("media.peerconnection.capture_delay", 70);
-pref("media.getusermedia.playout_delay", 50);
 pref("media.navigator.audio.full_duplex", true);
 #else
 // *BSD, others - merely a guess for now
 pref("media.peerconnection.capture_delay", 50);
-pref("media.getusermedia.playout_delay", 50);
 pref("media.navigator.audio.full_duplex", false);
 #endif
 // Use MediaDataDecoder API for WebRTC, this includes hardware acceleration for
@@ -564,13 +562,6 @@ pref("dom.webaudio.enabled", true);
 
 #if !defined(ANDROID)
 pref("media.getusermedia.screensharing.enabled", true);
-#endif
-
-#ifdef RELEASE_OR_BETA
-pref("media.getusermedia.screensharing.allowed_domains", "webex.com,*.webex.com,ciscospark.com,*.ciscospark.com,projectsquared.com,*.projectsquared.com,*.room.co,room.co,beta.talky.io,talky.io,*.clearslide.com,appear.in,*.appear.in,tokbox.com,*.tokbox.com,*.sso.francetelecom.fr,*.si.francetelecom.fr,*.sso.infra.ftgroup,*.multimedia-conference.orange-business.com,*.espacecollaboration.orange-business.com,free.gotomeeting.com,g2m.me,*.g2m.me,*.mypurecloud.com,*.mypurecloud.com.au,spreed.me,*.spreed.me,*.spreed.com,air.mozilla.org,*.circuit.com,*.yourcircuit.com,circuit.siemens.com,yourcircuit.siemens.com,circuitsandbox.net,*.unify.com,tandi.circuitsandbox.net,*.ericsson.net,*.cct.ericsson.net,*.opentok.com,*.conf.meetecho.com,meet.jit.si,*.meet.jit.si,web.stage.speakeasyapp.net,web.speakeasyapp.net,*.hipchat.me,*.beta-wspbx.com,*.wspbx.com,*.unifiedcloudit.com,*.smartboxuc.com,*.smartbox-uc.com,*.panterranetworks.com,pexipdemo.com,*.pexipdemo.com,pex.me,*.pex.me,*.rd.pexip.com,1click.io,*.1click.io,*.fuze.com,*.fuzemeeting.com,*.thinkingphones.com,gotomeeting.com,*.gotomeeting.com,gotowebinar.com,*.gotowebinar.com,gototraining.com,*.gototraining.com,citrix.com,*.citrix.com,expertcity.com,*.expertcity.com,citrixonline.com,*.citrixonline.com,g2m.me,*.g2m.me,gotomeet.me,*.gotomeet.me,gotomeet.at,*.gotomeet.at,miriadaxdes.miriadax.net,certificacion.miriadax.net,miriadax.net,*.wire.com,sylaps.com,*.sylaps.com,bluejeans.com,*.bluejeans.com,*.a.bluejeans.com,*.bbcollab.com");
-#else
- // includes Mozilla's test domain: mozilla.github.io (not intended for release)
-pref("media.getusermedia.screensharing.allowed_domains", "mozilla.github.io,webex.com,*.webex.com,ciscospark.com,*.ciscospark.com,projectsquared.com,*.projectsquared.com,*.room.co,room.co,beta.talky.io,talky.io,*.clearslide.com,appear.in,*.appear.in,tokbox.com,*.tokbox.com,*.sso.francetelecom.fr,*.si.francetelecom.fr,*.sso.infra.ftgroup,*.multimedia-conference.orange-business.com,*.espacecollaboration.orange-business.com,free.gotomeeting.com,g2m.me,*.g2m.me,*.mypurecloud.com,*.mypurecloud.com.au,spreed.me,*.spreed.me,*.spreed.com,air.mozilla.org,*.circuit.com,*.yourcircuit.com,circuit.siemens.com,yourcircuit.siemens.com,circuitsandbox.net,*.unify.com,tandi.circuitsandbox.net,*.ericsson.net,*.cct.ericsson.net,*.opentok.com,*.conf.meetecho.com,meet.jit.si,*.meet.jit.si,web.stage.speakeasyapp.net,web.speakeasyapp.net,*.hipchat.me,*.beta-wspbx.com,*.wspbx.com,*.unifiedcloudit.com,*.smartboxuc.com,*.smartbox-uc.com,*.panterranetworks.com,pexipdemo.com,*.pexipdemo.com,pex.me,*.pex.me,*.rd.pexip.com,1click.io,*.1click.io,*.fuze.com,*.fuzemeeting.com,*.thinkingphones.com,gotomeeting.com,*.gotomeeting.com,gotowebinar.com,*.gotowebinar.com,gototraining.com,*.gototraining.com,citrix.com,*.citrix.com,expertcity.com,*.expertcity.com,citrixonline.com,*.citrixonline.com,g2m.me,*.g2m.me,gotomeet.me,*.gotomeet.me,gotomeet.at,*.gotomeet.at,miriadaxdes.miriadax.net,certificacion.miriadax.net,miriadax.net,*.wire.com,sylaps.com,*.sylaps.com,bluejeans.com,*.bluejeans.com,*.a.bluejeans.com,*.bbcollab.com");
 #endif
 
 pref("media.getusermedia.audiocapture.enabled", false);
@@ -1834,7 +1825,7 @@ pref("network.http.enforce-framing.soft", true);
 pref("network.http.max_response_header_size", 393216);
 
 // If we should attempt to race the cache and network
-pref("network.http.rcwn.enabled", false);
+pref("network.http.rcwn.enabled", true);
 pref("network.http.rcwn.cache_queue_normal_threshold", 8);
 pref("network.http.rcwn.cache_queue_priority_threshold", 2);
 // We might attempt to race the cache with the network only if a resource
@@ -5049,6 +5040,11 @@ pref("dom.webnotifications.requireinteraction.enabled", false);
 // Show favicons in web notifications.
 pref("alerts.showFavicons", false);
 
+// Whether to use platform-specific backends for showing desktop notifications.
+// If no such backend is available, or if the pref is false, then XUL
+// notifications are used.
+pref("alerts.useSystemBackend", true);
+
 // DOM full-screen API.
 pref("full-screen-api.enabled", false);
 #ifdef RELEASE_OR_BETA
@@ -5904,4 +5900,3 @@ pref("layers.omtp.enabled", true);
 pref("layers.omtp.enabled", false);
 #endif
 pref("layers.omtp.release-capture-on-main-thread", false);
-pref("layers.omtp.force-sync", false);
