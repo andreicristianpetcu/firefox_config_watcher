@@ -860,6 +860,7 @@ pref("gfx.webrender.enabled", false);
 #endif
 #ifdef XP_WIN
 pref("gfx.webrender.force-angle", true);
+pref("gfx.webrender.program-binary", true);
 #endif
 
 pref("gfx.webrender.highlight-painted-layers", false);
@@ -3029,6 +3030,13 @@ pref("layout.css.column-span.enabled", false);
 
 // Are inter-character ruby annotations enabled?
 pref("layout.css.ruby.intercharacter.enabled", false);
+
+// Is support for overscroll-behavior enabled?
+#ifdef RELEASE_OR_BETA
+pref("layout.css.overscroll-behavior.enabled", false);
+#else
+pref("layout.css.overscroll-behavior.enabled", true);
+#endif
 
 // pref for which side vertical scrollbars should be on
 // 0 = end-side in UI direction
