@@ -22,7 +22,6 @@
 pref("preferences.allow.omt-write", true);
 
 pref("keyword.enabled", false);
-pref("general.useragent.locale", "chrome://global/locale/intl.properties");
 pref("general.useragent.compatMode.firefox", false);
 
 // This pref exists only for testing purposes. In order to disable all
@@ -497,7 +496,7 @@ pref("media.peerconnection.ice.no_host", false);
 pref("media.peerconnection.ice.default_address_only", false);
 pref("media.peerconnection.ice.proxy_only", false);
 
-// These values (aec, agc, and noice) are from media/webrtc/trunk/webrtc/common_types.h
+// These values (aec, agc, and noise) are from media/webrtc/trunk/webrtc/common_types.h
 // kXxxUnchanged = 0, kXxxDefault = 1, and higher values are specific to each
 // setting (for Xxx = Ec, Agc, or Ns).  Defaults are all set to kXxxDefault here.
 pref("media.peerconnection.turn.disable", false);
@@ -511,7 +510,7 @@ pref("media.getusermedia.noise_enabled", true);
 pref("media.getusermedia.aec_extended_filter", true);
 pref("media.getusermedia.noise", 1);
 pref("media.getusermedia.agc_enabled", false);
-pref("media.getusermedia.agc", 1);
+pref("media.getusermedia.agc", 3); // kAgcAdaptiveDigital
 // capture_delay: Adjustments for OS-specific input delay (lower bound)
 // playout_delay: Adjustments for OS-specific AudioStream+cubeb+output delay (lower bound)
 // full_duplex: enable cubeb full-duplex capture/playback
@@ -1584,9 +1583,11 @@ pref("network.protocol-handler.external.moz-icon", false);
 
 // Don't allow  external protocol handlers for common typos
 pref("network.protocol-handler.external.ttp", false);  // http
+pref("network.protocol-handler.external.htp", false);  // http
 pref("network.protocol-handler.external.ttps", false); // https
 pref("network.protocol-handler.external.tps", false);  // https
 pref("network.protocol-handler.external.ps", false);   // https
+pref("network.protocol-handler.external.htps", false); // https
 pref("network.protocol-handler.external.ile", false);  // file
 pref("network.protocol-handler.external.le", false);   // file
 
@@ -1689,6 +1690,10 @@ pref("network.http.referer.trimmingPolicy", 0);
 pref("network.http.referer.XOriginTrimmingPolicy", 0);
 // 0=always send, 1=send iff base domains match, 2=send iff hosts match
 pref("network.http.referer.XOriginPolicy", 0);
+
+// Include an origin header on non-GET and non-HEAD requests regardless of CORS
+// 0=never send, 1=send when same-origin only, 2=always send
+pref("network.http.sendOriginHeader", 0);
 
 // Maximum number of consecutive redirects before aborting.
 pref("network.http.redirection-limit", 20);
@@ -2183,7 +2188,7 @@ pref("network.auth.subresource-http-auth-allow", 2);
 // false - it is not allowed.
 // If network.auth.subresource-http-auth-allow has values 0 or 1 this pref does not
 // have any effect.
-pref("network.auth.subresource-img-cross-origin-http-auth-allow", true);
+pref("network.auth.subresource-img-cross-origin-http-auth-allow", false);
 
 // This preference controls whether to allow sending default credentials (SSO) to
 // NTLM/Negotiate servers allowed in the "trusted uri" list when navigating them
@@ -2287,8 +2292,8 @@ pref("intl.menuitems.insertseparatorbeforeaccesskeys","chrome://global/locale/in
 pref("intl.charset.detector",               "chrome://global/locale/intl.properties");
 pref("intl.charset.fallback.override",      "");
 pref("intl.charset.fallback.tld",           true);
+pref("intl.charset.fallback.utf8_for_file", false);
 pref("intl.ellipsis",                       "chrome://global-platform/locale/intl.properties");
-pref("intl.locale.matchOS",                 false);
 // this pref allows user to request that all internationalization formatters
 // like date/time formatting, unit formatting, calendars etc. should use
 // OS locale set instead of the app locale set.
@@ -3639,6 +3644,8 @@ pref("ui.mouse.radius.inputSource.touchOnly", true);
 
 #ifdef XP_WIN
 
+pref("font.name-list.emoji", "Segoe UI Emoji, EmojiOne Mozilla");
+
 pref("font.name-list.serif.ar", "Times New Roman");
 pref("font.name-list.sans-serif.ar", "Segoe UI, Tahoma, Arial");
 pref("font.name-list.monospace.ar", "Courier New");
@@ -3995,6 +4002,8 @@ pref("ui.key.saveLink.shift", false); // true = shift, false = meta
 // enable NSPR logging for module fontInfoLog:5
 // canonical names immediately follow '(fontinit) family:' in the log
 
+pref("font.name-list.emoji", "Apple Color Emoji");
+
 pref("font.name-list.serif.ar", "Al Bayan");
 pref("font.name-list.sans-serif.ar", "Geeza Pro");
 pref("font.name-list.monospace.ar", "Geeza Pro");
@@ -4286,6 +4295,10 @@ pref("print.print_in_color", true);
 
 // font names
 
+// fontconfig doesn't support emoji yet
+// https://lists.freedesktop.org/archives/fontconfig/2016-October/005842.html
+pref("font.name-list.emoji", "EmojiOne Mozilla");
+
 pref("font.name-list.serif.ar", "serif");
 pref("font.name-list.sans-serif.ar", "sans-serif");
 pref("font.name-list.monospace.ar", "monospace");
@@ -4460,6 +4473,8 @@ pref("font.size.fixed.x-western", 12);
 
 #if defined(ANDROID)
 // We use the bundled fonts for Firefox for Android
+
+pref("font.name-list.emoji", "Noto Color Emoji");
 
 pref("font.name-list.serif.ar", "Noto Naskh Arabic, Noto Serif, Droid Serif");
 pref("font.name-list.sans-serif.ar", "Noto Naskh Arabic, Clear Sans, Roboto, Droid Sans");
@@ -4688,6 +4703,13 @@ pref("webgl.force-index-validation", 0);
 pref("webgl.lose-context-on-memory-pressure", false);
 pref("webgl.can-lose-context-in-foreground", true);
 pref("webgl.restore-context-when-visible", true);
+#ifdef ANDROID
+pref("webgl.max-contexts", 16);
+pref("webgl.max-contexts-per-principal", 8);
+#else
+pref("webgl.max-contexts", 32);
+pref("webgl.max-contexts-per-principal", 16);
+#endif
 pref("webgl.max-warnings-per-context", 32);
 pref("webgl.enable-draft-extensions", false);
 pref("webgl.enable-privileged-extensions", false);
@@ -4975,6 +4997,8 @@ pref("full-screen-api.unprefix.enabled", false);
 pref("full-screen-api.unprefix.enabled", true);
 #endif
 pref("full-screen-api.allow-trusted-requests-only", true);
+// whether to prevent the top level widget from going fullscreen
+pref("full-screen-api.ignore-widgets", false);
 pref("full-screen-api.pointer-lock.enabled", true);
 // transition duration of fade-to-black and fade-from-black, unit: ms
 #ifndef MOZ_WIDGET_GTK
@@ -5131,7 +5155,7 @@ pref("dom.idle-observers-api.fuzz_time.disabled", true);
 // no notifications). The delay is the same for both download and upload, though
 // they are handled separately. This pref is only read once at startup:
 // a restart is required to enable a new value.
-pref("network.activity.blipIntervalMilliseconds", 0);
+pref("network.activity.intervalMilliseconds", 0);
 
 // If true, reuse the same global for (almost) everything loaded by the component
 // loader (JS components, JSMs, etc). This saves memory, but makes it possible
@@ -5205,6 +5229,20 @@ pref("dom.vr.openvr.enabled", true);
 // See Bug 1310663 (Linux)
 pref("dom.vr.openvr.enabled", false);
 #endif
+// Minimum number of milliseconds that the browser will wait before
+// attempting to poll again for connected VR controllers.  The browser
+// will not attempt to poll for VR controllers until it needs to use them.
+pref("dom.vr.controller.enumerate.interval", 1000);
+// Minimum number of milliseconds that the browser will wait before
+// attempting to poll again for connected VR displays.  The browser
+// will not attempt to poll for VR displays until it needs to use
+// them, such as when detecting a WebVR site.
+pref("dom.vr.display.enumerate.interval", 5000);
+// Minimum number of milliseconds that the VR session will be kept
+// alive after the browser and content no longer are using the
+// hardware.  If a VR multitasking environment, this should be set
+// very low or set to 0.
+pref("dom.vr.inactive.timeout", 5000);
 // Pose prediction reduces latency effects by returning future predicted HMD
 // poses to callers of the WebVR API.  This currently only has an effect for
 // Oculus Rift on SDK 0.8 or greater.
@@ -5807,7 +5845,7 @@ pref("toolkit.crashreporter.include_context_heap", true);
 // Open noopener links in a new process
 pref("dom.noopener.newprocess.enabled", true);
 
-#ifdef XP_WIN
+#if defined(XP_WIN) || defined(XP_MACOSX)
 pref("layers.omtp.enabled", true);
 #else
 pref("layers.omtp.enabled", false);
