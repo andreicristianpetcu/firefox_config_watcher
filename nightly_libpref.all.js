@@ -557,25 +557,18 @@ pref("media.getusermedia.agc", 3); // kAgcAdaptiveDigital
 // capture_delay: Adjustments for OS-specific input delay (lower bound)
 // playout_delay: Adjustments for OS-specific AudioStream+cubeb+output delay (lower bound)
 // full_duplex: enable cubeb full-duplex capture/playback
+pref("media.navigator.audio.full_duplex", true);
 #if defined(XP_MACOSX)
 pref("media.peerconnection.capture_delay", 50);
-pref("media.navigator.audio.full_duplex", true);
 #elif defined(XP_WIN)
 pref("media.peerconnection.capture_delay", 50);
-pref("media.navigator.audio.full_duplex", true);
 #elif defined(ANDROID)
 pref("media.peerconnection.capture_delay", 100);
-pref("media.navigator.audio.full_duplex", true);
 pref("media.navigator.hardware.vp8_encode.acceleration_enabled", true);
 pref("media.navigator.hardware.vp8_encode.acceleration_remote_enabled", true);
 pref("media.navigator.hardware.vp8_decode.acceleration_enabled", false);
-#elif defined(XP_LINUX) || defined(MOZ_SNDIO)
-pref("media.peerconnection.capture_delay", 70);
-pref("media.navigator.audio.full_duplex", true);
 #else
-// *BSD, others - merely a guess for now
-pref("media.peerconnection.capture_delay", 50);
-pref("media.navigator.audio.full_duplex", false);
+pref("media.peerconnection.capture_delay", 70);
 #endif
 // Use MediaDataDecoder API for WebRTC, this includes hardware acceleration for
 // decoding.
@@ -746,7 +739,6 @@ pref("apz.max_velocity_inches_per_ms", "-1.0");
 pref("apz.max_velocity_queue_size", 5);
 pref("apz.min_skate_speed", "1.0");
 pref("apz.minimap.enabled", false);
-pref("apz.minimap.visibility.enabled", false);
 pref("apz.one_touch_pinch.enabled", true);
 pref("apz.overscroll.enabled", false);
 pref("apz.overscroll.min_pan_distance_ratio", "1.0");
@@ -1089,23 +1081,23 @@ pref("devtools.errorconsole.deprecation_warnings", true);
 
 #ifdef NIGHTLY_BUILD
 // Don't show the Browser Toolbox prompt on local builds / nightly
-sticky_pref("devtools.debugger.prompt-connection", false);
+pref("devtools.debugger.prompt-connection", false, sticky);
 #else
-sticky_pref("devtools.debugger.prompt-connection", true);
+pref("devtools.debugger.prompt-connection", true, sticky);
 #endif
 
 #ifdef MOZILLA_OFFICIAL
 // Disable debugging chrome
-sticky_pref("devtools.chrome.enabled", false);
+pref("devtools.chrome.enabled", false, sticky);
 // Disable remote debugging connections
-sticky_pref("devtools.debugger.remote-enabled", false);
+pref("devtools.debugger.remote-enabled", false, sticky);
 // enable JS dump() function.
-sticky_pref("browser.dom.window.dump.enabled", false);
+pref("browser.dom.window.dump.enabled", false, sticky);
 #else
 // In local builds, enable the browser toolbox by default
-sticky_pref("devtools.chrome.enabled", true);
-sticky_pref("devtools.debugger.remote-enabled", true);
-sticky_pref("browser.dom.window.dump.enabled", true);
+pref("devtools.chrome.enabled", true, sticky);
+pref("devtools.debugger.remote-enabled", true, sticky);
+pref("browser.dom.window.dump.enabled", true, sticky);
 #endif
 
 
@@ -1366,8 +1358,8 @@ pref("dom.forms.autocomplete.formautofill", false);
 // Enable search in <select> dropdowns (more than 40 options)
 pref("dom.forms.selectSearch", false);
 // Allow for webpages to provide custom styling for <select>
-// popups. Disabled on Linux due to bug 1338283.
-#ifdef XP_LINUX
+// popups. Disabled on GTK due to bug 1338283.
+#ifdef MOZ_WIDGET_GTK
 pref("dom.forms.select.customstyling", false);
 #else
 pref("dom.forms.select.customstyling", true);
@@ -1574,8 +1566,10 @@ pref("javascript.options.dump_stack_on_debuggee_would_run", false);
 // Spectre security vulnerability mitigations.
 pref("javascript.options.spectre.index_masking", true);
 pref("javascript.options.spectre.object_mitigations.barriers", true);
+pref("javascript.options.spectre.object_mitigations.misc", true);
 pref("javascript.options.spectre.string_mitigations", true);
 pref("javascript.options.spectre.value_masking", true);
+pref("javascript.options.spectre.jit_to_C++_calls", true);
 
 // Streams API
 pref("javascript.options.streams", false);
@@ -2180,7 +2174,6 @@ pref("network.predictor.prefetch-rolling-load-count", 10);
 pref("network.predictor.prefetch-min-confidence", 100);
 pref("network.predictor.preconnect-min-confidence", 90);
 pref("network.predictor.preresolve-min-confidence", 60);
-pref("network.predictor.redirect-likely-confidence", 75);
 pref("network.predictor.prefetch-force-valid-for", 10);
 pref("network.predictor.max-resources-per-entry", 100);
 pref("network.predictor.max-uri-length", 500);
@@ -3079,13 +3072,7 @@ pref("layout.css.prefixes.webkit", true);
 // Are "-webkit-{min|max}-device-pixel-ratio" media queries supported?
 // (Note: this pref has no effect if the master 'layout.css.prefixes.webkit'
 // pref is set to false.)
-pref("layout.css.prefixes.device-pixel-ratio-webkit", false);
-
-// Is support for <style scoped> enabled in content documents?
-//
-// If disabled, this will also disable the DOM API (HTMLStyleElement.scoped)
-// in chrome documents.
-pref("layout.css.scoped-style.enabled", false);
+pref("layout.css.prefixes.device-pixel-ratio-webkit", true);
 
 // Is support for the :scope selector enabled?
 pref("layout.css.scope-pseudo.enabled", true);
@@ -5105,7 +5092,7 @@ pref("browser.meta_refresh_when_inactive.disabled", false);
 pref("xpinstall.whitelist.required", true);
 // Only Firefox requires add-on signatures
 pref("xpinstall.signatures.required", false);
-pref("extensions.alwaysUnpack", false);
+pref("extensions.langpacks.signatures.required", false);
 pref("extensions.minCompatiblePlatformVersion", "2.0");
 pref("extensions.webExtensionsMinPlatformVersion", "42.0a1");
 pref("extensions.legacy.enabled", true);
@@ -5116,6 +5103,7 @@ pref("extensions.webextensions.keepStorageOnUninstall", false);
 pref("extensions.webextensions.keepUuidOnUninstall", false);
 // Redirect basedomain used by identity api
 pref("extensions.webextensions.identity.redirectDomain", "extensions.allizom.org");
+pref("extensions.webextensions.restrictedDomains", "accounts-static.cdn.mozilla.net,accounts.firefox.com,addons.cdn.mozilla.net,addons.mozilla.org,api.accounts.firefox.com,content.cdn.mozilla.net,content.cdn.mozilla.net,discovery.addons.mozilla.org,input.mozilla.org,install.mozilla.org,oauth.accounts.firefox.com,profile.accounts.firefox.com,support.mozilla.org,sync.services.mozilla.com,testpilot.firefox.com");
 // Whether or not webextension themes are supported.
 pref("extensions.webextensions.themes.enabled", false);
 pref("extensions.webextensions.themes.icons.enabled", false);
@@ -5491,6 +5479,8 @@ pref("network.trr.bootstrapAddress", "");
 pref("network.trr.blacklist-duration", 259200);
 // Single TRR request timeout, in milliseconds
 pref("network.trr.request-timeout", 3000);
+// Allow AAAA entries to be used "early", before the A results are in
+pref("network.trr.early-AAAA", false);
 
 pref("captivedetect.canonicalURL", "http://detectportal.firefox.com/success.txt");
 pref("captivedetect.canonicalContent", "success\n");
