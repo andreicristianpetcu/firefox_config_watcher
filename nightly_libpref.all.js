@@ -196,6 +196,9 @@ pref("dom.performance.enable_user_timing_logging", false);
 // Enable notification of performance timing
 pref("dom.performance.enable_notify_performance_timing", false);
 
+// Enable collecting of docgroup activity in the scheduler
+pref("dom.performance.enable_scheduler_timing", false);
+
 // Enable Permission API's .revoke() method
 pref("dom.permissions.revoke.enable", false);
 
@@ -231,11 +234,6 @@ pref("dom.keyboardevent.keypress.dispatch_non_printable_keys_only_system_group_i
 
 // Whether the WebMIDI API is enabled
 pref("dom.webmidi.enabled", false);
-
-// Whether to run add-on code in different compartments from browser code. This
-// causes a separate compartment for each (addon, global) combination, which may
-// significantly increase the number of compartments in the system.
-pref("dom.compartment_per_addon", true);
 
 // Whether to enable the JavaScript start-up cache. This causes one of the first
 // execution to record the bytecode of the JavaScript function used, and save it
@@ -3086,7 +3084,7 @@ pref("layout.css.prefixes.webkit", true);
 // Are "-webkit-{min|max}-device-pixel-ratio" media queries supported?
 // (Note: this pref has no effect if the master 'layout.css.prefixes.webkit'
 // pref is set to false.)
-pref("layout.css.prefixes.device-pixel-ratio-webkit", true);
+pref("layout.css.prefixes.device-pixel-ratio-webkit", false);
 
 // Is support for the :scope selector enabled?
 pref("layout.css.scope-pseudo.enabled", true);
@@ -4555,6 +4553,13 @@ pref("mousewheel.system_scroll_override_on_root_content.enabled", false);
 
 pref("intl.ime.use_simple_context_on_password_field", false);
 
+// uim may use key snooper to listen to key events.  Unfortunately, we cannot
+// know whether it uses or not since it's a build option.  So, we need to make
+// distribution switchable whether we think uim uses key snooper or not with
+// this pref.  Debian 9.x still uses uim as their default IM and it uses key
+// snooper.  So, let's use true for its default value.
+pref("intl.ime.hack.uim.using_key_snooper", true);
+
 #ifdef MOZ_WIDGET_GTK
 // maximum number of fonts to substitute for a generic
 pref("gfx.font_rendering.fontconfig.max_generic_substitutions", 3);
@@ -5110,7 +5115,6 @@ pref("extensions.langpacks.signatures.required", false);
 pref("extensions.minCompatiblePlatformVersion", "2.0");
 pref("extensions.webExtensionsMinPlatformVersion", "42.0a1");
 pref("extensions.legacy.enabled", true);
-pref("extensions.allow-non-mpc-extensions", true);
 
 // Other webextensions prefs
 pref("extensions.webextensions.keepStorageOnUninstall", false);
