@@ -1084,28 +1084,33 @@ pref("security.sandbox.content.level", 3);
 #endif
 
 #if defined(NIGHTLY_BUILD) && defined(XP_MACOSX) && defined(MOZ_SANDBOX)
-pref("security.sandbox.mac.flash.enabled", false);
+// Controls whether and how the Mac NPAPI Flash plugin process is sandboxed.
+// On Mac these levels are:
+// 0 - "no sandbox"
+// 1 - "write access to some Flash-specific directories and global
+//      read access triggered by file dialog activity"
+// 2 - "no global read access, read and write access to some
+//      Flash-specific directories"
+pref("dom.ipc.plugins.sandbox-level.flash", 0);
+// Controls the sandbox level used by plugins other than Flash. On Mac,
+// no other plugins are supported and this pref is only used for test
+// plugins used in automated tests.
+pref("dom.ipc.plugins.sandbox-level.default", 0);
 #endif
 
 #if defined(XP_LINUX) && defined(MOZ_SANDBOX) && defined(MOZ_CONTENT_SANDBOX)
 // This pref is introduced as part of bug 742434, the naming is inspired from
 // its Windows/Mac counterpart, but on Linux it's an integer which means:
 // 0 -> "no sandbox"
-// 1 -> "content sandbox using seccomp-bpf when available"
+// 1 -> "content sandbox using seccomp-bpf when available" + ipc restrictions
 // 2 -> "seccomp-bpf + write file broker"
 // 3 -> "seccomp-bpf + read/write file brokering"
-// 4 -> all of the above + network/socket restrictions
-// Content sandboxing on Linux is currently in the stage of
-// 'just getting it enabled', which includes a very permissive whitelist. We
-// enable seccomp-bpf on nightly to see if everything is running, or if we need
-// to whitelist more system calls.
+// 4 -> all of the above + network/socket restrictions + chroot
 //
-// So the purpose of this setting is to allow nightly users to disable the
-// sandbox while we fix their problems. This way, they won't have to wait for
-// another nightly release which disables seccomp-bpf again.
+// The purpose of this setting is to allow Linux users or distros to disable
+// the sandbox while we fix their problems, or to allow running Firefox with
+// exotic configurations we can't reasonably support out of the box.
 //
-// This setting may not be required anymore once we decide to permanently
-// enable the content sandbox.
 pref("security.sandbox.content.level", 4);
 pref("security.sandbox.content.write_path_whitelist", "");
 pref("security.sandbox.content.read_path_whitelist", "");
@@ -1124,8 +1129,6 @@ pref("security.sandbox.content.tempDirSuffix", "");
 // logged.
 #if defined(XP_WIN) || defined(XP_MACOSX)
 pref("security.sandbox.logging.enabled", false);
-#else
-pref("security.sandbox.logging.enabled", true);
 #endif
 #endif
 
