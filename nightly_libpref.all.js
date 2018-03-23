@@ -2702,6 +2702,7 @@ pref("security.allow_chrome_frames_inside_content", false);
 
 // Services security settings
 pref("services.settings.server", "https://firefox.settings.services.mozilla.com/v1");
+pref("services.settings.changes.path", "/buckets/monitor/collections/changes/records");
 
 // Blocklist preferences
 pref("extensions.blocklist.enabled", true);
@@ -2718,7 +2719,6 @@ pref("extensions.blocklist.itemURL", "https://blocked.cdn.mozilla.net/%blockID%.
 // blocking them.
 pref("extensions.blocklist.level", 2);
 // Blocklist via settings server (Kinto)
-pref("services.blocklist.changes.path", "/buckets/monitor/collections/changes/records");
 pref("services.blocklist.bucket", "blocklists");
 pref("services.blocklist.onecrl.collection", "certificates");
 pref("services.blocklist.onecrl.checked", 0);
@@ -2732,14 +2732,8 @@ pref("services.blocklist.pinning.collection", "pins");
 pref("services.blocklist.pinning.checked", 0);
 pref("services.blocklist.gfx.collection", "gfx");
 pref("services.blocklist.gfx.checked", 0);
-
-// Controls whether signing should be enforced on signature-capable blocklist
-// collections.
-pref("services.blocklist.signing.enforced", true);
-
 // Enable blocklists via the services settings mechanism
 pref("services.blocklist.update_enabled", true);
-
 
 // Modifier key prefs: default to Windows settings,
 // menu access key = alt, accelerator key = control.
@@ -5310,7 +5304,7 @@ pref("media.ondevicechange.fakeDeviceChangeEvent.enabled", false);
 // a no-op.
 pref("layout.css.touch_action.enabled", true);
 
-// Enables some assertions in nsStyleContext that are too expensive
+// Enables some assertions in ComputedStyle that are too expensive
 // for general use, but might be useful to enable for specific tests.
 // This only has an effect in DEBUG-builds.
 pref("layout.css.expensive-style-struct-assertions.enabled", false);
