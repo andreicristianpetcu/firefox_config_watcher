@@ -322,15 +322,20 @@ pref("browser.urlbar.usepreloadedtopurls.expire_days", 14);
   pref("browser.urlbar.update1", true);
   // Whether the urlbar should strip https from urls in the view.
   pref("browser.urlbar.update1.view.stripHttps", true);
+  pref("browser.urlbar.openViewOnFocus", true);
 #else
   pref("browser.urlbar.update1", false);
   pref("browser.urlbar.update1.view.stripHttps", false);
+  pref("browser.urlbar.openViewOnFocus", false);
 #endif
 // Whether we expand the font size when when the urlbar is
 // focused in design update 1.
 pref("browser.urlbar.update1.expandTextOnFocus", false);
 
-pref("browser.urlbar.openViewOnFocus", false);
+// If true, we show new users and those about to start an organic search a tip
+// encouraging them to use the Urlbar.
+pref("browser.urlbar.update1.searchTips", false);
+
 pref("browser.urlbar.eventTelemetry.enabled", false);
 
 pref("browser.altClickSave", false);
@@ -405,7 +410,6 @@ pref("permissions.default.xr", 0);
 pref("permissions.default.desktop-notification", 0);
 pref("permissions.default.shortcuts", 0);
 
-pref("permissions.delegation.enabled", true);
 pref("permissions.desktop-notification.postPrompt.enabled", true);
 pref("permissions.desktop-notification.notNow.enabled", false);
 
@@ -442,6 +446,7 @@ pref("browser.link.open_newwindow.restriction", 2);
 pref("browser.tabs.multiselect", true);
 pref("browser.tabs.closeTabByDblclick", false);
 pref("browser.tabs.closeWindowWithLastTab", true);
+pref("browser.tabs.allowTabDetach", true);
 // Open related links to a tab, e.g., link in current tab, at next to the
 // current tab if |insertRelatedAfterCurrent| is true.  Otherwise, always
 // append new tab to the end.
@@ -969,9 +974,6 @@ pref("security.certerrors.mitm.auto_enable_enterprise_roots", true);
 
 pref("security.aboutcertificate.enabled", true);
 
-// Whether to start the private browsing mode at application startup
-pref("browser.privatebrowsing.autostart", false);
-
 // Whether the bookmark panel should be shown when bookmarking a page.
 pref("browser.bookmarks.editDialog.showForNewBookmarks", true);
 
@@ -1256,9 +1258,6 @@ pref("prompts.tab_modal.enabled", true);
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
 
-// Indicates if about:newtab shows content (enabled) or just blank
-pref("browser.newtabpage.enabled", true);
-
 // Activity Stream prefs that control to which page to redirect
 #ifndef RELEASE_OR_BETA
   pref("browser.newtabpage.activity-stream.debug", false);
@@ -1341,6 +1340,7 @@ pref("sidebar.position_start", true);
 
 pref("security.identitypopup.recordEventTelemetry", true);
 pref("security.protectionspopup.recordEventTelemetry", true);
+pref("security.app_menu.recordEventTelemetry", true);
 
 // Block insecure active content on https pages
 pref("security.mixed_content.block_active_content", true);
@@ -1685,7 +1685,9 @@ pref("browser.tabs.crashReporting.requestEmail", false);
 pref("browser.tabs.crashReporting.emailMe", false);
 pref("browser.tabs.crashReporting.email", "");
 
-pref("extensions.legacy.enabled", false);
+// If true, unprivileged extensions may use experimental APIs on
+// nightly and developer edition.
+pref("extensions.experiments.enabled", false);
 
 // Causes access on unsafe CPOWs from browser code to throw by default.
 pref("dom.ipc.cpows.forbid-unsafe-from-browser", true);
@@ -1705,8 +1707,6 @@ pref("reader.errors.includeURLs", true);
 pref("view_source.tab", true);
 
 pref("dom.serviceWorkers.enabled", true);
-
-pref("dom.security.featurePolicy.enabled", true);
 
 // Enable Push API.
 pref("dom.push.enabled", true);
@@ -1738,7 +1738,6 @@ pref("extensions.pocket.enabled", true);
 pref("extensions.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
 pref("extensions.pocket.site", "getpocket.com");
 
-pref("signon.management.page.enabled", true);
 pref("signon.management.page.breach-alerts.enabled", true);
 pref("signon.management.page.sort", "name");
 pref("signon.management.overrideURI", "about:logins?filter=%DOMAIN%");
@@ -2244,14 +2243,7 @@ pref("devtools.responsive.reloadNotification.enabled", true);
 pref("devtools.responsive.touchSimulation.enabled", false);
 // Whether or not meta viewport is enabled, if and only if touchSimulation
 // is also enabled.
-// For now this is only available in nightly, dev-edition and early betas. It is planned
-// to be gradually rolled out with release 72. Starting with 73, this pref needs to be set
-// to true on all channels.
-#if defined(EARLY_BETA_OR_EARLIER) || defined(MOZ_DEV_EDITION)
-  pref("devtools.responsive.metaViewport.enabled", true);
-#else
-  pref("devtools.responsive.metaViewport.enabled", false);
-#endif
+pref("devtools.responsive.metaViewport.enabled", true);
 // The user agent of the viewport.
 pref("devtools.responsive.userAgent", "");
 // Whether or not the RDM UI is embedded in the browser.
@@ -2298,13 +2290,6 @@ pref("devtools.debugger.features.map-await-expression", true);
 // This is currently not exposed by any UI to avoid making
 // about:devtools-toolbox tabs unusable by mistake.
 pref("devtools.popup.disable_autohide", false);
-
-// Load the DevTools toolbox in a frame with type=content instead of type=chrome
-// See Bug 1539979 for more details.
-// We keep the option of running devtools in a chrome frame while we fix racy
-// tests that started failing when using type=content, but this ultimately
-// should be removed.
-pref("devtools.toolbox.content-frame", true);
 
 // Visibility switch preference for the WhatsNew panel.
 pref("devtools.whatsnew.enabled", true);
