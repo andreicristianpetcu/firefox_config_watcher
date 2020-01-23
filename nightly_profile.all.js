@@ -886,6 +886,9 @@ pref("accessibility.blockautorefresh", false);
 // Whether history is enabled or not.
 pref("places.history.enabled", true);
 
+// Whether or not diacritics must match in history text searches.
+pref("places.search.matchDiacritics", false);
+
 // the (maximum) number of the recent visits to sample
 // when calculating frecency
 pref("places.frecency.numVisits", 10);
@@ -1822,12 +1825,6 @@ pref("extensions.screenshots.disabled", false);
 // disable uploading to the server.
 pref("extensions.screenshots.upload-disabled", false);
 
-// DoH Rollout: the earliest date of profile creation for which we don't need
-// to show the doorhanger. This is when the version of the privacy statement
-// that includes DoH went live - Oct 31, 2019. This has to be a string because
-// the number is outside the signed 32-bit integer range.
-pref("doh-rollout.profileCreationThreshold", "1572476400000");
-
 // URL for Learn More link for browser error logging in preferences
 pref("browser.chrome.errorReporter.infoURL",
      "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/nightly-error-collection");
@@ -2155,7 +2152,11 @@ pref("devtools.webconsole.input.autocomplete",true);
 
 // Set to true to eagerly show the results of webconsole terminal evaluations
 // when they don't have side effects.
-pref("devtools.webconsole.input.eagerEvaluation", false);
+#if defined(NIGHTLY_BUILD)
+  pref("devtools.webconsole.input.eagerEvaluation", true);
+#else
+  pref("devtools.webconsole.input.eagerEvaluation", false);
+#endif
 
 // Browser console filters
 pref("devtools.browserconsole.filter.error", true);
