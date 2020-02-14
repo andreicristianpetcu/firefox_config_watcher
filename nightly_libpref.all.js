@@ -927,10 +927,6 @@ pref("print.show_print_progress", true);
 
 // xxxbsmedberg: more toolkit prefs
 
-// When this is set to false each window has its own PrintSettings
-// and a change in one window does not affect the others
-pref("print.use_global_printsettings", true);
-
 // Save the Printings after each print job
 pref("print.save_print_settings", true);
 
@@ -3938,6 +3934,7 @@ pref("signon.autologin.proxy",              false);
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
 pref("signon.generation.enabled",                 true);
+pref("signon.passwordEditCapture.enabled",        false);
 pref("signon.privateBrowsingCapture.enabled",     true);
 pref("signon.storeWhenAutocompleteOff",     true);
 pref("signon.userInputRequiredToCapture.enabled", true);
