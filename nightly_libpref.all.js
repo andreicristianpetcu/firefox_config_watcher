@@ -506,7 +506,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
   pref("media.peerconnection.mute_on_bye_or_timeout", false);
 
   // 770 = DTLS 1.0, 771 = DTLS 1.2, 772 = DTLS 1.3
-  pref("media.peerconnection.dtls.version.min", 770);
+  pref("media.peerconnection.dtls.version.min", 771);
 #if defined(NIGHTLY_BUILD)
   pref("media.peerconnection.dtls.version.max", 772);
 #else
@@ -3006,9 +3006,9 @@ pref("ui.mouse.radius.inputSource.touchOnly", true);
 
   // hkscsm3u.ttf (HKSCS-2001) :  http://www.microsoft.com/hk/hkscs
   // Hong Kong users have the same demand about glyphs for Latin letters (bug 88579)
-  pref("font.name-list.serif.zh-HK", "Times New Roman, MingLiu_HKSCS, Ming(for ISO10646), MingLiU, MingLiU_HKSCS-ExtB");
-  pref("font.name-list.sans-serif.zh-HK", "Arial, MingLiU_HKSCS, Ming(for ISO10646), MingLiU, MingLiU_HKSCS-ExtB");
-  pref("font.name-list.monospace.zh-HK", "MingLiU_HKSCS, Ming(for ISO10646), MingLiU, MingLiU_HKSCS-ExtB");
+  pref("font.name-list.serif.zh-HK", "Times New Roman, MingLiu_HKSCS, Ming(for ISO10646), MingLiU, MingLiU_HKSCS-ExtB, Microsoft JhengHei");
+  pref("font.name-list.sans-serif.zh-HK", "Arial, MingLiU_HKSCS, Ming(for ISO10646), MingLiU, MingLiU_HKSCS-ExtB, Microsoft JhengHei");
+  pref("font.name-list.monospace.zh-HK", "MingLiU_HKSCS, Ming(for ISO10646), MingLiU, MingLiU_HKSCS-ExtB, Microsoft JhengHei");
   pref("font.name-list.cursive.zh-HK", "DFKai-SB");
 
   pref("font.name-list.serif.x-devanagari", "Kokila, Raghindi");
@@ -4892,6 +4892,10 @@ pref("marionette.contentListener", false);
 // "Config", "Info", "Warn", "Error", and "Fatal". The value is treated
 // case-sensitively.
 pref("remote.log.level", "Info");
+
+// Certain log messages that are known to be long are truncated. This
+// preference causes them to not be truncated.
+pref("remote.log.truncate", true);
 
 // Enable the JSON View tool (an inspector for application/json documents).
 pref("devtools.jsonview.enabled", true);
