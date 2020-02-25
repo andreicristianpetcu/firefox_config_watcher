@@ -323,10 +323,6 @@ pref("browser.urlbar.usepreloadedtopurls.expire_days", 14);
   // If true, we show actionable tips in the Urlbar when the user is searching
   // for those actions.
   pref("browser.urlbar.update1.interventions", true);
-  // If true, we do not allow the TAB key to cycle through results when the
-  // Urlbar was focused with the keyboard. Instead, Tab will focus the next
-  // focusable toolbar element after the Urlbar.
-  pref("browser.urlbar.update1.restrictTabAfterKeyboardFocus", true);
   // If true, we show new users and those about to start an organic search a tip
   // encouraging them to use the Urlbar.
   pref("browser.urlbar.update1.searchTips", true);
@@ -336,7 +332,6 @@ pref("browser.urlbar.usepreloadedtopurls.expire_days", 14);
 #else
   pref("browser.urlbar.update1", false);
   pref("browser.urlbar.update1.interventions", false);
-  pref("browser.urlbar.update1.restrictTabAfterKeyboardFocus", false);
   pref("browser.urlbar.update1.searchTips", false);
   pref("browser.urlbar.update1.view.stripHttps", false);
   pref("browser.urlbar.openViewOnFocus", false);
@@ -1301,12 +1296,12 @@ pref("browser.newtabpage.activity-stream.asrouter.useRemoteL10n", true);
 pref("browser.newtabpage.activity-stream.discoverystream.enabled", true);
 pref("browser.newtabpage.activity-stream.discoverystream.hardcoded-basic-layout", false);
 pref("browser.newtabpage.activity-stream.discoverystream.spocs-endpoint", "");
-// List of langs that get the 7 row layout.
-pref("browser.newtabpage.activity-stream.discoverystream.lang-layout-config", "en");
 // List of regions that get stories by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config", "US,DE,CA");
 // List of regions that get spocs by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "US");
+// List of regions that get the 7 row layout.
+pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA");
 // Switch between different versions of the recommendation provider.
 pref("browser.newtabpage.activity-stream.discoverystream.personalization.version", 1);
 // Configurable keys used by personalization version 2.
