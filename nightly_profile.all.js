@@ -222,6 +222,8 @@ pref("browser.defaultbrowser.notificationbar", false);
 // The behavior of option 3 is detailed at: http://wiki.mozilla.org/Session_Restore
 pref("browser.startup.page",                1);
 pref("browser.startup.homepage",            "about:home");
+pref("browser.startup.homepage.abouthome_cache.enabled", false);
+
 // Whether we should skip the homepage when opening the first-run page
 pref("browser.startup.firstrunSkipsHomepage", true);
 
@@ -1638,16 +1640,6 @@ pref("browser.tabs.remote.desktopbehavior", true);
   pref("media.peerconnection.mtransport_process", true);
 #else
   pref("media.peerconnection.mtransport_process", false);
-#endif
-
-// Start a separate socket process. Performing networking on the socket process
-// is control by a sepparate pref
-// ("network.http.network_access_on_socket_process.enabled").
-// Changing these prefs requires a restart.
-#ifdef NIGHTLY_BUILD
-  pref("network.process.enabled", true);
-#else
-  pref("network.process.enabled", false);
 #endif
 
 // For speculatively warming up tabs to improve perceived
