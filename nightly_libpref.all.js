@@ -835,22 +835,6 @@ pref("devtools.console.stdout.content", false, sticky);
 // Controls whether EventEmitter module throws dump message on each emit
 pref("toolkit.dump.emit", false);
 
-// Enable recording/replaying executions.
-#if defined(XP_MACOSX) && defined(NIGHTLY_BUILD)
-  pref("devtools.recordreplay.enabled", true);
-  pref("devtools.recordreplay.enableRewinding", true);
-#else
-  pref("devtools.recordreplay.enabled", false);
-#endif
-
-pref("devtools.recordreplay.mvp.enabled", false);
-pref("devtools.recordreplay.allowRepaintFailures", true);
-pref("devtools.recordreplay.includeSystemScripts", false);
-pref("devtools.recordreplay.logging", false);
-pref("devtools.recordreplay.loggingFull", false);
-pref("devtools.recordreplay.fastLogpoints", false);
-pref("devtools.recordreplay.cloudServer", "");
-
 // Preferences for the new performance panel.
 // This pref configures the base URL for the profiler.firefox.com instance to
 // use. This is useful so that a developer can change it while working on
@@ -4042,8 +4026,6 @@ pref("network.psl.onUpdate_notify", false);
 #endif
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", false);
-  pref("widget.wayland_dmabuf_webgl.enabled", false);
-  pref("widget.wayland_dmabuf_vaapi.enabled", false);
 #endif
 
 // All the Geolocation preferences are here.
@@ -4055,6 +4037,10 @@ pref("network.psl.onUpdate_notify", false);
   pref("geo.provider.network.url", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
 #endif
 
+pref("geo.provider-country.network.url", "https://location.services.mozilla.com/v1/country?key=%MOZILLA_API_KEY%");
+pref("geo.provider-country.network.scan", false);
+// Timeout to wait before sending the location request.
+pref("geo.provider.network.timeToWaitBeforeSending", 5000);
 // Timeout for outbound network geolocation provider.
 pref("geo.provider.network.timeout", 60000);
 
@@ -4500,8 +4486,6 @@ pref("browser.search.update.interval", 21600);
 pref("browser.search.suggest.enabled", true);
 pref("browser.search.suggest.enabled.private", false);
 pref("browser.search.geoSpecificDefaults", false);
-pref("browser.search.geoip.url", "https://location.services.mozilla.com/v1/country?key=%MOZILLA_API_KEY%");
-pref("browser.search.geoip.timeout", 3000);
 pref("browser.search.modernConfig", false);
 pref("browser.search.separatePrivateDefault", false);
 pref("browser.search.separatePrivateDefault.ui.enabled", false);
