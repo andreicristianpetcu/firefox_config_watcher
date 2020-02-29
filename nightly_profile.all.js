@@ -403,6 +403,10 @@ pref("browser.search.widget.inNavBar", false);
 // The maximum amount of times the private default banner is shown.
 pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
 
+#ifdef NIGHTLY_BUILD
+  pref("browser.search.modernConfig", true);
+#endif
+
 pref("browser.sessionhistory.max_entries", 50);
 
 // Built-in default permissions.
@@ -1318,6 +1322,11 @@ pref("browser.newtabpage.activity-stream.discoverystream.personalization.modelKe
 #endif
 
 pref("trailhead.firstrun.branches", "");
+
+// Separate about welcome
+pref("browser.aboutwelcome.enabled", false);
+// See Console.jsm LOG_LEVELS for all possible values
+pref("browser.aboutwelcome.log", "warn");
 
 // The pref that controls if the What's New panel is enabled.
 pref("browser.messaging-system.whatsNewPanel.enabled", true);
