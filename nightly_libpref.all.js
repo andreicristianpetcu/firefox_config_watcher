@@ -686,6 +686,8 @@ pref("gfx.webrender.debug.primitives", false);
 pref("gfx.webrender.debug.small-screen", false);
 pref("gfx.webrender.debug.obscure-images", false);
 pref("gfx.webrender.debug.glyph-flashing", false);
+pref("gfx.webrender.debug.disable-raster-root-scale", false);
+
 
 pref("accessibility.warn_on_browsewithcaret", true);
 
@@ -864,6 +866,8 @@ pref("devtools.performance.recording.threads", "[\"GeckoMain\",\"Compositor\",\"
 // the host machine. This is used in order to look up symbol information from
 // build artifacts of local builds.
 pref("devtools.performance.recording.objdirs", "[]");
+// The popup will display some introductory text the first time it is displayed.
+pref("devtools.performance.popup.intro-displayed", false);
 
 // view source
 pref("view_source.editor.path", "");
@@ -2387,7 +2391,7 @@ pref("middlemouse.scrollbarPosition", false);
 // Clipboard only supports text/plain
 pref("clipboard.plainTextOnly", false);
 
-#ifdef XP_WIN
+#if defined(XP_WIN) || defined(MOZ_WIDGET_GTK)
   // Setting false you can disable 4th button and/or 5th button of your mouse.
   // 4th button is typically mapped to "Back" and 5th button is typically mapped
   // to "Forward" button.
@@ -3539,8 +3543,6 @@ pref("ui.mouse.radius.inputSource.touchOnly", true);
   pref("middlemouse.openNewWindow", true);
   pref("middlemouse.scrollbarPosition", true);
 
-  pref("browser.urlbar.clickSelectsAll", false);
-
   // Tab focus model bit field:
   // 1 focuses text controls, 2 focuses other form elements, 4 adds links.
   // Leave this at the default, 7, to match mozilla1.0-era user expectations.
@@ -3581,8 +3583,6 @@ pref("ui.mouse.radius.inputSource.touchOnly", true);
   pref("middlemouse.paste", true);
   pref("middlemouse.openNewWindow", true);
   pref("middlemouse.scrollbarPosition", true);
-
-  pref("browser.urlbar.clickSelectsAll", false);
 
   // Tab focus model bit field:
   // 1 focuses text controls, 2 focuses other form elements, 4 adds links.
