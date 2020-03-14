@@ -852,8 +852,14 @@ pref("devtools.performance.recording.ui-base-url", "https://profiler.firefox.com
 
 // The preset to use for the recording settings. If set to "custom" then the pref
 // values below will be used.
-pref("devtools.performance.recording.preset", "web-developer");
-pref("devtools.performance.recording.preset.remote", "web-developer");
+#if defined(NIGHTLY_BUILD) || !defined(MOZILLA_OFFICIAL)
+  // Use a more advanced preset on Nightly and local builds.
+  pref("devtools.performance.recording.preset", "firefox-platform");
+  pref("devtools.performance.recording.preset.remote", "firefox-platform");
+#else
+  pref("devtools.performance.recording.preset", "web-developer");
+  pref("devtools.performance.recording.preset.remote", "web-developer");
+#endif
 // Profiler buffer size. It is the maximum number of 8-bytes entries in the
 // profiler's buffer. 10000000 is ~80mb.
 pref("devtools.performance.recording.entries", 10000000);
@@ -1091,10 +1097,6 @@ pref("dom.event.contextmenu.enabled",       true);
 pref("dom.event.coalesce_mouse_move",       true);
 
 pref("javascript.enabled",                  true);
-pref("javascript.options.strict",           false);
-#ifdef DEBUG
-  pref("javascript.options.strict.debug",     false);
-#endif
 pref("javascript.options.blinterp",         true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.blinterp.threshold", 10);
@@ -4460,9 +4462,6 @@ pref("snav.enabled", false);
 // Wakelock is disabled by default.
 pref("dom.wakelock.enabled", false);
 
-// The URL of the Firefox Accounts auth server backend
-pref("identity.fxaccounts.auth.uri", "https://api.accounts.firefox.com/v1");
-
 // Presentation Device
 pref("dom.presentation.tcp_server.debug", false);
 pref("dom.presentation.discovery.enabled", false);
@@ -4840,6 +4839,9 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
   // The maximum number of immediate resyncs to trigger for changes made during
   // a sync.
   pref("services.sync.maxResyncs", 5);
+
+  // The URL of the Firefox Accounts auth server backend
+  pref("identity.fxaccounts.auth.uri", "https://api.accounts.firefox.com/v1");
 #endif // MOZ_SERVICES_SYNC
 
 // Marionette is the remote protocol that lets OOP programs communicate with,

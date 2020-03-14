@@ -1024,7 +1024,7 @@ pref("dom.ipc.shims.enabledWarnings", false);
   // On windows these levels are:
   // See - security/sandbox/win/src/sandboxbroker/sandboxBroker.cpp
   // SetSecurityLevelForContentProcess() for what the different settings mean.
-  pref("security.sandbox.content.level", 5);
+  pref("security.sandbox.content.level", 6);
 
   // This controls the depth of stack trace that is logged when Windows sandbox
   // logging is turned on.  This is only currently available for the content
@@ -1788,6 +1788,8 @@ pref("extensions.formautofill.reauth.enabled", false);
 pref("extensions.formautofill.section.enabled", true);
 pref("extensions.formautofill.loglevel", "Warn");
 
+pref("browser.osKeyStore.loglevel", "Warn");
+
 #ifdef NIGHTLY_BUILD
   // Comma separated list of countries Form Autofill is available in.
   pref("extensions.formautofill.supportedCountries", "US,CA,DE");
@@ -2237,6 +2239,8 @@ pref("devtools.responsive.reloadConditions.touchSimulation", false);
 pref("devtools.responsive.reloadConditions.userAgent", false);
 // Whether to show the notification about reloading to apply emulation
 pref("devtools.responsive.reloadNotification.enabled", true);
+// Whether or not we should simulate native touch gestures.
+pref("devtools.responsive.touchGestureSimulation.enabled", false);
 // Whether or not touch simulation is enabled.
 pref("devtools.responsive.touchSimulation.enabled", false);
 // Whether or not meta viewport is enabled, if and only if touchSimulation
@@ -2244,14 +2248,15 @@ pref("devtools.responsive.touchSimulation.enabled", false);
 pref("devtools.responsive.metaViewport.enabled", true);
 // The user agent of the viewport.
 pref("devtools.responsive.userAgent", "");
-// Whether or not the RDM UI is embedded in the browser.
-pref("devtools.responsive.browserUI.enabled", false);
 
-// Show the custom user agent input in Nightly builds.
+// Show the custom user agent input and browser embedded RDM UI in
+// Nightly builds.
 #if defined(NIGHTLY_BUILD)
   pref("devtools.responsive.showUserAgentInput", true);
+  pref("devtools.responsive.browserUI.enabled", true);
 #else
   pref("devtools.responsive.showUserAgentInput", false);
+  pref("devtools.responsive.browserUI.enabled", false);
 #endif
 
 // Show tab debug targets for This Firefox (on by default for local builds).
