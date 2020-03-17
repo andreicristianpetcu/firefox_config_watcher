@@ -1320,6 +1320,9 @@ pref("trailhead.firstrun.branches", "");
 
 // Separate about welcome
 pref("browser.aboutwelcome.enabled", false);
+// Temporary utility to unblock testing on about:welcome experiment variations
+pref("browser.aboutwelcome.temp.testExperiment.slug", "");
+pref("browser.aboutwelcome.temp.testExperiment.branch", "control");
 // See Console.jsm LOG_LEVELS for all possible values
 pref("browser.aboutwelcome.log", "warn");
 
@@ -2310,3 +2313,10 @@ pref("devtools.whatsnew.feature-enabled", true);
 
 // FirstStartup service time-out in ms
 pref("first-startup.timeout", 30000);
+
+// Enable the default browser agent.
+// The agent still runs as scheduled if this pref is disabled,
+// but it exits immediately before taking any action.
+#ifdef XP_WIN
+  pref("default-browser-agent.enabled", true);
+#endif
