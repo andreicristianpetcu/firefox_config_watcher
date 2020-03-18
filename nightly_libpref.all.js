@@ -2011,7 +2011,11 @@ pref("network.stricttransportsecurity.preloadlist", true);
 pref("network.mdns.use_js_fallback", false);
 
 // Cache SSL resumption tokens in necko
-pref("network.ssl_tokens_cache_enabled", false);
+#ifdef NIGHTLY_BUILD
+  pref("network.ssl_tokens_cache_enabled", true);
+#else
+  pref("network.ssl_tokens_cache_enabled", false);
+#endif
 // Capacity of the cache in kilobytes
 pref("network.ssl_tokens_cache_capacity", 2048);
 
@@ -4838,10 +4842,13 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
 
   // The maximum number of immediate resyncs to trigger for changes made during
   // a sync.
-  pref("services.sync.maxResyncs", 5);
+  pref("services.sync.maxResyncs", 1);
 
   // The URL of the Firefox Accounts auth server backend
   pref("identity.fxaccounts.auth.uri", "https://api.accounts.firefox.com/v1");
+
+  // Percentage chance we skip an extension storage sync (kinto life support).
+  pref("services.sync.extension-storage.skipPercentageChance", 20);
 #endif // MOZ_SERVICES_SYNC
 
 // Marionette is the remote protocol that lets OOP programs communicate with,

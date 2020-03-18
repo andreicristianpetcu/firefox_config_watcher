@@ -1048,10 +1048,6 @@ pref("dom.ipc.shims.enabledWarnings", false);
 #endif
 
 #if defined(XP_MACOSX) && defined(MOZ_SANDBOX)
-  // Start the Mac sandbox early during child process startup instead
-  // of when messaged by the parent after the message loop is running.
-  pref("security.sandbox.content.mac.earlyinit", true);
-
   // This pref is discussed in bug 1083344, the naming is inspired from its
   // Windows counterpart, but on Mac it's an integer which means:
   // 0 -> "no sandbox" (nightly only)
@@ -2147,11 +2143,7 @@ pref("devtools.webconsole.input.context", false);
 
 // Set to true to eagerly show the results of webconsole terminal evaluations
 // when they don't have side effects.
-#if defined(NIGHTLY_BUILD) || defined(MOZ_DEV_EDITION)
-  pref("devtools.webconsole.input.eagerEvaluation", true);
-#else
-  pref("devtools.webconsole.input.eagerEvaluation", false);
-#endif
+pref("devtools.webconsole.input.eagerEvaluation", true);
 
 // Browser console filters
 pref("devtools.browserconsole.filter.error", true);
