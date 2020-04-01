@@ -428,6 +428,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
   pref("media.navigator.video.enabled", true);
   pref("media.navigator.video.default_fps",30);
   pref("media.navigator.video.use_remb", true);
+  pref("media.navigator.video.use_transport_cc", false);
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -1100,6 +1101,7 @@ pref("privacy.purge_trackers.enabled", false);
 #endif
 // Allowable amount of cookies to purge in a batch.
 pref("privacy.purge_trackers.max_purge_count", 100);
+pref("privacy.purge_trackers.logging.level", "Warn");
 
 
 pref("dom.event.contextmenu.enabled",       true);
