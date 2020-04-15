@@ -200,8 +200,6 @@ pref("browser.fixup.domainwhitelist.localhost", true);
   pref("general.autoScroll", true);
 #endif
 
-pref("browser.stopReloadAnimation.enabled", true);
-
 // UI density of the browser chrome. This mostly affects toolbarbutton
 // and urlbar spacing. The possible values are 0=normal, 1=compact, 2=touch.
 pref("browser.uidensity", 0);
@@ -308,9 +306,6 @@ pref("browser.urlbar.openintab", false);
 pref("browser.urlbar.usepreloadedtopurls.enabled", false);
 pref("browser.urlbar.usepreloadedtopurls.expire_days", 14);
 
-// Whether the quantum bar displays design update 1.
-pref("browser.urlbar.update1", true);
-
 // If true, we show actionable tips in the Urlbar when the user is searching
 // for those actions.
 pref("browser.urlbar.update1.interventions", true);
@@ -318,9 +313,6 @@ pref("browser.urlbar.update1.interventions", true);
 // If true, we show new users and those about to start an organic search a tip
 // encouraging them to use the Urlbar.
 pref("browser.urlbar.update1.searchTips", true);
-
-// Whether the urlbar should strip https from urls in the view.
-pref("browser.urlbar.update1.view.stripHttps", true);
 
 pref("browser.urlbar.openViewOnFocus", true);
 
@@ -487,17 +479,18 @@ pref("browser.tabs.showAudioPlayingIcon", true);
 // This should match Chromium's audio indicator delay.
 pref("browser.tabs.delayHidingAudioPlayingIconMS", 3000);
 
-#if defined(NIGHTLY_BUILD) && !defined(MOZ_ASAN)
 // Pref to control whether we use a separate privileged content process
 // for about: pages. This pref name did not age well: we will have multiple
 // types of privileged content processes, each with different privileges.
 // types of privleged content processes, each with different privleges.
-#if defined(MOZ_CODE_COVERAGE) && defined(XP_LINUX)
+#if defined(MOZ_CODE_COVERAGE) && defined(XP_LINUX) || defined(MOZ_ASAN)
   // Disabled on Linux ccov builds due to bug 1621269.
   pref("browser.tabs.remote.separatePrivilegedContentProcess", false);
 #else
   pref("browser.tabs.remote.separatePrivilegedContentProcess", true);
 #endif
+
+#if defined(NIGHTLY_BUILD) && !defined(MOZ_ASAN)
   // This pref will cause assertions when a remoteType triggers a process switch
   // to a new remoteType it should not be able to trigger.
   pref("browser.tabs.remote.enforceRemoteTypeRestrictions", true);
@@ -1451,11 +1444,6 @@ pref("identity.fxaccounts.commands.enabled", true);
 // Default is 24 hours.
 pref("identity.fxaccounts.commands.missed.fetch_interval", 86400);
 
-// On GTK, we now default to showing the menubar only when alt is pressed:
-#ifdef MOZ_WIDGET_GTK
-  pref("ui.key.menuAccessKeyFocuses", true);
-#endif
-
 // Whether we should run a test-pattern through EME GMPs before assuming they'll
 // decode H.264.
 pref("media.gmp.trial-create.enabled", true);
@@ -1548,6 +1536,10 @@ pref("dom.storage_access.enabled", true);
 
 pref("browser.contentblocking.cryptomining.preferences.ui.enabled", true);
 pref("browser.contentblocking.fingerprinting.preferences.ui.enabled", true);
+#ifdef NIGHTLY_BUILD
+  // Enable cookieBehavior = BEHAVIOR_REJECT_TRACKER_AND_PARTITION_FOREIGN as an option in the custom category ui
+  pref("browser.contentblocking.reject-and-isolate-cookies.preferences.ui.enabled", true);
+#endif
 
 // Possible values for browser.contentblocking.features.strict pref:
 //   Tracking Protection:
@@ -1596,6 +1588,7 @@ pref("browser.contentblocking.report.proxy.enabled", false);
 pref("browser.contentblocking.report.show_mobile_app", false);
 
 pref("browser.contentblocking.report.monitor.url", "https://monitor.firefox.com/?entrypoint=protection_report_monitor&utm_source=about-protections");
+pref("browser.contentblocking.report.monitor.how_it_works.url", "https://monitor.firefox.com/about");
 pref("browser.contentblocking.report.monitor.sign_in_url", "https://monitor.firefox.com/oauth/init?entrypoint=protection_report_monitor&utm_source=about-protections&email=");
 pref("browser.contentblocking.report.manage_devices.url", "https://accounts.firefox.com/settings/clients");
 pref("browser.contentblocking.report.proxy_extension.url", "https://fpn.firefox.com/browser?utm_source=firefox-desktop&utm_medium=referral&utm_campaign=about-protections&utm_content=about-protections");
@@ -1605,7 +1598,6 @@ pref("browser.contentblocking.report.mobile-ios.url", "https://apps.apple.com/ap
 pref("browser.contentblocking.report.mobile-android.url", "https://play.google.com/store/apps/details?id=org.mozilla.firefox&referrer=utm_source%3Dprotection_report%26utm_content%3Dmobile_promotion");
 
 // Protection Report's SUMO urls
-pref("browser.contentblocking.report.monitor.how_it_works.url", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/monitor-faq");
 pref("browser.contentblocking.report.lockwise.how_it_works.url", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/password-manager-report");
 pref("browser.contentblocking.report.social.url", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/social-media-tracking-report");
 pref("browser.contentblocking.report.cookie.url", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/cross-site-tracking-report");
@@ -1728,7 +1720,6 @@ pref("signon.management.page.os-auth.enabled", true);
 pref("signon.management.page.breach-alerts.enabled", true);
 pref("signon.management.page.vulnerable-passwords.enabled", true);
 pref("signon.management.page.sort", "name");
-pref("signon.management.overrideURI", "about:logins?filter=%DOMAIN%");
 // The utm_creative value is appended within the code (specific to the location on
 // where it is clicked). Be sure that if these two prefs are updated, that
 // the utm_creative param be last.
@@ -1739,6 +1730,7 @@ pref("signon.management.page.breachAlertUrl",
 pref("signon.management.page.hideMobileFooter", false);
 pref("signon.management.page.showPasswordSyncNotification", true);
 pref("signon.passwordEditCapture.enabled", true);
+pref("signon.showAutoCompleteFooter", true);
 
 // Enable the "Simplify Page" feature in Print Preview. This feature
 // is disabled by default in toolkit.
@@ -2083,10 +2075,10 @@ pref("devtools.netmonitor.panes-search-width", 550);
 pref("devtools.netmonitor.panes-search-height", 450);
 pref("devtools.netmonitor.filters", "[\"all\"]");
 pref("devtools.netmonitor.visibleColumns",
-  "[\"status\",\"method\",\"domain\",\"file\",\"cause\",\"type\",\"transferred\",\"contentSize\",\"waterfall\"]"
+    "[\"status\",\"method\",\"domain\",\"file\",\"initiator\",\"type\",\"transferred\",\"contentSize\",\"waterfall\"]"
 );
 pref("devtools.netmonitor.columnsData",
-  '[{"name":"status","minWidth":30,"width":5}, {"name":"method","minWidth":30,"width":5}, {"name":"domain","minWidth":30,"width":10}, {"name":"file","minWidth":30,"width":25}, {"name":"url","minWidth":30,"width":25}, {"name":"cause","minWidth":30,"width":10},{"name":"initiator","minWidth":30,"width":10},{"name":"type","minWidth":30,"width":5},{"name":"transferred","minWidth":30,"width":10},{"name":"contentSize","minWidth":30,"width":5},{"name":"waterfall","minWidth":150,"width":15}]');
+  '[{"name":"status","minWidth":30,"width":5}, {"name":"method","minWidth":30,"width":5}, {"name":"domain","minWidth":30,"width":10}, {"name":"file","minWidth":30,"width":25}, {"name":"url","minWidth":30,"width":25},{"name":"initiator","minWidth":30,"width":10},{"name":"type","minWidth":30,"width":5},{"name":"transferred","minWidth":30,"width":10},{"name":"contentSize","minWidth":30,"width":5},{"name":"waterfall","minWidth":150,"width":15}]');
 pref("devtools.netmonitor.ws.payload-preview-height", 128);
 pref("devtools.netmonitor.ws.visibleColumns",
   '["data", "time"]'
@@ -2144,7 +2136,16 @@ pref("devtools.webconsole.filter.netxhr", false);
 
 // Webconsole autocomplete preference
 pref("devtools.webconsole.input.autocomplete",true);
-pref("devtools.webconsole.input.context", false);
+
+// Show context selector in console input, in the browser toolbox
+#if defined(NIGHTLY_BUILD)
+  pref("devtools.webconsole.input.context", true);
+#else
+  pref("devtools.webconsole.input.context", false);
+#endif
+
+// Show context selector in console input, in the content toolbox
+pref("devtools.contenttoolbox.webconsole.input.context", false);
 
 // Set to true to eagerly show the results of webconsole terminal evaluations
 // when they don't have side effects.
