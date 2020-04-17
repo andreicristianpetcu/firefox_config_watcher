@@ -281,9 +281,9 @@ pref("browser.urlbar.suggest.bookmark",             true);
 pref("browser.urlbar.suggest.openpage",             true);
 pref("browser.urlbar.suggest.searches",             true);
 
-// Limit the number of characters sent to the current search engine to fetch
-// suggestions.
-pref("browser.urlbar.maxCharsForSearchSuggestions", 20);
+// As a user privacy measure, don't fetch search suggestions if a pasted string
+// is longer than this.
+pref("browser.urlbar.maxCharsForSearchSuggestions", 100);
 
 pref("browser.urlbar.formatting.enabled", true);
 pref("browser.urlbar.trimURLs", true);
@@ -1030,7 +1030,7 @@ pref("dom.ipc.shims.enabledWarnings", false);
   // For information on what the level number means, see
   // SetSecurityLevelForGPUProcess() in
   // security/sandbox/win/src/sandboxbroker/sandboxBroker.cpp
-  pref("security.sandbox.gpu.level", 1);
+  pref("security.sandbox.gpu.level", 0);
 
   // Controls whether we disable win32k for the processes.
   // true means that win32k system calls are not permitted.
@@ -1251,6 +1251,10 @@ pref("browser.menu.showCharacterEncoding", "chrome://browser/locale/browser.prop
 
 // Allow using tab-modal prompts when possible.
 pref("prompts.tab_modal.enabled", true);
+
+// Whether prompts should be content modal (1) tab modal (2) or window modal(3) by default
+// This is a fallback value for when prompt callers do not specify a modalType.
+pref("prompts.defaultModalType", 3);
 
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
@@ -1953,8 +1957,6 @@ pref("devtools.inspector.showAllAnonymousContent", false);
 pref("devtools.inspector.new-rulesview.enabled", false);
 // Enable the compatibility tool in the inspector.
 pref("devtools.inspector.compatibility.enabled", false);
-// Enable the new Box Model Highlighter with renderer in parent process
-pref("devtools.inspector.use-new-box-model-highlighter", false);
 // Enable color scheme simulation in the inspector.
 pref("devtools.inspector.color-scheme-simulation.enabled", false);
 
