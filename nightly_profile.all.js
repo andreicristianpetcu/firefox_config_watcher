@@ -242,7 +242,6 @@ pref("browser.slowStartup.notificationDisabled", false);
 pref("browser.slowStartup.timeThreshold", 20000);
 pref("browser.slowStartup.maxSamples", 5);
 
-pref("browser.enable_automatic_image_resizing", true);
 pref("browser.chrome.site_icons", true);
 // browser.warnOnQuit == false will override all other possible prompts when quitting or restarting
 pref("browser.warnOnQuit", true);
@@ -273,6 +272,11 @@ pref("browser.urlbar.delay", 50);
 
 // The maximum number of historical search results to show.
 pref("browser.urlbar.maxHistoricalSearchSuggestions", 0);
+
+// When true, URLs in the user's history that look like search result pages
+// are styled to look like search engine results instead of the usual history
+// results.
+pref("browser.urlbar.restyleSearches", false);
 
 // The default behavior for the urlbar can be configured to use any combination
 // of the match filters with each additional filter adding more results (union).
@@ -753,6 +757,8 @@ pref("browser.download.hide_plugins_without_extensions", true);
   pref("browser.backspace_action", 0);
 #endif
 
+pref("intl.regional_prefs.use_os_locales", false);
+
 // this will automatically enable inline spellchecking (if it is available) for
 // editable elements in HTML
 // 0 = spellcheck nothing
@@ -1199,6 +1205,7 @@ pref("services.sync.prefs.sync.dom.event.contextmenu.enabled", true);
 pref("services.sync.prefs.sync.extensions.update.enabled", true);
 pref("services.sync.prefs.sync.extensions.activeThemeID", true);
 pref("services.sync.prefs.sync.intl.accept_languages", true);
+pref("services.sync.prefs.sync.intl.regional_prefs.use_os_locales", true);
 pref("services.sync.prefs.sync.layout.spellcheckDefault", true);
 pref("services.sync.prefs.sync.media.autoplay.default", true);
 pref("services.sync.prefs.sync.media.eme.enabled", true);
@@ -1313,8 +1320,6 @@ pref("trailhead.firstrun.branches", "join-dynamic");
 
 // Separate about welcome
 pref("browser.aboutwelcome.enabled", true);
-// See Console.jsm LOG_LEVELS for all possible values
-pref("browser.aboutwelcome.log", "warn");
 
 // The pref that controls if the What's New panel is enabled.
 pref("browser.messaging-system.whatsNewPanel.enabled", true);
@@ -1323,6 +1328,7 @@ pref("browser.messaging-system.personalized-cfr.scores", "{}");
 pref("browser.messaging-system.personalized-cfr.score-threshold", 5000);
 
 // Experiment Manager
+// See Console.jsm LOG_LEVELS for all possible values
 pref("messaging-system.log", "warn");
 pref("messaging-system.rsexperimentloader.enabled", true);
 
@@ -1966,6 +1972,10 @@ pref("devtools.gridinspector.showGridLineNumbers", false);
 pref("devtools.gridinspector.showInfiniteLines", false);
 // Max number of grid highlighters that can be displayed
 pref("devtools.gridinspector.maxHighlighters", 3);
+
+// Compatibility preferences
+// Stringified array of target browsers that users investigate.
+pref("devtools.inspector.compatibility.target-browsers", "");
 
 // Whether or not the box model panel is opened in the layout view
 pref("devtools.layout.boxmodel.opened", true);

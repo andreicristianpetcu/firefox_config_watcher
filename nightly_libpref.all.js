@@ -33,7 +33,11 @@ pref("security.tls.insecure_fallback_hosts", "");
 // https://tools.ietf.org/html/draft-davidben-http2-tls13-00
 pref("security.tls.enable_post_handshake_auth", false);
 pref("security.tls.hello_downgrade_check", true);
-pref("security.tls.enable_delegated_credentials", false);
+#ifdef NIGHTLY_BUILD
+  pref("security.tls.enable_delegated_credentials", true);
+#else if MOZ_UPDATE_CHANNEL != esr
+  pref("security.tls.enable_delegated_credentials", false);
+#endif
 
 pref("security.ssl.treat_unsafe_negotiation_as_broken", false);
 pref("security.ssl.require_safe_negotiation",  false);
@@ -325,8 +329,6 @@ pref("browser.display.show_image_placeholders", true);
 pref("browser.display.show_loading_image_placeholder", false);
 // min font device pixel size at which to turn on high quality
 pref("browser.display.auto_quality_min_font_size", 20);
-pref("browser.enable_automatic_image_resizing", false);
-pref("browser.enable_click_image_resizing", true);
 
 // See http://whatwg.org/specs/web-apps/current-work/#ping
 pref("browser.send_pings", false);
@@ -2717,15 +2719,6 @@ pref("browser.tabs.remote.separateFileUriProcess", true);
 // web process when running with fission.
 pref("browser.tabs.remote.dataUriInDefaultWebProcess", false);
 
-// Pref that enables top level web content pages that are opened from file://
-// URI pages to run in the file content process.
-// This has been added in case breaking any window references between these
-// sorts of pages, which we have to do when we run them in the normal web
-// content process, causes compatibility issues.
-//
-// This is going away and for now is disabled.
-pref("browser.tabs.remote.allowLinkedWebInFileUriProcess", false);
-
 // This pref will cause assertions when a remoteType triggers a process switch
 // to a new remoteType it should not be able to trigger.
 pref("browser.tabs.remote.enforceRemoteTypeRestrictions", false);
@@ -4001,7 +3994,7 @@ pref("network.psl.onUpdate_notify", false);
   pref("widget.content.gtk-theme-override", "");
 #endif
 #ifdef MOZ_WAYLAND
-  pref("widget.wayland_vsync.enabled", false);
+  pref("widget.wayland_vsync.enabled", true);
   pref("widget.wayland.use-opaque-region", true);
 #endif
 
@@ -4796,7 +4789,7 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
   pref("identity.fxaccounts.auth.uri", "https://api.accounts.firefox.com/v1");
 
   // Percentage chance we skip an extension storage sync (kinto life support).
-  pref("services.sync.extension-storage.skipPercentageChance", 20);
+  pref("services.sync.extension-storage.skipPercentageChance", 50);
 #endif // MOZ_SERVICES_SYNC
 
 // Marionette is the remote protocol that lets OOP programs communicate with,
@@ -4893,6 +4886,12 @@ pref("devtools.errorconsole.deprecation_warnings", true);
 #endif
 
 pref("devtools.debugger.features.watchpoints", true);
+
+#ifdef NIGHTLY_BUILD
+  pref("devtools.debugger.features.windowless-service-workers", true);
+#else
+  pref("devtools.debugger.features.windowless-service-workers", false);
+#endif
 
 // Disable remote debugging protocol logging.
 pref("devtools.debugger.log", false);
