@@ -1076,7 +1076,7 @@ pref("privacy.restrict3rdpartystorage.url_decorations", "");
 pref("privacy.popups.maxReported", 100);
 
 // Purging first-party tracking cookies.
-#ifdef NIGHTLY_BUILD
+#ifdef EARLY_BETA_OR_EARLIER
   pref("privacy.purge_trackers.enabled", true);
   pref("privacy.purge_trackers.logging.level", "All");
 #else
@@ -1109,6 +1109,7 @@ pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
 pref("javascript.options.wasm_ionjit",            true);
 pref("javascript.options.wasm_baselinejit",       true);
+pref("javascript.options.wasm_reftypes",          true);
 #ifdef ENABLE_WASM_CRANELIFT
   pref("javascript.options.wasm_cranelift",       false);
 #endif
