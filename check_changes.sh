@@ -9,4 +9,6 @@ wget https://hg.mozilla.org/releases/mozilla-aurora/raw-file/tip/browser/app/pro
 wget https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/browser/app/profile/firefox.js -O beta_profile.all.js
 wget https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/browser/app/profile/firefox.js -O stable_profile.all.js
 
+wget https://raw.githubusercontent.com/mozilla-mobile/fenix/master/app/src/main/java/org/mozilla/fenix/FeatureFlags.kt -O FeatureFlags.kt
+
 git status
