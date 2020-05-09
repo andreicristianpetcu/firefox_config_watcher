@@ -429,6 +429,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
+  pref("media.peerconnection.video.use_rtx", false);
 
   #ifdef NIGHTLY_BUILD
     pref("media.peerconnection.sdp.parser", "sipcc");
@@ -2333,8 +2334,6 @@ pref("services.settings.security.onecrl.checked", 0);
 pref("extensions.abuseReport.enabled", true);
 // Allow AMO to handoff reports to the Firefox integrated dialog.
 pref("extensions.abuseReport.amWebAPI.enabled", true);
-// Opened as a sub-frame of the about:addons page when set to false.
-pref("extensions.abuseReport.openDialog", true);
 pref("extensions.abuseReport.url", "https://services.addons.mozilla.org/api/v4/abuse/report/addon/");
 pref("extensions.abuseReport.amoDetailsURL", "https://services.addons.mozilla.org/api/v4/addons/addon/");
 
