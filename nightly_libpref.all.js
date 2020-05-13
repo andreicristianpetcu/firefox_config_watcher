@@ -533,6 +533,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.getusermedia.agc_enabled", true);
   pref("media.getusermedia.agc", 1); // kAdaptiveDigital
   pref("media.getusermedia.hpf_enabled", true);
+  pref("media.getusermedia.aecm_output_routing", 3); // kSpeakerphone
   // full_duplex: enable cubeb full-duplex capture/playback
   pref("media.navigator.audio.full_duplex", true);
 #endif // MOZ_WEBRTC
@@ -581,6 +582,8 @@ pref("media.cubeb.logging_level", "");
 #if defined(XP_MACOSX)
   pref("media.cubeb.backend", "audiounit-rust");
 #endif
+
+pref("media.cubeb.output_voice_routing", true);
 
 // GraphRunner (fixed MediaTrackGraph thread) control
 pref("media.audiograph.single_thread.enabled", true);
@@ -814,7 +817,7 @@ pref("toolkit.telemetry.debugSlowSql", false);
 pref("toolkit.telemetry.unified", true);
 // AsyncShutdown delay before crashing in case of shutdown freeze
 #if !defined(MOZ_ASAN) && !defined(MOZ_TSAN)
-  pref("toolkit.asyncshutdown.report_writes_after", 20000); // 20 seconds
+  pref("toolkit.asyncshutdown.report_writes_after", 40000); // 40 seconds
   pref("toolkit.asyncshutdown.crash_timeout", 60000); // 1 minute
 #else
   // ASan and TSan builds can be considerably slower. Extend the grace period
@@ -1848,8 +1851,6 @@ pref("network.ftp.idleConnectionTimeout", 300);
 // enables the prefetch service (i.e., prefetching of <link rel="next"> and
 // <link rel="prefetch"> URLs).
 pref("network.prefetch-next", true);
-// enables the preloading (i.e., preloading of <link rel="preload"> URLs).
-pref("network.preload", false);
 
 // The following prefs pertain to the negotiate-auth extension (see bug 17578),
 // which provides transparent Kerberos or NTLM authentication using the SPNEGO
@@ -4328,6 +4329,7 @@ pref("urlclassifier.disallow_completions", "goog-downloadwhite-digest256,base-tr
 
 // Workaround for Google Recaptcha
 pref("urlclassifier.trackingAnnotationSkipURLs", "google.com/recaptcha/,*.google.com/recaptcha/");
+pref("privacy.rejectForeign.allowList", "");
 
 // Number of random entries to send with a gethash request
 pref("urlclassifier.gethashnoise", 4);
