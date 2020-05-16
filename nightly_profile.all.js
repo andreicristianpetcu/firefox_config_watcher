@@ -369,6 +369,11 @@ pref("browser.download.autohideButton", true);
   pref("browser.helperApps.deleteTempFileOnExit", true);
 #endif
 
+// This controls the visibility of the radio button in the
+// Unknown Content Type (Helper App) dialog that will open
+// the content in the browser.
+pref("browser.helperApps.showOpenOptionForPdfJS", false);
+
 // search engines URL
 pref("browser.search.searchEnginesURL",      "https://addons.mozilla.org/%LOCALE%/firefox/search-engines/");
 
@@ -1327,6 +1332,8 @@ pref("trailhead.firstrun.branches", "join-dynamic");
 
 // Separate about welcome
 pref("browser.aboutwelcome.enabled", true);
+// Used for switching simplified 3 cards welcome to multistage welcome
+pref("browser.aboutwelcome.overrideContent", "");
 
 // The pref that controls if the What's New panel is enabled.
 pref("browser.messaging-system.whatsNewPanel.enabled", true);
@@ -1646,6 +1653,10 @@ pref("privacy.userContext.extension", "");
 // allows user to open container menu on a left click instead of a new
 // tab in the default container
 pref("privacy.userContext.newTabContainerOnLeftClick.enabled", false);
+
+// Set to true to allow the user to silence all notifications when
+// sharing the screen.
+pref("privacy.webrtc.allowSilencingNotifications", false);
 
 // Start the browser in e10s mode
 pref("browser.tabs.remote.autostart", true);
