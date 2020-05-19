@@ -372,7 +372,7 @@ pref("browser.download.autohideButton", true);
 // This controls the visibility of the radio button in the
 // Unknown Content Type (Helper App) dialog that will open
 // the content in the browser.
-pref("browser.helperApps.showOpenOptionForPdfJS", false);
+pref("browser.helperApps.showOpenOptionForPdfJS", true);
 
 // search engines URL
 pref("browser.search.searchEnginesURL",      "https://addons.mozilla.org/%LOCALE%/firefox/search-engines/");
@@ -1372,6 +1372,9 @@ pref("pdfjs.firstRun", true);
 pref("pdfjs.previousHandler.preferredAction", 0);
 pref("pdfjs.previousHandler.alwaysAskBeforeHandling", false);
 
+// Try to convert PDFs sent as octet-stream
+pref("pdfjs.handleOctetStream", true);
+
 // Is the sidebar positioned ahead of the content browser
 pref("sidebar.position_start", true);
 
@@ -1657,6 +1660,11 @@ pref("privacy.userContext.newTabContainerOnLeftClick.enabled", false);
 // Set to true to allow the user to silence all notifications when
 // sharing the screen.
 pref("privacy.webrtc.allowSilencingNotifications", false);
+// Set to true to use the legacy WebRTC global indicator
+pref("privacy.webrtc.legacyGlobalIndicator", true);
+// Set to true to enable a warning displayed when attempting
+// to switch tabs in a window that's being shared over WebRTC.
+pref("privacy.webrtc.sharedTabWarning", false);
 
 // Start the browser in e10s mode
 pref("browser.tabs.remote.autostart", true);
