@@ -317,9 +317,6 @@ pref("ui.click_hold_context_menus", false);
 // 0 = false, 1 = true, 2 = autodetect.
 pref("ui.android.mouse_as_touch", 1);
 
-// Duration of timeout of incremental search in menus (ms).  0 means infinite.
-pref("ui.menu.incremental_search.timeout", 1000);
-
 pref("browser.display.force_inline_alttext", false); // true = force ALT text for missing images to be layed out inline
 // 0 = no external leading,
 // 1 = use external leading only when font provides,
@@ -427,11 +424,10 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.navigator.video.use_remb", true);
   #ifdef EARLY_BETA_OR_EARLIER
     pref("media.navigator.video.use_transport_cc", true);
-    pref("media.peerconnection.video.use_rtx", true);
   #else
     pref("media.navigator.video.use_transport_cc", false);
-    pref("media.peerconnection.video.use_rtx", false);
   #endif
+  pref("media.peerconnection.video.use_rtx", false);
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -535,8 +531,6 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.getusermedia.agc", 1); // kAdaptiveDigital
   pref("media.getusermedia.hpf_enabled", true);
   pref("media.getusermedia.aecm_output_routing", 3); // kSpeakerphone
-  // full_duplex: enable cubeb full-duplex capture/playback
-  pref("media.navigator.audio.full_duplex", true);
 #endif // MOZ_WEBRTC
 
 #if !defined(ANDROID)
@@ -1133,7 +1127,7 @@ pref("javascript.options.wasm_reftypes",          true);
   pref("javascript.options.wasm_multi_value",     true);
 #endif
 #ifdef ENABLE_WASM_SIMD
-  pref("javascript.options.wasm_simd",            false);
+  pref("javascript.options.wasm_simd",            true);
 #endif
 pref("javascript.options.native_regexp",    true);
 pref("javascript.options.parallel_parsing", true);
@@ -2290,8 +2284,6 @@ pref("security.notification_enable_delay", 500);
   // Disallow web documents loaded with the SystemPrincipal
   pref("security.disallow_non_local_systemprincipal_in_tests", false);
 #endif
-// Cancel outgoing requests with SystemPrincipal
-pref("security.cancel_non_local_systemprincipal", true);
 
 // Sub-resource integrity
 pref("security.sri.enable", true);

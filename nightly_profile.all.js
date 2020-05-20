@@ -1440,7 +1440,12 @@ pref("identity.fxaccounts.remote.pairing.uri", "wss://channelserver.services.moz
 pref("identity.sync.tokenserver.uri", "https://token.services.mozilla.com/1.0/sync/1.5");
 
 // Fetch Sync tokens using the OAuth token function
-pref("identity.sync.useOAuthForSyncToken", false);
+#ifdef NIGHTLY_BUILD
+  // Only enabled in Nightly to avoid excessive / abnormal traffic to FxA
+  pref("identity.sync.useOAuthForSyncToken", true);
+#else
+  pref("identity.sync.useOAuthForSyncToken", false);
+#endif
 
 // Auto-config URL for FxA self-hosters, makes an HTTP request to
 // [identity.fxaccounts.autoconfig.uri]/.well-known/fxa-client-configuration
@@ -2141,6 +2146,9 @@ pref("devtools.netmonitor.har.pageLoadedTimeout", 1500);
 pref("devtools.netmonitor.har.enableAutoExportToFile", false);
 
 pref("devtools.netmonitor.features.webSockets", true);
+
+// Disable the EventSource Inspector.
+pref("devtools.netmonitor.features.serverSentEvents", false);
 
 // Enable the Storage Inspector
 pref("devtools.storage.enabled", true);
