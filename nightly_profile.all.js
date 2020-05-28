@@ -295,10 +295,11 @@ pref("browser.urlbar.restyleSearches", false);
 
 // The default behavior for the urlbar can be configured to use any combination
 // of the match filters with each additional filter adding more results (union).
-pref("browser.urlbar.suggest.history",              true);
 pref("browser.urlbar.suggest.bookmark",             true);
+pref("browser.urlbar.suggest.history",              true);
 pref("browser.urlbar.suggest.openpage",             true);
 pref("browser.urlbar.suggest.searches",             true);
+pref("browser.urlbar.suggest.topsites",             true);
 
 // As a user privacy measure, don't fetch search suggestions if a pasted string
 // is longer than this.
@@ -333,8 +334,6 @@ pref("browser.urlbar.update1.interventions", true);
 // If true, we show new users and those about to start an organic search a tip
 // encouraging them to use the Urlbar.
 pref("browser.urlbar.update1.searchTips", true);
-
-pref("browser.urlbar.openViewOnFocus", true);
 
 // Whether we expand the font size when when the urlbar is
 // focused in design update 2.
@@ -2175,7 +2174,8 @@ pref("devtools.dom.enabled", false);
 
 // Enable the Accessibility panel.
 pref("devtools.accessibility.enabled", true);
-#if defined(NIGHTLY_BUILD)
+// Enable accessibility panel auto initialization on early beta and dev edition.
+#if defined(EARLY_BETA_OR_EARLIER) || defined(MOZ_DEV_EDITION)
   pref("devtools.accessibility.auto-init.enabled", true);
 #else
   pref("devtools.accessibility.auto-init.enabled", false);
