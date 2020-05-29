@@ -404,7 +404,7 @@ pref("browser.search.widget.inNavBar", false);
 // The maximum amount of times the private default banner is shown.
 pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
 
-#ifdef NIGHTLY_BUILD
+#ifdef EARLY_BETA_OR_EARLIER
   pref("browser.search.modernConfig", true);
 #endif
 
@@ -1324,6 +1324,9 @@ pref("browser.newtabpage.activity-stream.discoverystream.personalization.version
 // Configurable keys used by personalization version 2.
 pref("browser.newtabpage.activity-stream.discoverystream.personalization.modelKeys", "nb_model_arts_and_entertainment, nb_model_autos_and_vehicles, nb_model_beauty_and_fitness, nb_model_blogging_resources_and_services, nb_model_books_and_literature, nb_model_business_and_industrial, nb_model_computers_and_electronics, nb_model_finance, nb_model_food_and_drink, nb_model_games, nb_model_health, nb_model_hobbies_and_leisure, nb_model_home_and_garden, nb_model_internet_and_telecom, nb_model_jobs_and_education, nb_model_law_and_government, nb_model_online_communities, nb_model_people_and_society, nb_model_pets_and_animals, nb_model_real_estate, nb_model_reference, nb_model_science, nb_model_shopping, nb_model_sports, nb_model_travel");
 
+// User pref to show stories on newtab (feeds.system.topstories has to be set to true as well)
+pref("browser.newtabpage.activity-stream.feeds.section.topstories", true);
+
 // The pref controls if search hand-off is enabled for Activity Stream.
 #ifdef NIGHTLY_BUILD
   pref("browser.newtabpage.activity-stream.improvesearch.handoffToAwesomebar", true);
@@ -1757,7 +1760,11 @@ pref("extensions.pocket.site", "getpocket.com");
 // Can be removed once Bug 1618058 is resolved.
 pref("signon.generation.confidenceThreshold", "0.75");
 
+#ifdef NIGHTLY_BUILD
 pref("signon.management.page.os-auth.enabled", true);
+#else
+pref("signon.management.page.os-auth.enabled", false);
+#endif
 pref("signon.management.page.breach-alerts.enabled", true);
 pref("signon.management.page.vulnerable-passwords.enabled", true);
 pref("signon.management.page.sort", "name");
