@@ -1315,8 +1315,6 @@ pref("network.protocol-handler.expose-all", true);
 
 // Whether IOService.connectivity and NS_IsOffline depends on connectivity status
 pref("network.manage-offline-status", true);
-// If set to true, IOService.offline depends on IOService.connectivity
-pref("network.offline-mirrors-connectivity", false);
 
 // <http>
 pref("network.http.version", "1.1");      // default
@@ -1513,17 +1511,6 @@ pref("network.http.enforce-framing.strict_chunked_encoding", true);
 // Max size, in bytes, for received HTTP response header.
 pref("network.http.max_response_header_size", 393216);
 
-// If we should attempt to race the cache and network
-pref("network.http.rcwn.enabled", true);
-pref("network.http.rcwn.cache_queue_normal_threshold", 8);
-pref("network.http.rcwn.cache_queue_priority_threshold", 2);
-// We might attempt to race the cache with the network only if a resource
-// is smaller than this size.
-pref("network.http.rcwn.small_resource_size_kb", 256);
-
-pref("network.http.rcwn.min_wait_before_racing_ms", 0);
-pref("network.http.rcwn.max_wait_before_racing_ms", 500);
-
 // The ratio of the transaction count for the focused window and the count of
 // all available active connections.
 pref("network.http.focused_window_transaction_ratio", "0.9");
@@ -1576,9 +1563,6 @@ pref("network.sts.max_time_for_pr_close_during_shutdown", 5000);
 // This timeout can be disabled by setting this pref to 0.
 // The value is expected in seconds.
 pref("network.sts.pollable_event_timeout", 6);
-
-// Enable/disable sni encryption.
-pref("network.security.esni.enabled", false);
 
 // 2147483647 == PR_INT32_MAX == ~2 GB
 pref("network.websocket.max-message-size", 2147483647);
@@ -1823,13 +1807,6 @@ pref("network.dns.resolver-thread-extra-idle-time-seconds", 60);
 // Whether to disable TRR when parental control is enabled.
 pref("network.dns.skipTRR-when-parental-control-enabled", true);
 
-// The maximum allowed length for a URL - 1MB default
-pref("network.standard-url.max-length", 1048576);
-
-// Whether nsIURI.host/.hostname/.spec should return a punycode string
-// If set to false we will revert to previous behaviour and return a unicode string.
-pref("network.standard-url.punycode-host", true);
-
 // Idle timeout for ftp control connections - 5 minute default
 pref("network.ftp.idleConnectionTimeout", 300);
 
@@ -2007,15 +1984,6 @@ pref("network.stricttransportsecurity.preloadlist", true);
 
 // Use JS mDNS as a fallback
 pref("network.mdns.use_js_fallback", false);
-
-// Cache SSL resumption tokens in necko
-#ifdef NIGHTLY_BUILD
-  pref("network.ssl_tokens_cache_enabled", true);
-#else
-  pref("network.ssl_tokens_cache_enabled", false);
-#endif
-// Capacity of the cache in kilobytes
-pref("network.ssl_tokens_cache_capacity", 2048);
 
 pref("converter.html2txt.structs",          true); // Output structured phrases (strong, em, code, sub, sup, b, i, u)
 pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indention, increased with header level; 2 = numbering and slight indention
@@ -4578,11 +4546,6 @@ pref("dom.maxHardwareConcurrency", 16);
 #if !defined(RELEASE_OR_BETA)
   pref("osfile.reset_worker_delay", 30000);
 #endif
-
-// If true, all toplevel data: URI navigations will be blocked.
-// Please note that manually entering a data: URI in the
-// URL-Bar will not be blocked when flipping this pref.
-pref("security.data_uri.block_toplevel_data_uri_navigations", true);
 
 pref("dom.storageManager.prompt.testing", false);
 pref("dom.storageManager.prompt.testing.allow", false);
