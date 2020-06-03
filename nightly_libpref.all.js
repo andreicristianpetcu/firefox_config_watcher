@@ -824,8 +824,6 @@ pref("toolkit.telemetry.unified", true);
 // Extra logging for AsyncShutdown barriers and phases
 pref("toolkit.asyncshutdown.log", false);
 
-pref("toolkit.content-background-hang-monitor.disabled", false);
-
 // Enable JS dump() function.
 // IMPORTANT: These prefs must be here even though they're also defined in
 // StaticPrefList.yaml. They are required because MOZILLA_OFFICIAL is false in
@@ -3883,8 +3881,9 @@ pref("toolkit.zoomManager.zoomValues", ".3,.5,.67,.8,.9,1,1.1,1.2,1.33,1.5,1.7,2
 // Image-related prefs
 //
 
-// The default Accept header sent for images loaded over HTTP(S)
-pref("image.http.accept", "image/webp,*/*");
+// By default the Accept header sent for images loaded over HTTP(S) is derived
+// by ImageAcceptHeader() in nsHttpHandler.cpp. If set, this pref overrides it.
+pref("image.http.accept", "");
 
 //
 // Image memory management prefs
@@ -3956,6 +3955,9 @@ pref("network.psl.onUpdate_notify", false);
 #else
   // Use MLS on Nightly and early Beta.
   pref("geo.provider.network.url", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
+  // On Nightly and early Beta, make duplicate location services requests
+  // to google so we can compare results.
+  pref("geo.provider.network.compare.url", "https://www.googleapis.com/geolocation/v1/geolocate?key=%GOOGLE_LOCATION_SERVICE_API_KEY%");
 #endif
 
 // Timeout to wait before sending the location request.
@@ -4060,18 +4062,6 @@ pref("dom.webnotifications.requireinteraction.count", 3);
 
 // Show favicons in web notifications.
 pref("alerts.showFavicons", false);
-
-// Whether to use platform-specific backends for showing desktop notifications.
-// If no such backend is available, or if the pref is false, then XUL
-// notifications are used.
-
-// Linux and macOS turn on system level notification as default, but Windows is
-// disabled due to instability (dependencies of bug 1497425).
-#if defined(XP_WIN)
-  pref("alerts.useSystemBackend", false);
-#else
-  pref("alerts.useSystemBackend", true);
-#endif
 
 // DOM full-screen API.
 #ifdef XP_MACOSX
@@ -4290,10 +4280,6 @@ pref("urlclassifier.gethashnoise", 4);
 
 // Gethash timeout for Safe Browsing
 pref("urlclassifier.gethash.timeout_ms", 5000);
-// Update server response timeout for Safe Browsing
-pref("urlclassifier.update.response_timeout_ms", 30000);
-// Download update timeout for Safe Browsing
-pref("urlclassifier.update.timeout_ms", 90000);
 
 // Name of the about: page to display Safe Browsing warnings (bug 399233)
 pref("urlclassifier.alternate_error_page", "blocked");

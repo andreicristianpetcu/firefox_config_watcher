@@ -989,8 +989,6 @@ pref("security.certerrors.mitm.priming.enabled", true);
 pref("security.certerrors.mitm.priming.endpoint", "https://mitmdetection.services.mozilla.com/");
 pref("security.certerrors.mitm.auto_enable_enterprise_roots", true);
 
-pref("security.aboutcertificate.enabled", true);
-
 // Whether the bookmark panel should be shown when bookmarking a page.
 pref("browser.bookmarks.editDialog.showForNewBookmarks", true);
 
@@ -1317,7 +1315,7 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "
 // List of regions that get the 7 row layout.
 pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA");
 // Allows Pocket story collections to be dismissed.
-pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", false);
+pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", true);
 // Switch between different versions of the recommendation provider.
 pref("browser.newtabpage.activity-stream.discoverystream.personalization.version", 1);
 // Configurable keys used by personalization version 2.
@@ -2180,12 +2178,8 @@ pref("devtools.dom.enabled", false);
 
 // Enable the Accessibility panel.
 pref("devtools.accessibility.enabled", true);
-// Enable accessibility panel auto initialization on early beta and dev edition.
-#if defined(EARLY_BETA_OR_EARLIER) || defined(MOZ_DEV_EDITION)
-  pref("devtools.accessibility.auto-init.enabled", true);
-#else
-  pref("devtools.accessibility.auto-init.enabled", false);
-#endif
+// Enable accessibility panel auto initialization.
+pref("devtools.accessibility.auto-init.enabled", true);
 
 // Web console filters
 pref("devtools.webconsole.filter.error", true);
@@ -2373,6 +2367,10 @@ pref("devtools.whatsnew.enabled", true);
 // Temporary preference to fully disable the WhatsNew panel on any target.
 // Should be removed in https://bugzilla.mozilla.org/show_bug.cgi?id=1596037
 pref("devtools.whatsnew.feature-enabled", true);
+
+// Part of the Overflow Debugging project
+// Here's the meta bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1529280
+pref("devtools.overflow.debugging.enabled", false);
 
 // FirstStartup service time-out in ms
 pref("first-startup.timeout", 30000);
