@@ -1252,7 +1252,6 @@ pref("services.sync.prefs.sync.security.default_personal_cert", true);
 pref("services.sync.prefs.sync.services.sync.syncedTabs.showRemoteIcons", true);
 pref("services.sync.prefs.sync.signon.rememberSignons", true);
 pref("services.sync.prefs.sync.spellchecker.dictionary", true);
-pref("services.sync.prefs.sync.webextensions.storage.sync.kinto", true);
 
 // A preference which, if false, means sync will only apply incoming preference
 // changes if there's already a local services.sync.prefs.sync.* control pref.
@@ -1859,6 +1858,10 @@ pref("extensions.screenshots.upload-disabled", false);
 // that includes DoH went live - Oct 31, 2019. This has to be a string because
 // the number is outside the signed 32-bit integer range.
 pref("doh-rollout.profileCreationThreshold", "1572476400000");
+
+// DoH Rollout: whether to enable automatic performance-based TRR-selection.
+// This pref is controlled by a Normandy rollout so we don't overload providers.
+pref("doh-rollout.trr-selection.enabled", false);
 
 // URL for Learn More link for browser error logging in preferences
 pref("browser.chrome.errorReporter.infoURL",

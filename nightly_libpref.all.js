@@ -19,11 +19,7 @@
 // improves readability, particular for conditional blocks that exceed a single
 // screen.
 
-#if MOZ_UPDATE_CHANNEL == release || MOZ_UPDATE_CHANNEL == esr
-  pref("security.tls.version.min", 1);
-#else
-  pref("security.tls.version.min", 3);
-#endif
+pref("security.tls.version.min", 3);
 pref("security.tls.version.max", 4);
 pref("security.tls.version.enable-deprecated", false);
 pref("security.tls.version.fallback-limit", 4);
@@ -810,7 +806,6 @@ pref("toolkit.telemetry.debugSlowSql", false);
 pref("toolkit.telemetry.unified", true);
 // AsyncShutdown delay before crashing in case of shutdown freeze
 #if !defined(MOZ_ASAN) && !defined(MOZ_TSAN)
-  pref("toolkit.asyncshutdown.report_writes_after", 40000); // 40 seconds
   pref("toolkit.asyncshutdown.crash_timeout", 60000); // 1 minute
 #else
   // ASan and TSan builds can be considerably slower. Extend the grace period
@@ -4850,8 +4845,8 @@ pref("devtools.debugger.force-local", true);
 pref("devtools.netmonitor.responseBodyLimit", 1048576);
 pref("devtools.netmonitor.requestBodyLimit", 1048576);
 
-// Limit for WebSocket frames (100 KB).
-pref("devtools.netmonitor.ws.messageDataLimit", 100000);
+// Limit for WebSocket/EventSource messages (100 KB).
+pref("devtools.netmonitor.msg.messageDataLimit", 100000);
 
 // DevTools default color unit.
 pref("devtools.defaultColorUnit", "authored");
