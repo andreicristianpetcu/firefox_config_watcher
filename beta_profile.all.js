@@ -191,6 +191,7 @@ pref("browser.uitour.url", "https://www.mozilla.org/%LOCALE%/firefox/%VERSION%/t
 pref("browser.uitour.surveyDuration", 7200);
 
 pref("keyword.enabled", true);
+
 // Fixup whitelists, the urlbar won't try to search for these words, but will
 // instead consider them valid TLDs. Don't check these directly, use
 // Services.uriFixup.isDomainWhitelisted() instead.
@@ -267,6 +268,8 @@ pref("browser.urlbar.ctrlCanonizesURLs", true);
 
 // Control autoFill behavior
 pref("browser.urlbar.autoFill", true);
+
+// Whether to warm up network connections for autofill or search results.
 pref("browser.urlbar.speculativeConnect.enabled", true);
 
 // Whether bookmarklets should be filtered out of Address Bar matches.
@@ -282,11 +285,7 @@ pref("browser.urlbar.maxRichResults", 10);
 pref("browser.urlbar.delay", 50);
 
 // The maximum number of historical search results to show.
-#ifdef EARLY_BETA_OR_EARLIER
 pref("browser.urlbar.maxHistoricalSearchSuggestions", 2);
-#else
-pref("browser.urlbar.maxHistoricalSearchSuggestions", 0);
-#endif
 
 // When true, URLs in the user's history that look like search result pages
 // are styled to look like search engine results instead of the usual history
@@ -340,6 +339,12 @@ pref("browser.urlbar.update1.searchTips", true);
 pref("browser.urlbar.update2.expandTextOnFocus", false);
 
 pref("browser.urlbar.eventTelemetry.enabled", false);
+
+// Controls when to DNS resolve single word search strings, after they were
+// searched for. If the string is resolved as a valid host, show a
+// "Did you mean to go to 'host'" prompt.
+// 0 - never resolve; 1 - use heuristics (default); 2 - always resolve
+pref("browser.urlbar.dnsResolveSingleWordsAfterSearch", 1);
 
 pref("browser.altClickSave", false);
 
@@ -404,9 +409,7 @@ pref("browser.search.widget.inNavBar", false);
 // The maximum amount of times the private default banner is shown.
 pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
 
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("browser.search.modernConfig", true);
-#endif
+pref("browser.search.modernConfig", true);
 
 pref("browser.sessionhistory.max_entries", 50);
 
@@ -1317,7 +1320,7 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "
 // List of regions that get the 7 row layout.
 pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA");
 // Allows Pocket story collections to be dismissed.
-pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", false);
+pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", true);
 // Switch between different versions of the recommendation provider.
 pref("browser.newtabpage.activity-stream.discoverystream.personalization.version", 1);
 // Configurable keys used by personalization version 2.

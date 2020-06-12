@@ -51,8 +51,8 @@ pref("security.ssl3.ecdhe_rsa_aes_128_sha", true);
 pref("security.ssl3.ecdhe_ecdsa_aes_128_sha", true);
 pref("security.ssl3.ecdhe_rsa_aes_256_sha", true);
 pref("security.ssl3.ecdhe_ecdsa_aes_256_sha", true);
-pref("security.ssl3.dhe_rsa_aes_128_sha", true);
-pref("security.ssl3.dhe_rsa_aes_256_sha", true);
+pref("security.ssl3.dhe_rsa_aes_128_sha", false);
+pref("security.ssl3.dhe_rsa_aes_256_sha", false);
 pref("security.ssl3.rsa_aes_128_sha", true);
 pref("security.ssl3.rsa_aes_256_sha", true);
 pref("security.ssl3.rsa_des_ede3_sha", true);
@@ -194,9 +194,12 @@ pref("security.pki.mitm_detected", false);
 // Intermediate CA Preloading settings
 #if defined(MOZ_NEW_CERT_STORAGE) && !defined(MOZ_WIDGET_ANDROID)
   pref("security.remote_settings.intermediates.enabled", true);
+  pref("security.intermediate_preloading_healer.enabled", true);
 #else
   pref("security.remote_settings.intermediates.enabled", false);
+  pref("security.intermediate_preloading_healer.enabled", false);
 #endif
+pref("security.intermediate_preloading_healer.timer_interval_ms", 300000);
 pref("security.remote_settings.intermediates.bucket", "security-state");
 pref("security.remote_settings.intermediates.collection", "intermediates");
 pref("security.remote_settings.intermediates.checked", 0);
@@ -308,8 +311,6 @@ pref("dom.mouseevent.click.hack.use_legacy_non-primary_dispatch", "");
 // Fastback caching - if this pref is negative, then we calculate the number
 // of content viewers to cache based on the amount of available memory.
 pref("browser.sessionhistory.max_total_viewers", -1);
-
-pref("ui.click_hold_context_menus", false);
 // 0 = false, 1 = true, 2 = autodetect.
 pref("ui.android.mouse_as_touch", 1);
 
@@ -420,10 +421,12 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.navigator.video.use_remb", true);
   #ifdef EARLY_BETA_OR_EARLIER
     pref("media.navigator.video.use_transport_cc", true);
+    pref("media.peerconnection.video.use_rtx", true);
   #else
     pref("media.navigator.video.use_transport_cc", false);
+    pref("media.peerconnection.video.use_rtx", false);
   #endif
-  pref("media.peerconnection.video.use_rtx", false);
+  pref("media.peerconnection.video.use_rtx.blocklist", "*.google.com");
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -495,7 +498,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   #else
     pref("media.peerconnection.ice.obfuscate_host_addresses", true);
   #endif
-  pref("media.peerconnection.ice.obfuscate_host_addresses.whitelist", "");
+  pref("media.peerconnection.ice.obfuscate_host_addresses.blocklist", "");
   pref("media.peerconnection.ice.proxy_only_if_behind_proxy", false);
   pref("media.peerconnection.ice.proxy_only", false);
   pref("media.peerconnection.turn.disable", false);
@@ -743,7 +746,6 @@ pref("accessibility.force_disabled", 0);
 pref("focusmanager.testmode", false);
 
 pref("accessibility.usetexttospeech", "");
-pref("accessibility.accesskeycausesactivation", true);
 pref("accessibility.mouse_focuses_formcontrol", false);
 
 // Type Ahead Find
@@ -1019,17 +1021,6 @@ pref("dom.storage.snapshot_reusing", true);
 pref("dom.storage.client_validation", true);
 
 pref("dom.send_after_paint_to_content", false);
-
-// Don't use new input types
-pref("dom.experimental_forms", false);
-
-// Enable <input type=color> by default. It will be turned off for remaining
-// platforms which don't have a color picker implemented yet.
-pref("dom.forms.color", true);
-
-// Support for input type=month, type=week and type=datetime-local. By default,
-// disabled.
-pref("dom.forms.datetime.others", false);
 
 // Enable time picker UI. By default, disabled.
 pref("dom.forms.datetime.timepicker", false);
@@ -1372,10 +1363,6 @@ pref("network.http.request.max-start-delay", 10);
 
 // If a connection is reset, we will retry it max-attempts times.
 pref("network.http.request.max-attempts", 10);
-
-// Include an origin header on non-GET and non-HEAD requests regardless of CORS
-// 0=never send, 1=send when same-origin only, 2=always send
-pref("network.http.sendOriginHeader", 2);
 
 // Maximum number of consecutive redirects before aborting.
 pref("network.http.redirection-limit", 20);
@@ -1980,11 +1967,6 @@ pref("network.mdns.use_js_fallback", false);
 
 pref("converter.html2txt.structs",          true); // Output structured phrases (strong, em, code, sub, sup, b, i, u)
 pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indention, increased with header level; 2 = numbering and slight indention
-// Whether we include ruby annotation in the text despite whether it
-// is requested. This was true because we didn't explicitly strip out
-// annotations. Set false by default to provide a better behavior, but
-// we want to be able to pref-off it if user doesn't like it.
-pref("converter.html2txt.always_include_ruby", false);
 
 pref("intl.accept_languages",               "chrome://global/locale/intl.properties");
 pref("intl.menuitems.alwaysappendaccesskeys","chrome://global/locale/intl.properties");
@@ -2400,30 +2382,6 @@ pref("mousewheel.with_win.delta_multiplier_x", 100);
 pref("mousewheel.with_win.delta_multiplier_y", 100);
 pref("mousewheel.with_win.delta_multiplier_z", 100);
 
-// Auto-dir is a feature which treats any single-wheel scroll as a scroll in the
-// only one scrollable direction if the target has only one scrollable
-// direction. For example, if the user scrolls a vertical wheel inside a target
-// which is horizontally scrollable but vertical unscrollable, then the vertical
-// scroll is converted to a horizontal scroll for that target.
-// Note that auto-dir only takes effect for |mousewheel.*.action|s and
-// |mousewheel.*.action.override_x|s whose values are 1.
-pref("mousewheel.autodir.enabled", false);
-// When a wheel scroll is converted due to auto-dir, which side the converted
-// scroll goes towards is decided by one thing called "honoured target". If the
-// content of the honoured target horizontally starts from right to left, then
-// an upward scroll maps to a rightward scroll and a downward scroll maps to a
-// leftward scroll; otherwise, an upward scroll maps to a leftward scroll and a
-// downward scroll maps to a rightward scroll.
-// If this pref is set to false, then consider the scrolling target as the
-// honoured target.
-// If set to true, then consider the root element in the document where the
-// scrolling target is as the honoured target. But note that there's one
-// exception: for targets in an HTML document, the real root element(I.e. the
-// <html> element) is typically not considered as a root element, but the <body>
-// element is typically considered as a root element. If there is no <body>
-// element, then consider the <html> element instead.
-pref("mousewheel.autodir.honourroot", false);
-
 // These define the smooth scroll behavior (min ms, max ms) for different triggers
 // Some triggers:
 // mouseWheel: Discrete mouse wheel events, Synaptics touchpads on windows (generate wheel events)
@@ -2467,12 +2425,6 @@ pref("bidi.texttype", 1);
 // 5 = persiancontextnumeralBidi
 // 6 = persiannumeralBidi
 pref("bidi.numeral", 0);
-
-// Bidi caret movement style:
-// 0 = logical
-// 1 = visual
-// 2 = visual, but logical during selection
-pref("bidi.edit.caret_movement_style", 2);
 
 // Setting this pref to |true| forces Bidi UI menu items and keyboard shortcuts
 // to be exposed, and enables the directional caret hook. By default, only
@@ -2634,9 +2586,6 @@ pref("svg.disabled", false);
 
 // Override default dom.ipc.processCount for some remote content process types.
 pref("dom.ipc.processCount.webLargeAllocation", 10);
-
-// Enable the Large-Allocation header
-pref("dom.largeAllocationHeader.enabled", true);
 
 // Disable e10s for Gecko by default. This is overridden in firefox.js.
 pref("browser.tabs.remote.autostart", false);
@@ -3050,9 +2999,6 @@ pref("ui.mouse.radius.inputSource.touchOnly", true);
   // Locate plugins by the directories specified in the Windows registry for PLIDs
   // Which is currently HKLM\Software\MozillaPlugins\xxxPLIDxxx\Path
   pref("plugin.scan.plid.all", true);
-
-  // Whether sending WM_MOUSEWHEEL and WM_MOUSEHWHEEL to plugins on Windows.
-  pref("plugin.mousewheel.enabled", true);
 
   // Switch the keyboard layout per window
   pref("intl.keyboard.per_window_layout", false);
@@ -4141,12 +4087,6 @@ pref("memory.blob_report.stack_frames", 0);
 // Activates the activity monitor
 pref("io.activity.enabled", false);
 
-// If true, reuse the same global for (almost) everything loaded by the component
-// loader (JS components, JSMs, etc). This saves memory, but makes it possible
-// for the scripts to interfere with each other.  A restart is required for this
-// to take effect.
-pref("jsloader.shareGlobal", true);
-
 // path to OSVR DLLs
 pref("gfx.vr.osvr.utilLibPath", "");
 pref("gfx.vr.osvr.commonLibPath", "");
@@ -4578,19 +4518,11 @@ pref("dom.clients.openwindow_favors_same_process", true);
   pref("toolkit.crashreporter.include_context_heap", true);
 #endif
 
-// Open noopener links in a new process
-pref("dom.noopener.newprocess.enabled", true);
-
 #if defined(XP_WIN) || defined(XP_MACOSX) || defined(MOZ_WIDGET_GTK)
   pref("layers.omtp.enabled", true);
 #else
   pref("layers.omtp.enabled", false);
 #endif
-
-// Limits the depth of recursive conversion of data when opening
-// a content to view.  This is mostly intended to prevent infinite
-// loops with faulty converters involved.
-pref("general.document_open_conversion_depth_limit", 20);
 
 pref("fission.rebuild_frameloaders_on_remoteness_change", true);
 
