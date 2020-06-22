@@ -300,14 +300,6 @@ pref("dom.keyboardevent.keypress.hack.use_legacy_keycode_and_charcode.addl", "")
 // explanation for the detail.
 pref("dom.mouseevent.click.hack.use_legacy_non-primary_dispatch", "");
 
-#ifdef JS_BUILD_BINAST
-  // Until we're satisfied that it works nicely, we're restricting
-  // BinAST to a few partner sites:
-  // - A subset of Facebook
-  // - A subset of Cloudflare
-  pref("dom.script_loader.binast_encoding.domain.restrict.list", "*.facebook.com,static.xx.fbcdn.net,*.cloudflare.com,*.cloudflarestream.com,unpkg.com");
-#endif
-
 // Fastback caching - if this pref is negative, then we calculate the number
 // of content viewers to cache based on the amount of available memory.
 pref("browser.sessionhistory.max_total_viewers", -1);
@@ -525,11 +517,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.getusermedia.agc", 1); // kAdaptiveDigital
   pref("media.getusermedia.hpf_enabled", true);
   pref("media.getusermedia.aecm_output_routing", 3); // kSpeakerphone
-#if defined(NIGHTLY_BUILD) && defined(XP_MACOSX)
-  pref("media.getusermedia.experimental_input_processing", true);
-#else
   pref("media.getusermedia.experimental_input_processing", false);
-#endif
 #endif // MOZ_WEBRTC
 
 #if !defined(ANDROID)
@@ -1068,7 +1056,7 @@ pref("privacy.popups.maxReported", 100);
 // Purging first-party tracking cookies.
 #ifdef EARLY_BETA_OR_EARLIER
   pref("privacy.purge_trackers.enabled", true);
-  pref("privacy.purge_trackers.logging.level", "All");
+  pref("privacy.purge_trackers.logging.level", "Warn");
 #else
   pref("privacy.purge_trackers.enabled", false);
   pref("privacy.purge_trackers.logging.level", "Error");
@@ -1076,6 +1064,12 @@ pref("privacy.popups.maxReported", 100);
 
 // Allowable amount of cookies to purge in a batch.
 pref("privacy.purge_trackers.max_purge_count", 100);
+
+// Whether purging should not clear data from domains
+// that are associated with other domains which have
+// user interaction (even if they don't have user
+// interaction directly).
+pref("privacy.purge_trackers.consider_entity_list", false);
 
 pref("dom.event.contextmenu.enabled",       true);
 pref("dom.event.coalesce_mouse_move",       true);
@@ -1115,17 +1109,12 @@ pref("javascript.options.wasm_reftypes",          true);
 pref("javascript.options.native_regexp",    true);
 pref("javascript.options.parallel_parsing", true);
 pref("javascript.options.source_pragmas",    true);
-// Async stacks instrumentation adds overhead that is only
-// advisable for developers, so we limit it to Nightly and DevEdition
-#if defined(ANDROID) || defined(XP_IOS)
-  pref("javascript.options.asyncstack",       false);
-#else
-  #if defined(NIGHTLY_BUILD) || defined(MOZ_DEV_EDITION)
-    pref("javascript.options.asyncstack",       true);
-  #else
-    pref("javascript.options.asyncstack",       false);
-  #endif
-#endif
+
+pref("javascript.options.asyncstack", true);
+// Broadly capturing async stack data adds overhead that is only advisable for
+// developers, so we only enable it when the devtools are open, by default.
+pref("javascript.options.asyncstack_capture_debuggee_only", true);
+
 pref("javascript.options.throw_on_asmjs_validation_failure", false);
 pref("javascript.options.ion.offthread_compilation", true);
 #ifdef DEBUG
@@ -1971,8 +1960,6 @@ pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indenti
 pref("intl.accept_languages",               "chrome://global/locale/intl.properties");
 pref("intl.menuitems.alwaysappendaccesskeys","chrome://global/locale/intl.properties");
 pref("intl.menuitems.insertseparatorbeforeaccesskeys","chrome://global/locale/intl.properties");
-pref("intl.charset.detector",               "chrome://global/locale/intl.properties");
-pref("intl.charset.fallback.override",      "");
 pref("intl.ellipsis",                       "chrome://global-platform/locale/intl.properties");
 // this pref allows user to request that all internationalization formatters
 // like date/time formatting, unit formatting, calendars etc. should use
@@ -2775,33 +2762,6 @@ pref("font.default.x-math", "serif");
 pref("font.minimum-size.x-math", 0);
 pref("font.size.variable.x-math", 16);
 pref("font.size.monospace.x-math", 13);
-
-/*
- * When enabled, the touch.radius and mouse.radius prefs allow events to be dispatched
- * to nearby elements that are sensitive to the event. See PositionedEventTargeting.cpp.
- * The 'mm' prefs define a rectangle around the nominal event target point within which
- * we will search for suitable elements. 'visitedWeight' is a percentage weight;
- * a value > 100 makes a visited link be treated as further away from the event target
- * than it really is, while a value < 100 makes a visited link be treated as closer
- * to the event target than it really is.
- */
-pref("ui.touch.radius.enabled", false);
-pref("ui.touch.radius.leftmm", 8);
-pref("ui.touch.radius.topmm", 12);
-pref("ui.touch.radius.rightmm", 8);
-pref("ui.touch.radius.bottommm", 4);
-pref("ui.touch.radius.visitedWeight", 120);
-
-pref("ui.mouse.radius.enabled", false);
-pref("ui.mouse.radius.leftmm", 8);
-pref("ui.mouse.radius.topmm", 12);
-pref("ui.mouse.radius.rightmm", 8);
-pref("ui.mouse.radius.bottommm", 4);
-pref("ui.mouse.radius.visitedWeight", 120);
-
-// When true, the ui.mouse.radius.* prefs will only affect simulated mouse events generated by touch input.
-// When false, the prefs will be used for all mouse events.
-pref("ui.mouse.radius.inputSource.touchOnly", true);
 
 #ifdef XP_WIN
 
@@ -3785,6 +3745,7 @@ pref("signon.autofillForms",                true);
 pref("signon.autofillForms.autocompleteOff", true);
 pref("signon.autofillForms.http",           false);
 pref("signon.autologin.proxy",              false);
+pref("signon.capture.inputChanges.enabled", true);
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
 // A value of "-1" disables new-password heuristics. Can be updated once Bug 1618058 is resolved.
@@ -4118,7 +4079,7 @@ pref("network.trr.mode", 0);
 pref("network.trr.uri", "https://mozilla.cloudflare-dns.com/dns-query");
 // List of DNS-over-HTTP resolver service providers. This pref populates the
 // drop-down list in the Network Settings dialog box in about:preferences.
-pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://mozilla.cloudflare-dns.com/dns-query\" },{ \"name\": \"NextDNS\", \"url\": \"https://trr.dns.nextdns.io/\" }]");
+pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://mozilla.cloudflare-dns.com/dns-query\" },{ \"name\": \"NextDNS\", \"url\": \"https://firefox.dns.nextdns.io/\" }]");
 // credentials to pass to DOH end-point
 pref("network.trr.credentials", "");
 pref("network.trr.custom_uri", "");
@@ -4523,8 +4484,6 @@ pref("dom.clients.openwindow_favors_same_process", true);
 #else
   pref("layers.omtp.enabled", false);
 #endif
-
-pref("fission.rebuild_frameloaders_on_remoteness_change", true);
 
 // Support for legacy customizations that rely on checking the
 // user profile directory for these stylesheets:

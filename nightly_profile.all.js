@@ -739,7 +739,7 @@ pref("plugins.favorfallback.rules", "nosrc,video");
 
 // Toggling Search bar on and off in about:preferences
 pref("browser.preferences.search", true);
-
+pref("browser.preferences.experimental", false);
 pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 
 pref("browser.download.show_plugins_in_list", true);
@@ -1281,11 +1281,11 @@ pref("browser.newtabpage.activity-stream.discoverystream.enabled", true);
 pref("browser.newtabpage.activity-stream.discoverystream.hardcoded-basic-layout", false);
 pref("browser.newtabpage.activity-stream.discoverystream.spocs-endpoint", "");
 // List of regions that get stories by default.
-pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config", "US,DE,CA");
+pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config", "US,DE,CA,GB");
 // List of regions that get spocs by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "US");
 // List of regions that get the 7 row layout.
-pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA");
+pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA,GB");
 // Allows Pocket story collections to be dismissed.
 pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", true);
 // Switch between different versions of the recommendation provider.
@@ -1296,6 +1296,10 @@ pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible
 #endif
 // Configurable keys used by personalization version 2.
 pref("browser.newtabpage.activity-stream.discoverystream.personalization.modelKeys", "nb_model_arts_and_entertainment, nb_model_autos_and_vehicles, nb_model_beauty_and_fitness, nb_model_blogging_resources_and_services, nb_model_books_and_literature, nb_model_business_and_industrial, nb_model_computers_and_electronics, nb_model_finance, nb_model_food_and_drink, nb_model_games, nb_model_health, nb_model_hobbies_and_leisure, nb_model_home_and_garden, nb_model_internet_and_telecom, nb_model_jobs_and_education, nb_model_law_and_government, nb_model_online_communities, nb_model_people_and_society, nb_model_pets_and_animals, nb_model_real_estate, nb_model_reference, nb_model_science, nb_model_shopping, nb_model_sports, nb_model_travel");
+// System pref to allow Pocket stories personalization to be turned on/off.
+pref("browser.newtabpage.activity-stream.discoverystream.recs.personalized", false);
+// System pref to allow Pocket sponsored content personalization to be turned on/off.
+pref("browser.newtabpage.activity-stream.discoverystream.spocs.personalized", true);
 
 // User pref to show stories on newtab (feeds.system.topstories has to be set to true as well)
 pref("browser.newtabpage.activity-stream.feeds.section.topstories", true);
@@ -1944,8 +1948,10 @@ pref("devtools.browsertoolbox.fission", false);
 
 // The fission pref for enabling Fission frame debugging directly from the
 // regular web/content toolbox.
-// ⚠ This is a work in progress. Expect weirdness when the pref is enabled. ⚠
-pref("devtools.contenttoolbox.fission", false);
+// When set to true, the toolbox will start showing content from remote frames
+// if (and only if) fission.autostart is also set to true.
+// When set to false, the toolbox should not show content from remote frames.
+pref("devtools.contenttoolbox.fission", true);
 
 // This pref is also related to fission, but not only. It allows the toolbox
 // to stay open even if the debugged tab switches to another process.

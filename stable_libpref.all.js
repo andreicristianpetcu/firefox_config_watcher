@@ -19,11 +19,7 @@
 // improves readability, particular for conditional blocks that exceed a single
 // screen.
 
-#if MOZ_UPDATE_CHANNEL == release || MOZ_UPDATE_CHANNEL == esr
-  pref("security.tls.version.min", 1);
-#else
-  pref("security.tls.version.min", 3);
-#endif
+pref("security.tls.version.min", 3);
 pref("security.tls.version.max", 4);
 pref("security.tls.version.enable-deprecated", false);
 pref("security.tls.version.fallback-limit", 4);
@@ -55,8 +51,8 @@ pref("security.ssl3.ecdhe_rsa_aes_128_sha", true);
 pref("security.ssl3.ecdhe_ecdsa_aes_128_sha", true);
 pref("security.ssl3.ecdhe_rsa_aes_256_sha", true);
 pref("security.ssl3.ecdhe_ecdsa_aes_256_sha", true);
-pref("security.ssl3.dhe_rsa_aes_128_sha", true);
-pref("security.ssl3.dhe_rsa_aes_256_sha", true);
+pref("security.ssl3.dhe_rsa_aes_128_sha", false);
+pref("security.ssl3.dhe_rsa_aes_256_sha", false);
 pref("security.ssl3.rsa_aes_128_sha", true);
 pref("security.ssl3.rsa_aes_256_sha", true);
 pref("security.ssl3.rsa_des_ede3_sha", true);
@@ -218,6 +214,10 @@ pref("security.remote_settings.crlite_filters.collection", "cert-revocations");
 pref("security.remote_settings.crlite_filters.checked", 0);
 pref("security.remote_settings.crlite_filters.signer", "onecrl.content-signature.mozilla.org");
 
+pref("security.osreauthenticator.blank_password", false);
+pref("security.osreauthenticator.password_last_changed_lo", 0);
+pref("security.osreauthenticator.password_last_changed_hi", 0);
+
 pref("general.useragent.compatMode.firefox", false);
 
 pref("general.config.obscure_value", 13); // for MCD .cfg files
@@ -312,9 +312,6 @@ pref("browser.sessionhistory.max_total_viewers", -1);
 pref("ui.click_hold_context_menus", false);
 // 0 = false, 1 = true, 2 = autodetect.
 pref("ui.android.mouse_as_touch", 1);
-
-// Duration of timeout of incremental search in menus (ms).  0 means infinite.
-pref("ui.menu.incremental_search.timeout", 1000);
 
 pref("browser.display.force_inline_alttext", false); // true = force ALT text for missing images to be layed out inline
 // 0 = no external leading,
@@ -426,6 +423,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   #else
     pref("media.navigator.video.use_transport_cc", false);
   #endif
+  pref("media.peerconnection.video.use_rtx", false);
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -514,13 +512,8 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
 
   // These values (aec, agc, and noise) are from:
   // media/webrtc/trunk/webrtc/modules/audio_processing/include/audio_processing.h
-  #if defined(MOZ_WEBRTC_HARDWARE_AEC_NS)
-    pref("media.getusermedia.aec_enabled", false);
-    pref("media.getusermedia.noise_enabled", false);
-  #else
-    pref("media.getusermedia.aec_enabled", true);
-    pref("media.getusermedia.noise_enabled", true);
-  #endif
+  pref("media.getusermedia.aec_enabled", true);
+  pref("media.getusermedia.noise_enabled", true);
   pref("media.getusermedia.use_aec_mobile", false);
   pref("media.getusermedia.aec", 1); // kModerateSuppression
   pref("media.getusermedia.aec_extended_filter", true);
@@ -528,8 +521,12 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.getusermedia.agc_enabled", true);
   pref("media.getusermedia.agc", 1); // kAdaptiveDigital
   pref("media.getusermedia.hpf_enabled", true);
-  // full_duplex: enable cubeb full-duplex capture/playback
-  pref("media.navigator.audio.full_duplex", true);
+  pref("media.getusermedia.aecm_output_routing", 3); // kSpeakerphone
+#if defined(NIGHTLY_BUILD) && defined(XP_MACOSX)
+  pref("media.getusermedia.experimental_input_processing", true);
+#else
+  pref("media.getusermedia.experimental_input_processing", false);
+#endif
 #endif // MOZ_WEBRTC
 
 #if !defined(ANDROID)
@@ -576,6 +573,8 @@ pref("media.cubeb.logging_level", "");
 #if defined(XP_MACOSX)
   pref("media.cubeb.backend", "audiounit-rust");
 #endif
+
+pref("media.cubeb.output_voice_routing", true);
 
 // GraphRunner (fixed MediaTrackGraph thread) control
 pref("media.audiograph.single_thread.enabled", true);
@@ -789,8 +788,6 @@ pref("toolkit.autocomplete.richBoundaryCutoff", 200);
 // Variable controlling logging for osfile.
 pref("toolkit.osfile.log", false);
 
-pref("toolkit.cosmeticAnimations.enabled", true);
-
 pref("toolkit.scrollbox.smoothScroll", true);
 pref("toolkit.scrollbox.scrollIncrement", 20);
 pref("toolkit.scrollbox.clickToScroll.scrollDelay", 150);
@@ -809,7 +806,7 @@ pref("toolkit.telemetry.debugSlowSql", false);
 pref("toolkit.telemetry.unified", true);
 // AsyncShutdown delay before crashing in case of shutdown freeze
 #if !defined(MOZ_ASAN) && !defined(MOZ_TSAN)
-  pref("toolkit.asyncshutdown.report_writes_after", 20000); // 20 seconds
+  pref("toolkit.asyncshutdown.report_writes_after", 40000); // 40 seconds
   pref("toolkit.asyncshutdown.crash_timeout", 60000); // 1 minute
 #else
   // ASan and TSan builds can be considerably slower. Extend the grace period
@@ -917,6 +914,7 @@ pref("nglayout.debug.paint_flashing_chrome", false);
 pref("browser.fixup.alternate.enabled", true);
 pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
+pref("browser.fixup.fallback-to-https", true);
 
 // Print header customization
 // Use the following codes:
@@ -1123,8 +1121,12 @@ pref("javascript.options.wasm_reftypes",          true);
 #ifdef ENABLE_WASM_MULTI_VALUE
   pref("javascript.options.wasm_multi_value",     true);
 #endif
+#ifdef ENABLE_WASM_SIMD
+  pref("javascript.options.wasm_simd",            true);
+#endif
 pref("javascript.options.native_regexp",    true);
 pref("javascript.options.parallel_parsing", true);
+pref("javascript.options.source_pragmas",    true);
 // Async stacks instrumentation adds overhead that is only
 // advisable for developers, so we limit it to Nightly and DevEdition
 #if defined(ANDROID) || defined(XP_IOS)
@@ -1211,11 +1213,7 @@ pref("javascript.options.mem.gc_max_empty_chunk_count", 30);
 
 pref("javascript.options.showInConsole", false);
 
-#ifdef EARLY_BETA_OR_EARLIER
 pref("javascript.options.shared_memory", true);
-#else
-pref("javascript.options.shared_memory", false);
-#endif
 
 pref("javascript.options.throw_on_debuggee_would_run", false);
 pref("javascript.options.dump_stack_on_debuggee_would_run", false);
@@ -1313,8 +1311,6 @@ pref("network.protocol-handler.expose-all", true);
 
 // Whether IOService.connectivity and NS_IsOffline depends on connectivity status
 pref("network.manage-offline-status", true);
-// If set to true, IOService.offline depends on IOService.connectivity
-pref("network.offline-mirrors-connectivity", false);
 
 // <http>
 pref("network.http.version", "1.1");      // default
@@ -1511,17 +1507,6 @@ pref("network.http.enforce-framing.strict_chunked_encoding", true);
 // Max size, in bytes, for received HTTP response header.
 pref("network.http.max_response_header_size", 393216);
 
-// If we should attempt to race the cache and network
-pref("network.http.rcwn.enabled", true);
-pref("network.http.rcwn.cache_queue_normal_threshold", 8);
-pref("network.http.rcwn.cache_queue_priority_threshold", 2);
-// We might attempt to race the cache with the network only if a resource
-// is smaller than this size.
-pref("network.http.rcwn.small_resource_size_kb", 256);
-
-pref("network.http.rcwn.min_wait_before_racing_ms", 0);
-pref("network.http.rcwn.max_wait_before_racing_ms", 500);
-
 // The ratio of the transaction count for the focused window and the count of
 // all available active connections.
 pref("network.http.focused_window_transaction_ratio", "0.9");
@@ -1574,14 +1559,6 @@ pref("network.sts.max_time_for_pr_close_during_shutdown", 5000);
 // This timeout can be disabled by setting this pref to 0.
 // The value is expected in seconds.
 pref("network.sts.pollable_event_timeout", 6);
-
-// Perform all network access on the socket process.
-// The pref requires "network.sts.socket_process.enable" to be true.
-// Changing these prefs requires a restart.
-pref("network.http.network_access_on_socket_process.enabled", false);
-
-// Enable/disable sni encryption.
-pref("network.security.esni.enabled", false);
 
 // 2147483647 == PR_INT32_MAX == ~2 GB
 pref("network.websocket.max-message-size", 2147483647);
@@ -1826,21 +1803,12 @@ pref("network.dns.resolver-thread-extra-idle-time-seconds", 60);
 // Whether to disable TRR when parental control is enabled.
 pref("network.dns.skipTRR-when-parental-control-enabled", true);
 
-// The maximum allowed length for a URL - 1MB default
-pref("network.standard-url.max-length", 1048576);
-
-// Whether nsIURI.host/.hostname/.spec should return a punycode string
-// If set to false we will revert to previous behaviour and return a unicode string.
-pref("network.standard-url.punycode-host", true);
-
 // Idle timeout for ftp control connections - 5 minute default
 pref("network.ftp.idleConnectionTimeout", 300);
 
 // enables the prefetch service (i.e., prefetching of <link rel="next"> and
 // <link rel="prefetch"> URLs).
 pref("network.prefetch-next", true);
-// enables the preloading (i.e., preloading of <link rel="preload"> URLs).
-pref("network.preload", false);
 
 // The following prefs pertain to the negotiate-auth extension (see bug 17578),
 // which provides transparent Kerberos or NTLM authentication using the SPNEGO
@@ -2012,15 +1980,6 @@ pref("network.stricttransportsecurity.preloadlist", true);
 
 // Use JS mDNS as a fallback
 pref("network.mdns.use_js_fallback", false);
-
-// Cache SSL resumption tokens in necko
-#ifdef NIGHTLY_BUILD
-  pref("network.ssl_tokens_cache_enabled", true);
-#else
-  pref("network.ssl_tokens_cache_enabled", false);
-#endif
-// Capacity of the cache in kilobytes
-pref("network.ssl_tokens_cache_capacity", 2048);
 
 pref("converter.html2txt.structs",          true); // Output structured phrases (strong, em, code, sub, sup, b, i, u)
 pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indention, increased with header level; 2 = numbering and slight indention
@@ -2330,8 +2289,6 @@ pref("services.settings.security.onecrl.checked", 0);
 pref("extensions.abuseReport.enabled", true);
 // Allow AMO to handoff reports to the Firefox integrated dialog.
 pref("extensions.abuseReport.amWebAPI.enabled", true);
-// Opened as a sub-frame of the about:addons page when set to false.
-pref("extensions.abuseReport.openDialog", true);
 pref("extensions.abuseReport.url", "https://services.addons.mozilla.org/api/v4/abuse/report/addon/");
 pref("extensions.abuseReport.amoDetailsURL", "https://services.addons.mozilla.org/api/v4/addons/addon/");
 
@@ -3985,6 +3942,7 @@ pref("network.psl.onUpdate_notify", false);
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", false);
   pref("widget.wayland.use-opaque-region", true);
+  pref("widget.use-xdg-desktop-portal", false);
 #endif
 
 // All the Geolocation preferences are here.
@@ -3996,8 +3954,6 @@ pref("network.psl.onUpdate_notify", false);
   pref("geo.provider.network.url", "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%");
 #endif
 
-pref("geo.provider-country.network.url", "https://location.services.mozilla.com/v1/country?key=%MOZILLA_API_KEY%");
-pref("geo.provider-country.network.scan", false);
 // Timeout to wait before sending the location request.
 pref("geo.provider.network.timeToWaitBeforeSending", 5000);
 // Timeout for outbound network geolocation provider.
@@ -4015,6 +3971,14 @@ pref("geo.provider.network.timeout", 60000);
 #if defined(MOZ_WIDGET_GTK) && defined(MOZ_GPSD)
   pref("geo.provider.use_gpsd", true);
 #endif
+
+// Region
+pref("browser.region.log", false);
+pref("browser.region.network.url", "https://location.services.mozilla.com/v1/country?key=%MOZILLA_API_KEY%");
+// Include wifi data in region request.
+pref("browser.region.network.scan", false);
+// Timeout for whole region request.
+pref("browser.region.timeout", 5000);
 
 // Enable/Disable the device storage API for content
 pref("device.storage.enabled", false);
@@ -4225,7 +4189,7 @@ pref("network.trr.mode", 0);
 pref("network.trr.uri", "https://mozilla.cloudflare-dns.com/dns-query");
 // List of DNS-over-HTTP resolver service providers. This pref populates the
 // drop-down list in the Network Settings dialog box in about:preferences.
-pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://mozilla.cloudflare-dns.com/dns-query\" },{ \"name\": \"NextDNS\", \"url\": \"https://trr.dns.nextdns.io/\" }]");
+pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://mozilla.cloudflare-dns.com/dns-query\" },{ \"name\": \"NextDNS\", \"url\": \"https://firefox.dns.nextdns.io/\" }]");
 // credentials to pass to DOH end-point
 pref("network.trr.credentials", "");
 pref("network.trr.custom_uri", "");
@@ -4315,6 +4279,7 @@ pref("urlclassifier.disallow_completions", "goog-downloadwhite-digest256,base-tr
 
 // Workaround for Google Recaptcha
 pref("urlclassifier.trackingAnnotationSkipURLs", "google.com/recaptcha/,*.google.com/recaptcha/");
+pref("privacy.rejectForeign.allowList", "");
 
 // Number of random entries to send with a gethash request
 pref("urlclassifier.gethashnoise", 4);
@@ -4556,6 +4521,9 @@ pref("webextensions.tests", false);
 pref("webextensions.webRequest.requestBodyMaxRawBytes", 16777216);
 
 pref("webextensions.storage.sync.enabled", true);
+// Should we use the old kinto-based implementation of storage.sync? To be removed in bug 1637465.
+pref("webextensions.storage.sync.kinto", true);
+// Server used by the old kinto-based implementation of storage.sync.
 pref("webextensions.storage.sync.serverURL", "https://webextensions.settings.services.mozilla.com/v1");
 
 // Allow customization of the fallback directory for file uploads
@@ -4574,11 +4542,6 @@ pref("dom.maxHardwareConcurrency", 16);
 #if !defined(RELEASE_OR_BETA)
   pref("osfile.reset_worker_delay", 30000);
 #endif
-
-// If true, all toplevel data: URI navigations will be blocked.
-// Please note that manually entering a data: URI in the
-// URL-Bar will not be blocked when flipping this pref.
-pref("security.data_uri.block_toplevel_data_uri_navigations", true);
 
 pref("dom.storageManager.prompt.testing", false);
 pref("dom.storageManager.prompt.testing.allow", false);
