@@ -127,6 +127,10 @@ pref("app.update.download.promptMaxAttempts", 2);
 // download a fresh installer.
 pref("app.update.elevation.promptMaxAttempts", 2);
 
+// If set to true, a message will be displayed in the hamburger menu while
+// an update is being downloaded.
+pref("app.update.notifyDuringDownload", false);
+
 // If set to true, the Update Service will automatically download updates if the
 // user can apply updates. This pref is no longer used on Windows, except as the
 // default value to migrate to the new location that this data is now stored
@@ -194,7 +198,7 @@ pref("keyword.enabled", true);
 
 // Fixup whitelists, the urlbar won't try to search for these words, but will
 // instead consider them valid TLDs. Don't check these directly, use
-// Services.uriFixup.isDomainWhitelisted() instead.
+// Services.uriFixup.isDomainKnown() instead.
 pref("browser.fixup.domainwhitelist.localhost", true);
 // https://tools.ietf.org/html/rfc2606
 pref("browser.fixup.domainsuffixwhitelist.test", true);
@@ -314,7 +318,11 @@ pref("browser.urlbar.switchTabs.adoptIntoActiveWindow", false);
 pref("browser.urlbar.openintab", false);
 
 // If true, we show tail suggestions when available.
+#ifdef EARLY_BETA_OR_EARLIER
+pref("browser.urlbar.richSuggestions.tail", true);
+#else
 pref("browser.urlbar.richSuggestions.tail", false);
+#endif
 
 // Whether we expand the font size when when the urlbar is
 // focused in design update 2.
@@ -1536,8 +1544,13 @@ pref("browser.ping-centre.log", false);
 // Enable GMP support in the addon manager.
 pref("media.gmp-provider.enabled", true);
 
+#ifdef NIGHTLY_BUILD
+// Enable Dynamic First-Party Isolation in Nightly.
+pref("network.cookie.cookieBehavior", 5 /* BEHAVIOR_REJECT_TRACKER_AND_PARTITION_FOREIGN */);
+#else
 // Enable blocking access to storage from tracking resources by default.
 pref("network.cookie.cookieBehavior", 4 /* BEHAVIOR_REJECT_TRACKER */);
+#endif
 
 // Enable fingerprinting blocking by default for all channels, only on desktop.
 pref("privacy.trackingprotection.fingerprinting.enabled", true);
@@ -1580,7 +1593,12 @@ pref("browser.contentblocking.fingerprinting.preferences.ui.enabled", true);
 //     "cookieBehavior4": cookie behaviour BEHAVIOR_REJECT_TRACKER
 //     "cookieBehavior5": cookie behaviour BEHAVIOR_REJECT_TRACKER_AND_PARTITION_FOREIGN
 // One value from each section must be included in the browser.contentblocking.features.strict pref.
+#ifdef NIGHTLY_BUILD
+// Enable Dynamic First-Party Isolation in Nightly.
+pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior5,cm,fp,stp");
+#else
 pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior4,cm,fp,stp");
+#endif
 
 // Hide the "Change Block List" link for trackers/tracking content in the custom
 // Content Blocking/ETP panel. By default, it will not be visible. There is also
