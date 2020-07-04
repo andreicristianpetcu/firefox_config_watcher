@@ -497,13 +497,8 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.peerconnection.mute_on_bye_or_timeout", false);
 
   // 770 = DTLS 1.0, 771 = DTLS 1.2, 772 = DTLS 1.3
-#if defined(NIGHTLY_BUILD)
   pref("media.peerconnection.dtls.version.min", 771);
   pref("media.peerconnection.dtls.version.max", 772);
-#else
-  pref("media.peerconnection.dtls.version.min", 770);
-  pref("media.peerconnection.dtls.version.max", 771);
-#endif
 
   // These values (aec, agc, and noise) are from:
   // media/webrtc/trunk/webrtc/modules/audio_processing/include/audio_processing.h
@@ -1903,7 +1898,6 @@ pref("network.http.spdy.bug1563538", true);
 pref("network.http.spdy.bug1563695", true);
 pref("network.http.spdy.bug1556491", true);
 
-pref("network.proxy.type",                  5);
 pref("network.proxy.ftp",                   "");
 pref("network.proxy.ftp_port",              0);
 pref("network.proxy.http",                  "");
@@ -3748,6 +3742,7 @@ pref("signon.autologin.proxy",              false);
 pref("signon.capture.inputChanges.enabled", true);
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
+pref("signon.backup.enabled",               false);
 // A value of "-1" disables new-password heuristics. Can be updated once Bug 1618058 is resolved.
 pref("signon.generation.confidenceThreshold",     "-1");
 pref("signon.generation.enabled",                 true);
@@ -3887,6 +3882,10 @@ pref("browser.region.network.url", "https://location.services.mozilla.com/v1/cou
 pref("browser.region.network.scan", false);
 // Timeout for whole region request.
 pref("browser.region.timeout", 5000);
+
+#ifdef EARLY_BETA_OR_EARLIER
+  pref("browser.region.update.enabled", true);
+#endif
 
 // Enable/Disable the device storage API for content
 pref("device.storage.enabled", false);
