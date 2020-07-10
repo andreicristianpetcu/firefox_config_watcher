@@ -198,9 +198,12 @@ pref("security.pki.mitm_detected", false);
 // Intermediate CA Preloading settings
 #if defined(MOZ_NEW_CERT_STORAGE) && !defined(MOZ_WIDGET_ANDROID)
   pref("security.remote_settings.intermediates.enabled", true);
-  pref("security.intermediate_preloading_healer.enabled", true);
 #else
   pref("security.remote_settings.intermediates.enabled", false);
+#endif
+#if defined(MOZ_NEW_CERT_STORAGE) && !defined(MOZ_WIDGET_ANDROID) && defined(EARLY_BETA_OR_EARLIER)
+  pref("security.intermediate_preloading_healer.enabled", true);
+#else
   pref("security.intermediate_preloading_healer.enabled", false);
 #endif
 pref("security.intermediate_preloading_healer.timer_interval_ms", 300000);
@@ -415,14 +418,9 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.navigator.video.enabled", true);
   pref("media.navigator.video.default_fps",30);
   pref("media.navigator.video.use_remb", true);
-  #ifdef EARLY_BETA_OR_EARLIER
-    pref("media.navigator.video.use_transport_cc", true);
-    pref("media.peerconnection.video.use_rtx", true);
-  #else
-    pref("media.navigator.video.use_transport_cc", false);
-    pref("media.peerconnection.video.use_rtx", false);
-  #endif
-  pref("media.peerconnection.video.use_rtx.blocklist", "*.google.com");
+  pref("media.navigator.video.use_transport_cc", true);
+  pref("media.peerconnection.video.use_rtx", true);
+  pref("media.peerconnection.video.use_rtx.blocklist", "");
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -559,10 +557,6 @@ pref("media.video-queue.send-to-compositor-size", 9999);
 // Log level for cubeb, the audio input/output system. Valid values are
 // "verbose", "normal" and "" (log disabled).
 pref("media.cubeb.logging_level", "");
-
-#if defined(XP_MACOSX)
-  pref("media.cubeb.backend", "audiounit-rust");
-#endif
 
 pref("media.cubeb.output_voice_routing", true);
 
@@ -1924,7 +1918,7 @@ pref("network.cookie.move.interval_sec",    10);
 
 // This pref contains the list of hostnames (such as
 // "mozilla.org,example.net"). For these hosts, firefox will treat
-// sameSite=none if nothing else is specified, even if
+// SameSite=None if nothing else is specified, even if
 // network.cookie.sameSite.laxByDefault if set to true.
 // To know the correct syntax, see nsContentUtils::IsURIInList()
 pref("network.cookie.sameSite.laxByDefault.disabledHosts", "");

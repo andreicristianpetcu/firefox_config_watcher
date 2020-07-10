@@ -289,6 +289,9 @@ pref("browser.urlbar.speculativeConnect.enabled", true);
 // search for bookmarklets typing "javascript: " followed by the actual query.
 pref("browser.urlbar.filter.javascript", true);
 
+// Enable a certain level of urlbar logging to the Browser Console. See Log.jsm.
+pref("browser.urlbar.loglevel", "Error");
+
 // the maximum number of results to show in autocomplete when doing richResults
 pref("browser.urlbar.maxRichResults", 10);
 
@@ -766,8 +769,18 @@ pref("browser.preferences.experimental", false);
 pref("browser.preferences.experimental.hidden", false);
 pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 
+#if defined(NIGHTLY_BUILD)
+pref("browser.preferences.exposeHTTPSOnly", true);
+#else
+pref("browser.preferences.exposeHTTPSOnly", false);
+#endif
+
 pref("browser.download.show_plugins_in_list", true);
 pref("browser.download.hide_plugins_without_extensions", true);
+
+// URL for "Learn More" for HttpsOnly
+pref("domsecurity.httpsonly.infoURL",
+     "https://developer.mozilla.org/en-US/docs/Glossary/https");
 
 // Backspace and Shift+Backspace behavior
 // 0 goes Back/Forward
@@ -1703,7 +1716,7 @@ pref("browser.tabs.remote.autostart", true);
 pref("browser.tabs.remote.desktopbehavior", true);
 
 // Run media transport in a separate process?
-#ifdef NIGHTLY_BUILD
+#ifdef EARLY_BETA_OR_EARLIER
   pref("media.peerconnection.mtransport_process", true);
 #else
   pref("media.peerconnection.mtransport_process", false);
@@ -2339,8 +2352,6 @@ pref("devtools.responsive.touchSimulation.enabled", false);
 pref("devtools.responsive.metaViewport.enabled", true);
 // The user agent of the viewport.
 pref("devtools.responsive.userAgent", "");
-// Enable the RDM browser UI in all builds.
-pref("devtools.responsive.browserUI.enabled", true);
 
 // Show the custom user agent input only in Nightly.
 #if defined(NIGHTLY_BUILD)
