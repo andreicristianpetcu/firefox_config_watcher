@@ -986,16 +986,6 @@ pref("dom.popup_allowed_events", "change click dblclick auxclick mouseup pointer
 pref("dom.serviceWorkers.disable_open_click_delay", 1000);
 
 pref("dom.storage.enabled", true);
-// Whether or not LSNG (Next Generation Local Storage) is enabled.
-// See bug 1517090 for enabling this on Nightly.
-// See bug 1534736 for changing it to EARLY_BETA_OR_EARLIER.
-// See bug 1539835 for enabling this unconditionally.
-// See bug 1619948 for changing it back to EARLY_BETA_OR_EARLIER.
-#ifdef EARLY_BETA_OR_EARLIER
-pref("dom.storage.next_gen", true);
-#else
-pref("dom.storage.next_gen", false);
-#endif
 pref("dom.storage.shadow_writes", true);
 pref("dom.storage.snapshot_prefill", 16384);
 pref("dom.storage.snapshot_gradual_prefill", 4096);
@@ -4700,7 +4690,9 @@ pref("devtools.errorconsole.deprecation_warnings", true);
 #endif
 
 pref("devtools.debugger.features.watchpoints", true);
-pref("devtools.debugger.features.windowless-service-workers", true);
+
+// Disable service worker debugging on all channels (see Bug 1651605).
+pref("devtools.debugger.features.windowless-service-workers", false);
 
 // Disable remote debugging protocol logging.
 pref("devtools.debugger.log", false);
