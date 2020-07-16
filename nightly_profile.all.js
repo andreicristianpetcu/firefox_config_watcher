@@ -325,11 +325,7 @@ pref("browser.urlbar.switchTabs.adoptIntoActiveWindow", false);
 pref("browser.urlbar.openintab", false);
 
 // If true, we show tail suggestions when available.
-#ifdef EARLY_BETA_OR_EARLIER
 pref("browser.urlbar.richSuggestions.tail", true);
-#else
-pref("browser.urlbar.richSuggestions.tail", false);
-#endif
 
 // Whether aliases are styled as a "chiclet" separated from the Urlbar.
 // Also controls the other urlbar.update2 prefs.
@@ -1334,7 +1330,7 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config",
 // List of regions that get spocs by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "US,CA");
 // List of regions that get the 7 row layout.
-pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA,GB");
+pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA,GB,DE");
 // Allows Pocket story collections to be dismissed.
 pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", true);
 pref("browser.newtabpage.activity-stream.discoverystream.personalization.version", 2);
@@ -1709,6 +1705,7 @@ pref("privacy.userContext.newTabContainerOnLeftClick.enabled", false);
 pref("privacy.webrtc.allowSilencingNotifications", true);
 // Set to true to use the legacy WebRTC global indicator
 pref("privacy.webrtc.legacyGlobalIndicator", false);
+pref("privacy.webrtc.hideGlobalIndicator", false);
 #else
 pref("privacy.webrtc.allowSilencingNotifications", false);
 pref("privacy.webrtc.legacyGlobalIndicator", true);
