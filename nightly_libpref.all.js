@@ -347,6 +347,9 @@ pref("print.shrink-to-fit.scale-limit-percent", 20);
 // Whether we should display simplify page checkbox on print preview UI
 pref("print.use_simplify_page", false);
 
+// The tab modal print dialog is currently only for testing/experiments.
+pref("print.tab_modal.enabled", false);
+
 // Disable support for MathML
 pref("mathml.disabled",    false);
 
@@ -3857,10 +3860,7 @@ pref("browser.region.network.url", "https://location.services.mozilla.com/v1/cou
 pref("browser.region.network.scan", false);
 // Timeout for whole region request.
 pref("browser.region.timeout", 5000);
-
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("browser.region.update.enabled", true);
-#endif
+pref("browser.region.update.enabled", true);
 
 // Enable/Disable the device storage API for content
 pref("device.storage.enabled", false);
