@@ -164,6 +164,9 @@ pref("security.ssl.errorReporting.enabled", false);
 pref("security.ssl.errorReporting.url", "https://incoming.telemetry.mozilla.org/submit/sslreports/");
 pref("security.ssl.errorReporting.automatic", false);
 
+pref("security.xfocsp.errorReporting.enabled", true);
+pref("security.xfocsp.errorReporting.automatic", false);
+
 // Impose a maximum age on HPKP headers, to avoid sites getting permanently
 // blacking themselves out by setting a bad pin.  (60 days by default)
 // https://tools.ietf.org/html/rfc7469#section-4.1
@@ -415,6 +418,9 @@ pref("media.videocontrols.picture-in-picture.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
+pref("media.videocontrols.picture-in-picture.video-toggle.mode", -1);
+pref("media.videocontrols.picture-in-picture.video-toggle.position", "right");
+pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
 
 #ifdef MOZ_WEBRTC
   pref("media.navigator.video.enabled", true);
