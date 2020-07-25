@@ -2539,9 +2539,8 @@ pref("dom.ipc.processCount.privilegedabout", 1);
 // to avoid multiple of these content processes
 pref("dom.ipc.processCount.privilegedmozilla", 1);
 
-// Isolated content processes are always one-per-origin.
-// Changing this pref will break fission completely, so it is locked.
-pref("dom.ipc.processCount.webIsolated", 1, locked);
+// Maximum number of isolated content processes per-origin.
+pref("dom.ipc.processCount.webIsolated", 1);
 
 // Keep a single privileged about process alive for performance reasons.
 // e.g. we do not want to throw content processes out every time we navigate
@@ -3729,7 +3728,7 @@ pref("signon.autologin.proxy",              false);
 #endif
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
-pref("signon.backup.enabled",               false);
+pref("signon.backup.enabled",               true);
 pref("signon.generation.confidenceThreshold",     "0.75");
 pref("signon.generation.enabled",                 true);
 pref("signon.passwordEditCapture.enabled",        false);
@@ -3824,6 +3823,7 @@ pref("network.psl.onUpdate_notify", false);
 #ifdef MOZ_WIDGET_GTK
   pref("gfx.xrender.enabled",false);
   pref("widget.content.gtk-theme-override", "");
+  pref("widget.disable-workspace-management", false);
 #endif
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", false);

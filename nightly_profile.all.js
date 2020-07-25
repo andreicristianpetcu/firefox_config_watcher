@@ -1291,6 +1291,8 @@ pref("prompts.tab_modal.enabled", true);
 // This is a fallback value for when prompt callers do not specify a modalType.
 pref("prompts.defaultModalType", 3);
 
+pref("browser.topsites.useRemoteSetting", false);
+
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
 
@@ -1789,8 +1791,10 @@ pref("extensions.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
 pref("extensions.pocket.site", "getpocket.com");
 
 #ifdef NIGHTLY_BUILD
+pref("signon.management.page.fileImport.enabled", true);
 pref("signon.management.page.os-auth.enabled", true);
 #else
+pref("signon.management.page.fileImport.enabled", false);
 pref("signon.management.page.os-auth.enabled", false);
 #endif
 pref("signon.management.page.breach-alerts.enabled", true);
@@ -1837,13 +1841,10 @@ pref("browser.crashReports.unsubmittedCheck.autoSubmit2", false);
 // The truthy values of "extensions.formautofill.available" are "on" and "detect",
 // any other value means autofill isn't available.
 // "detect" means it's enabled if conditions defined in the extension are met.
-#ifdef NIGHTLY_BUILD
-  pref("extensions.formautofill.available", "on");
-#else
-  pref("extensions.formautofill.available", "detect");
-#endif
+pref("extensions.formautofill.available", "detect");
 pref("extensions.formautofill.creditCards.available", false);
 pref("extensions.formautofill.addresses.enabled", true);
+pref("extensions.formautofill.addresses.capture.enabled", false);
 pref("extensions.formautofill.creditCards.enabled", true);
 // Pref for shield/heartbeat to recognize users who have used Credit Card
 // Autofill. The valid values can be:
@@ -1862,14 +1863,8 @@ pref("extensions.formautofill.loglevel", "Warn");
 
 pref("toolkit.osKeyStore.loglevel", "Warn");
 
-#ifdef NIGHTLY_BUILD
-  // Comma separated list of countries Form Autofill is available in.
-  pref("extensions.formautofill.supportedCountries", "US,CA,DE");
-  pref("extensions.formautofill.supportRTL", true);
-#else
-  pref("extensions.formautofill.supportedCountries", "US");
-  pref("extensions.formautofill.supportRTL", false);
-#endif
+pref("extensions.formautofill.supportedCountries", "US");
+pref("extensions.formautofill.supportRTL", false);
 
 // Whether or not to restore a session with lazy-browser tabs.
 pref("browser.sessionstore.restore_tabs_lazily", true);
