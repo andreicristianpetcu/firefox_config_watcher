@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 package org.mozilla.fenix
 
 /**
@@ -13,7 +17,7 @@ object FeatureFlags {
     /**
      * Allows edit of saved logins.
      */
-    val loginsEdit = Config.channel.isNightlyOrDebug
+    const val loginsEdit = true
 
     /**
      * Enable tab sync feature
@@ -26,7 +30,12 @@ object FeatureFlags {
     val tabTray = Config.channel.isNightlyOrDebug
 
     /**
-     * Enables swipe on toolbar to switch tabs
+     * Enables gestures on the browser chrome that depend on a [SwipeGestureLayout]
      */
-    val swipeToSwitchTabs = Config.channel.isNightlyOrDebug
+    val browserChromeGestures = Config.channel.isNightlyOrDebug
+
+    /**
+     * Enables viewing tab history
+     */
+    val tabHistory = Config.channel.isNightlyOrDebug
 }
