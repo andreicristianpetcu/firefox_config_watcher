@@ -38,4 +38,14 @@ object FeatureFlags {
      * Enables viewing tab history
      */
     val tabHistory = Config.channel.isNightlyOrDebug
+
+    /**
+     * Enables the new search experience
+     */
+    val newSearchExperience = Config.channel.isDebug
+
+    /**
+     * Enables wait til first contentful paint
+     */
+    val waitUntilPaintToDraw = Config.channel.isNightlyOrDebug
 }
