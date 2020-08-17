@@ -510,8 +510,16 @@ pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   pref("media.peerconnection.mute_on_bye_or_timeout", false);
 
   // 770 = DTLS 1.0, 771 = DTLS 1.2, 772 = DTLS 1.3
+#ifdef EARLY_BETA_OR_EARLIER
   pref("media.peerconnection.dtls.version.min", 771);
+#else
+  pref("media.peerconnection.dtls.version.min", 770);
+#endif
+#ifdef NIGHTLY_BUILD
   pref("media.peerconnection.dtls.version.max", 772);
+#else
+  pref("media.peerconnection.dtls.version.max", 771);
+#endif
 
   // These values (aec, agc, and noise) are from:
   // media/webrtc/trunk/webrtc/modules/audio_processing/include/audio_processing.h
@@ -1098,7 +1106,11 @@ pref("javascript.options.wasm_baselinejit",       true);
   pref("javascript.options.wasm_multi_value",     true);
 #endif
 #ifdef ENABLE_WASM_SIMD
-  pref("javascript.options.wasm_simd",            true);
+  #ifdef NIGHTLY_BUILD
+    pref("javascript.options.wasm_simd",            true);
+  #else
+    pref("javascript.options.wasm_simd",            false);
+  #endif
 #endif
 pref("javascript.options.native_regexp",    true);
 pref("javascript.options.parallel_parsing", true);
@@ -1438,6 +1450,12 @@ pref("network.http.http3.default-qpack-table-size", 65536); // 64k
 // Maximal number of streams that can be blocked on waiting for qpack
 // instructions.
 pref("network.http.http3.default-max-stream-blocked", 20);
+
+
+// This is only for testing!
+// This adds alt-svc mapping and it has a form of <host-name>;<alt-svc-header>
+// Example: example1.com;h3-29=":443",example2.com;h3-29=":443"
+pref("network.http.http3.alt-svc-mapping-for-testing", "");
 
 // alt-svc allows separation of transport routing from
 // the origin host without using a proxy.

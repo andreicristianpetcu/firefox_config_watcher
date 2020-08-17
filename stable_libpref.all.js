@@ -55,6 +55,8 @@ pref("security.ssl3.dhe_rsa_aes_128_sha", false);
 pref("security.ssl3.dhe_rsa_aes_256_sha", false);
 pref("security.ssl3.rsa_aes_128_sha", true);
 pref("security.ssl3.rsa_aes_256_sha", true);
+pref("security.ssl3.rsa_aes_128_gcm_sha256", true);
+pref("security.ssl3.rsa_aes_256_gcm_sha384", true);
 pref("security.ssl3.rsa_des_ede3_sha", true);
 
 pref("security.content.signature.root_hash",
@@ -78,7 +80,11 @@ pref("security.enterprise_roots.enabled", false);
 // If true, attempt to load the osclientcerts PKCS#11 module at startup on a
 // background thread. This module allows Firefox to use client certificates
 // stored in OS certificate storage. Currently only available for Windows.
-pref("security.osclientcerts.autoload", false);
+#ifdef NIGHTLY_BUILD
+  pref("security.osclientcerts.autoload", true);
+#else
+  pref("security.osclientcerts.autoload", false);
+#endif
 
 // The supported values of this pref are:
 // 0: do not fetch OCSP
@@ -158,6 +164,9 @@ pref("security.ssl.errorReporting.enabled", false);
 pref("security.ssl.errorReporting.url", "https://incoming.telemetry.mozilla.org/submit/sslreports/");
 pref("security.ssl.errorReporting.automatic", false);
 
+pref("security.xfocsp.errorReporting.enabled", true);
+pref("security.xfocsp.errorReporting.automatic", false);
+
 // Impose a maximum age on HPKP headers, to avoid sites getting permanently
 // blacking themselves out by setting a bad pin.  (60 days by default)
 // https://tools.ietf.org/html/rfc7469#section-4.1
@@ -234,9 +243,6 @@ pref("general.warnOnAboutConfig", true);
 
 // maximum number of dated backups to keep at any time
 pref("browser.bookmarks.max_backups",       5);
-
-// Size (in KB) explicitly set by the user. Used when smart_size.enabled == false
-pref("browser.cache.disk.capacity",         256000);
 
 pref("browser.cache.disk_cache_ssl",        true);
 // The half life used to re-compute cache entries frecency in hours.
@@ -344,6 +350,9 @@ pref("print.shrink-to-fit.scale-limit-percent", 20);
 // Whether we should display simplify page checkbox on print preview UI
 pref("print.use_simplify_page", false);
 
+// The tab modal print dialog is currently only for testing/experiments.
+pref("print.tab_modal.enabled", false);
+
 // Disable support for MathML
 pref("mathml.disabled",    false);
 
@@ -409,19 +418,17 @@ pref("media.videocontrols.picture-in-picture.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
+pref("media.videocontrols.picture-in-picture.video-toggle.mode", -1);
+pref("media.videocontrols.picture-in-picture.video-toggle.position", "right");
+pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
 
 #ifdef MOZ_WEBRTC
   pref("media.navigator.video.enabled", true);
   pref("media.navigator.video.default_fps",30);
   pref("media.navigator.video.use_remb", true);
-  #ifdef EARLY_BETA_OR_EARLIER
-    pref("media.navigator.video.use_transport_cc", true);
-    pref("media.peerconnection.video.use_rtx", true);
-  #else
-    pref("media.navigator.video.use_transport_cc", false);
-    pref("media.peerconnection.video.use_rtx", false);
-  #endif
-  pref("media.peerconnection.video.use_rtx.blocklist", "*.google.com");
+  pref("media.navigator.video.use_transport_cc", true);
+  pref("media.peerconnection.video.use_rtx", true);
+  pref("media.peerconnection.video.use_rtx.blocklist", "");
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -451,7 +458,6 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.navigator.video.h264.max_mbps", 0);
   pref("media.peerconnection.video.vp9_enabled", true);
   pref("media.peerconnection.video.vp9_preferred", false);
-  pref("media.getusermedia.browser.enabled", false);
   pref("media.getusermedia.channels", 0);
   #if defined(ANDROID)
     pref("media.getusermedia.camera.off_while_disabled.enabled", false);
@@ -500,11 +506,14 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.peerconnection.mute_on_bye_or_timeout", false);
 
   // 770 = DTLS 1.0, 771 = DTLS 1.2, 772 = DTLS 1.3
-#if defined(NIGHTLY_BUILD)
+#ifdef EARLY_BETA_OR_EARLIER
   pref("media.peerconnection.dtls.version.min", 771);
-  pref("media.peerconnection.dtls.version.max", 772);
 #else
   pref("media.peerconnection.dtls.version.min", 770);
+#endif
+#ifdef NIGHTLY_BUILD
+  pref("media.peerconnection.dtls.version.max", 772);
+#else
   pref("media.peerconnection.dtls.version.max", 771);
 #endif
 
@@ -520,7 +529,6 @@ pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
   pref("media.getusermedia.agc", 1); // kAdaptiveDigital
   pref("media.getusermedia.hpf_enabled", true);
   pref("media.getusermedia.aecm_output_routing", 3); // kSpeakerphone
-  pref("media.getusermedia.experimental_input_processing", false);
 #endif // MOZ_WEBRTC
 
 #if !defined(ANDROID)
@@ -563,10 +571,6 @@ pref("media.video-queue.send-to-compositor-size", 9999);
 // Log level for cubeb, the audio input/output system. Valid values are
 // "verbose", "normal" and "" (log disabled).
 pref("media.cubeb.logging_level", "");
-
-#if defined(XP_MACOSX)
-  pref("media.cubeb.backend", "audiounit-rust");
-#endif
 
 pref("media.cubeb.output_voice_routing", true);
 
@@ -995,16 +999,6 @@ pref("dom.popup_allowed_events", "change click dblclick auxclick mouseup pointer
 pref("dom.serviceWorkers.disable_open_click_delay", 1000);
 
 pref("dom.storage.enabled", true);
-// Whether or not LSNG (Next Generation Local Storage) is enabled.
-// See bug 1517090 for enabling this on Nightly.
-// See bug 1534736 for changing it to EARLY_BETA_OR_EARLIER.
-// See bug 1539835 for enabling this unconditionally.
-// See bug 1619948 for changing it back to EARLY_BETA_OR_EARLIER.
-#ifdef EARLY_BETA_OR_EARLIER
-pref("dom.storage.next_gen", true);
-#else
-pref("dom.storage.next_gen", false);
-#endif
 pref("dom.storage.shadow_writes", true);
 pref("dom.storage.snapshot_prefill", 16384);
 pref("dom.storage.snapshot_gradual_prefill", 4096);
@@ -1906,7 +1900,6 @@ pref("network.http.spdy.bug1563538", true);
 pref("network.http.spdy.bug1563695", true);
 pref("network.http.spdy.bug1556491", true);
 
-pref("network.proxy.type",                  5);
 pref("network.proxy.ftp",                   "");
 pref("network.proxy.ftp_port",              0);
 pref("network.proxy.http",                  "");
@@ -1929,7 +1922,7 @@ pref("network.cookie.move.interval_sec",    10);
 
 // This pref contains the list of hostnames (such as
 // "mozilla.org,example.net"). For these hosts, firefox will treat
-// sameSite=none if nothing else is specified, even if
+// SameSite=None if nothing else is specified, even if
 // network.cookie.sameSite.laxByDefault if set to true.
 // To know the correct syntax, see nsContentUtils::IsURIInList()
 pref("network.cookie.sameSite.laxByDefault.disabledHosts", "");
@@ -2421,14 +2414,6 @@ pref("bidi.numeral", 0);
 // expose it for bidi-associated system locales.
 pref("bidi.browser.ui", false);
 
-// used for double-click word selection behavior. Win will override.
-pref("layout.word_select.eat_space_to_next_word", false);
-pref("layout.word_select.stop_at_punctuation", true);
-
-// Whether underscore should be treated as a word-breaking character for
-// word selection/arrow-key movement purposes.
-pref("layout.word_select.stop_at_underscore", false);
-
 // Override DPI. A value of -1 means use the maximum of 96 and the system DPI.
 // A value of 0 means use the system DPI. A positive value is used as the DPI.
 // This sets the physical size of a device pixel and thus controls the
@@ -2455,7 +2440,7 @@ pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
 pref("dom.use_watchdog", true);
-pref("dom.max_chrome_script_run_time", 20);
+pref("dom.max_chrome_script_run_time", 0);
 pref("dom.max_script_run_time", 10);
 pref("dom.max_ext_content_script_run_time", 5);
 
@@ -2955,9 +2940,6 @@ pref("font.size.monospace.x-math", 13);
   // The maximum size at which we will force GDI classic mode using
   // force_gdi_classic_for_families.
   pref("gfx.font_rendering.cleartype_params.force_gdi_classic_max_size", 15);
-
-  // override double-click word selection behavior.
-  pref("layout.word_select.eat_space_to_next_word", true);
 
   // Locate plugins by the directories specified in the Windows registry for PLIDs
   // Which is currently HKLM\Software\MozillaPlugins\xxxPLIDxxx\Path
@@ -3748,12 +3730,15 @@ pref("signon.autofillForms",                true);
 pref("signon.autofillForms.autocompleteOff", true);
 pref("signon.autofillForms.http",           false);
 pref("signon.autologin.proxy",              false);
-pref("signon.capture.inputChanges.enabled", true);
+#ifdef NIGHTLY_BUILD
+  pref("signon.capture.inputChanges.enabled", true);
+#else
+  pref("signon.capture.inputChanges.enabled", false);
+#endif
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
-pref("signon.backup.enabled",               false);
-// A value of "-1" disables new-password heuristics. Can be updated once Bug 1618058 is resolved.
-pref("signon.generation.confidenceThreshold",     "-1");
+pref("signon.backup.enabled",               true);
+pref("signon.generation.confidenceThreshold",     "0.75");
 pref("signon.generation.enabled",                 true);
 pref("signon.passwordEditCapture.enabled",        false);
 pref("signon.privateBrowsingCapture.enabled",     true);
@@ -3847,6 +3832,7 @@ pref("network.psl.onUpdate_notify", false);
 #ifdef MOZ_WIDGET_GTK
   pref("gfx.xrender.enabled",false);
   pref("widget.content.gtk-theme-override", "");
+  pref("widget.disable-workspace-management", false);
 #endif
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", false);
@@ -3891,10 +3877,7 @@ pref("browser.region.network.url", "https://location.services.mozilla.com/v1/cou
 pref("browser.region.network.scan", false);
 // Timeout for whole region request.
 pref("browser.region.timeout", 5000);
-
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("browser.region.update.enabled", true);
-#endif
+pref("browser.region.update.enabled", true);
 
 // Enable/Disable the device storage API for content
 pref("device.storage.enabled", false);
