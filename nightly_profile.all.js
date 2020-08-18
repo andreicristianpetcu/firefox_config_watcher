@@ -169,7 +169,7 @@ pref("app.update.staging.enabled", true);
   pref("app.update.BITS.enabled", true);
 #endif
 
-pref("app.update.langpack.enabled", false);
+pref("app.update.langpack.enabled", true);
 
 // Symmetric (can be overridden by individual extensions) update preferences.
 // e.g.
@@ -385,6 +385,11 @@ pref("browser.download.openInSystemViewerContextMenuItem", true);
 
 // This records whether or not to show the 'Always open...' context menu item when appropriate
 pref("browser.download.alwaysOpenInSystemViewerContextMenuItem", true);
+
+// Open downloaded file types internally for the given types.
+// This is a comma-separated list, the empty string ("") means no types are
+// viewable internally.
+pref("browser.download.viewableInternally.enabledTypes", "xml,svg,webp,avif");
 
 
 // This controls whether the button is automatically shown/hidden depending
