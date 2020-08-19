@@ -30,11 +30,6 @@ object FeatureFlags {
     val tabTray = Config.channel.isNightlyOrDebug
 
     /**
-     * Enables gestures on the browser chrome that depend on a [SwipeGestureLayout]
-     */
-    val browserChromeGestures = Config.channel.isNightlyOrDebug
-
-    /**
      * Enables viewing tab history
      */
     val tabHistory = Config.channel.isNightlyOrDebug
@@ -53,4 +48,9 @@ object FeatureFlags {
      * Enables downloads with external download managers.
      */
     val externalDownloadManager = Config.channel.isNightlyOrDebug
+
+    /**
+     * Enables viewing downloads in browser.
+     */
+    val viewDownloads = Config.channel.isNightlyOrDebug
 }
