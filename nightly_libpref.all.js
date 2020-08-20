@@ -350,13 +350,6 @@ pref("print.shrink-to-fit.scale-limit-percent", 20);
 // Whether we should display simplify page checkbox on print preview UI
 pref("print.use_simplify_page", false);
 
-// The tab modal print dialog is currently only for early beta or nightly.
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("print.tab_modal.enabled", true);
-#else
-  pref("print.tab_modal.enabled", false);
-#endif
-
 // Enable fillable forms in the PDF viewer.
 #ifdef EARLY_BETA_OR_EARLIER
   pref("pdfjs.renderInteractiveForms", true);
@@ -901,6 +894,10 @@ pref("devtools.performance.recording.objdirs", "[]");
 pref("devtools.performance.recording.objdirs.remote", "[]");
 // The popup will display some introductory text the first time it is displayed.
 pref("devtools.performance.popup.intro-displayed", false);
+
+// Compatibility preferences
+// Stringified array of target browsers that users investigate.
+pref("devtools.inspector.compatibility.target-browsers", "");
 
 // view source
 pref("view_source.editor.path", "");
@@ -2599,7 +2596,7 @@ pref("browser.tabs.remote.autostart", false);
 // any session can contain a mix of Fission and non-Fission windows. Instead,
 // callers should check whether the relevant nsILoadContext has the
 // `useRemoteSubframes` flag set.
-#ifdef RELEASE_OR_BETA
+#if defined(RELEASE_OR_BETA) || defined(MOZ_WIDGET_ANDROID)
   pref("fission.autostart", false, locked);
 #else
   pref("fission.autostart", false);
@@ -3757,11 +3754,7 @@ pref("signon.autofillForms",                true);
 pref("signon.autofillForms.autocompleteOff", true);
 pref("signon.autofillForms.http",           false);
 pref("signon.autologin.proxy",              false);
-#ifdef NIGHTLY_BUILD
-  pref("signon.capture.inputChanges.enabled", true);
-#else
-  pref("signon.capture.inputChanges.enabled", false);
-#endif
+pref("signon.capture.inputChanges.enabled", true);
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
 pref("signon.backup.enabled",               true);
