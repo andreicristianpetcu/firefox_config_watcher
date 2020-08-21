@@ -1313,7 +1313,8 @@ pref("prompts.tab_modal.enabled", true);
 pref("prompts.defaultModalType", 3);
 
 pref("browser.topsites.useRemoteSetting", false);
-pref("browser.topsites.attributionURL", "");
+
+pref("browser.partnerlink.attributionURL", "https://topsites.mozilla.io/cid/amzn_2020_a1");
 
 // Whether to show tab level system prompts opened via nsIPrompt(Service) as
 // SubDialogs in the TabDialogBox (true) or as TabModalPrompt in the
@@ -1856,7 +1857,7 @@ pref("signon.management.page.hideMobileFooter", false);
 pref("signon.management.page.showPasswordSyncNotification", true);
 pref("signon.passwordEditCapture.enabled", true);
 pref("signon.showAutoCompleteFooter", true);
-pref("signon.showAutoCompleteImport", "");
+pref("signon.showAutoCompleteImport", "import");
 
 // Enable the "Simplify Page" feature in Print Preview. This feature
 // is disabled by default in toolkit.
