@@ -169,6 +169,8 @@ pref("app.update.staging.enabled", true);
   pref("app.update.BITS.enabled", true);
 #endif
 
+pref("app.update.langpack.enabled", true);
+
 // Symmetric (can be overridden by individual extensions) update preferences.
 // e.g.
 //  extensions.{GUID}.update.enabled
@@ -238,7 +240,13 @@ pref("browser.shell.mostRecentDateSetAsDefault", "");
 pref("browser.shell.skipDefaultBrowserCheckOnFirstRun", true);
 pref("browser.shell.didSkipDefaultBrowserCheckOnFirstRun", false);
 pref("browser.shell.defaultBrowserCheckCount", 0);
+#ifdef EARLY_BETA_OR_EARLIER
+pref("browser.defaultbrowser.notificationbar", true);
+#else
 pref("browser.defaultbrowser.notificationbar", false);
+#endif
+pref("browser.defaultbrowser.notificationbar.checkcount", 0);
+pref("browser.defaultbrowser.notificationbar.checklimit", 10000);
 
 // 0 = blank, 1 = home (browser.startup.homepage), 2 = last visited page, 3 = resume previous browser session
 // The behavior of option 3 is detailed at: http://wiki.mozilla.org/Session_Restore
@@ -327,17 +335,21 @@ pref("browser.urlbar.openintab", false);
 // If true, we show tail suggestions when available.
 pref("browser.urlbar.richSuggestions.tail", true);
 
-// Whether aliases are styled as a "chiclet" separated from the Urlbar.
-// Also controls the other urlbar.update2 prefs.
-pref("browser.urlbar.update2", false);
-
+#ifdef NIGHTLY_BUILD
+// Whether the Urlbar can enter search mode. Also controls the other
+// urlbar.update2 prefs.
+pref("browser.urlbar.update2", true);
 // Whether the urlbar displays one-offs to filter searches to history,
 // bookmarks, or tabs.
-pref("browser.urlbar.update2.localOneOffs", false);
-
+pref("browser.urlbar.update2.localOneOffs", true);
 // Whether the urlbar one-offs act as search filters instead of executing a
 // search immediately.
+pref("browser.urlbar.update2.oneOffsRefresh", true);
+#else
+pref("browser.urlbar.update2", false);
+pref("browser.urlbar.update2.localOneOffs", false);
 pref("browser.urlbar.update2.oneOffsRefresh", false);
+#endif
 
 // Whether we display a tab-to-complete result when the user types an engine
 // name.
@@ -380,6 +392,11 @@ pref("browser.download.openInSystemViewerContextMenuItem", true);
 // This records whether or not to show the 'Always open...' context menu item when appropriate
 pref("browser.download.alwaysOpenInSystemViewerContextMenuItem", true);
 
+// Open downloaded file types internally for the given types.
+// This is a comma-separated list, the empty string ("") means no types are
+// viewable internally.
+pref("browser.download.viewableInternally.enabledTypes", "xml,svg,webp,avif");
+
 
 // This controls whether the button is automatically shown/hidden depending
 // on whether there are downloads to show.
@@ -391,8 +408,11 @@ pref("browser.download.autohideButton", true);
 
 // This controls the visibility of the radio button in the
 // Unknown Content Type (Helper App) dialog that will open
-// the content in the browser.
+// the content in the browser for PDF and for other
+// Viewable Internally types
+// (see browser.download.viewableInternally.enabledTypes)
 pref("browser.helperApps.showOpenOptionForPdfJS", true);
+pref("browser.helperApps.showOpenOptionForViewableInternally", true);
 
 // search engines URL
 pref("browser.search.searchEnginesURL",      "https://addons.mozilla.org/%LOCALE%/firefox/search-engines/");
@@ -518,7 +538,7 @@ pref("browser.tabs.delayHidingAudioPlayingIconMS", 3000);
 // for about: pages. This pref name did not age well: we will have multiple
 // types of privileged content processes, each with different privileges.
 // types of privleged content processes, each with different privleges.
-#if defined(MOZ_CODE_COVERAGE) && defined(XP_LINUX) || defined(MOZ_ASAN)
+#if defined(MOZ_CODE_COVERAGE) && defined(XP_LINUX)
   // Disabled on Linux ccov builds due to bug 1621269.
   pref("browser.tabs.remote.separatePrivilegedContentProcess", false);
 #else
@@ -785,10 +805,6 @@ pref("browser.preferences.exposeHTTPSOnly", false);
 
 pref("browser.download.show_plugins_in_list", true);
 pref("browser.download.hide_plugins_without_extensions", true);
-
-// URL for "Learn More" for HttpsOnly
-pref("domsecurity.httpsonly.infoURL",
-     "https://developer.mozilla.org/en-US/docs/Glossary/https");
 
 // Backspace and Shift+Backspace behavior
 // 0 goes Back/Forward
@@ -1212,6 +1228,10 @@ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highli
 pref("services.sync.prefs.sync.browser.newtabpage.enabled", true);
 pref("services.sync.prefs.sync.browser.newtabpage.pinned", true);
 pref("services.sync.prefs.sync.browser.offline-apps.notify", true);
+pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", true);
+pref("services.sync.prefs.sync.browser.safebrowsing.downloads.remote.block_potentially_unwanted", true);
+pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", true);
+pref("services.sync.prefs.sync.browser.safebrowsing.phishing.enabled", true);
 pref("services.sync.prefs.sync.browser.search.update", true);
 pref("services.sync.prefs.sync.browser.search.widget.inNavBar", true);
 pref("services.sync.prefs.sync.browser.startup.homepage", true);
@@ -1230,6 +1250,10 @@ pref("services.sync.prefs.sync.dom.disable_open_during_load", true);
 pref("services.sync.prefs.sync.dom.disable_window_flip", true);
 pref("services.sync.prefs.sync.dom.disable_window_move_resize", true);
 pref("services.sync.prefs.sync.dom.event.contextmenu.enabled", true);
+pref("services.sync.prefs.sync.dom.security.https_only_mode", true);
+pref("services.sync.prefs.sync.dom.security.https_only_mode_ever_enabled", true);
+pref("services.sync.prefs.sync.dom.security.https_only_mode_ever_enabled_pbm", true);
+pref("services.sync.prefs.sync.dom.security.https_only_mode_pbm", true);
 pref("services.sync.prefs.sync.extensions.update.enabled", true);
 pref("services.sync.prefs.sync.extensions.activeThemeID", true);
 pref("services.sync.prefs.sync.intl.accept_languages", true);
@@ -1265,6 +1289,9 @@ pref("services.sync.prefs.sync.privacy.resistFingerprinting.reduceTimerPrecision
 pref("services.sync.prefs.sync.privacy.resistFingerprinting.reduceTimerPrecision.jitter", true);
 pref("services.sync.prefs.sync.security.default_personal_cert", true);
 pref("services.sync.prefs.sync.services.sync.syncedTabs.showRemoteIcons", true);
+pref("services.sync.prefs.sync.signon.autofillForms", true);
+pref("services.sync.prefs.sync.signon.generation.enabled", true);
+pref("services.sync.prefs.sync.signon.management.page.breach-alerts.enabled", true);
 pref("services.sync.prefs.sync.signon.rememberSignons", true);
 pref("services.sync.prefs.sync.spellchecker.dictionary", true);
 
@@ -1292,6 +1319,17 @@ pref("prompts.tab_modal.enabled", true);
 pref("prompts.defaultModalType", 3);
 
 pref("browser.topsites.useRemoteSetting", false);
+
+pref("browser.partnerlink.attributionURL", "https://topsites.mozilla.io/cid/amzn_2020_a1");
+
+// Whether to show tab level system prompts opened via nsIPrompt(Service) as
+// SubDialogs in the TabDialogBox (true) or as TabModalPrompt in the
+// TabModalPromptBox (false).
+#ifdef NIGHTLY_BUILD
+  pref("prompts.tabChromePromptSubDialog", true);
+#else
+  pref("prompts.tabChromePromptSubDialog", false);
+#endif
 
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
@@ -1327,6 +1365,8 @@ pref("browser.newtabpage.activity-stream.asrouter.useRemoteL10n", true);
 pref("browser.newtabpage.activity-stream.discoverystream.enabled", true);
 pref("browser.newtabpage.activity-stream.discoverystream.hardcoded-basic-layout", false);
 pref("browser.newtabpage.activity-stream.discoverystream.spocs-endpoint", "");
+// List of locales that get stories by default, regardless of region.
+pref("browser.newtabpage.activity-stream.discoverystream.locale-list-config", "");
 // List of regions that get stories by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config", "US,DE,CA,GB,IE");
 // List of regions that get spocs by default.
@@ -1358,7 +1398,7 @@ pref("trailhead.firstrun.branches", "join-dynamic");
 // Separate about welcome
 pref("browser.aboutwelcome.enabled", true);
 // Used to set multistage welcome UX
-pref("browser.aboutwelcome.overrideContent", "{\"id\": \"multi-stage-welcome-default\",\"template\": \"multistage\",\"screens\": [{\"id\": \"AW_GET_STARTED\",\"order\": 0,\"content\": {\"zap\": true,\"title\": {\"string_id\": \"onboarding-multistage-welcome-header\"},\"subtitle\": {\"string_id\": \"onboarding-multistage-welcome-subtitle\"},\"primary_button\": {\"label\": {\"string_id\": \"onboarding-multistage-welcome-primary-button-label\"},\"action\": {\"navigate\": true}},\"secondary_button\": {\"text\": {\"string_id\": \"onboarding-multistage-welcome-secondary-button-text\"},\"label\": {\"string_id\": \"onboarding-multistage-welcome-secondary-button-label\"},\"position\": \"top\",\"action\": {\"type\": \"OPEN_URL\",\"addFlowParams\": true,\"data\": {\"args\": \"https://accounts.firefox.com/?service=sync&action=email&context=fx_desktop_v3&entrypoint=activity-stream-firstrun&style=trailhead\",\"where\": \"current\"}}}}}, {\"id\": \"AW_IMPORT_SETTINGS\",\"order\": 1,\"content\": {\"zap\": true, \"disclaimer\": {\"string_id\": \"onboarding-import-sites-disclaimer\"},\"title\": {\"string_id\": \"onboarding-multistage-import-header\"},\"subtitle\": {\"string_id\": \"onboarding-multistage-import-subtitle\"},\"tiles\": {\"type\": \"topsites\",\"info\": true},\"primary_button\": {\"label\": {\"string_id\": \"onboarding-multistage-import-primary-button-label\"},\"action\": {\"type\": \"SHOW_MIGRATION_WIZARD\",\"navigate\": true}},\"secondary_button\": {\"label\":  {\"string_id\": \"onboarding-multistage-import-secondary-button-label\"},\"action\": {\"navigate\": true}}}}, {\"id\": \"AW_CHOOSE_THEME\",\"order\": 2,\"content\": {\"zap\": true,\"title\":  {\"string_id\": \"onboarding-multistage-theme-header\"},\"subtitle\": {\"string_id\": \"onboarding-multistage-theme-subtitle\"},\"tiles\": {\"type\": \"theme\",\"action\": {\"theme\": \"<event>\"}, \"data\": [{\"theme\": \"automatic\",\"label\": {\"string_id\": \"onboarding-multistage-theme-label-automatic\"}, \"description\": {\"string_id\": \"onboarding-multistage-theme-description-automatic\"}, \"tooltip\": {\"string_id\": \"onboarding-multistage-theme-tooltip-automatic\"}}, {\"theme\": \"light\",\"label\": {\"string_id\": \"onboarding-multistage-theme-label-light\"}, \"tooltip\": {\"string_id\": \"onboarding-multistage-theme-tooltip-light\"}},{\"theme\": \"dark\",\"label\": {\"string_id\": \"onboarding-multistage-theme-label-dark\"}, \"tooltip\": {\"string_id\": \"onboarding-multistage-theme-tooltip-dark\"}}]},\"primary_button\": {\"label\": {\"string_id\": \"onboarding-multistage-theme-primary-button-label\"},\"action\": {\"navigate\": true}},\"secondary_button\": {\"label\": {\"string_id\": \"onboarding-multistage-theme-secondary-button-label\"},\"action\": {\"theme\": \"automatic\",\"navigate\": true}}}}]}");
+pref("browser.aboutwelcome.overrideContent", "");
 
 // The pref that controls if the What's New panel is enabled.
 pref("browser.messaging-system.whatsNewPanel.enabled", true);
@@ -1564,7 +1604,7 @@ pref("toolkit.telemetry.updatePing.enabled", true);
 // Enables sending 'bhr' pings when the browser hangs.
 pref("toolkit.telemetry.bhrPing.enabled", true);
 // Whether to enable Ecosystem Telemetry, requires a restart.
-pref("toolkit.telemetry.ecosystemtelemetry.enabled", false);
+pref("toolkit.telemetry.ecosystemtelemetry.enabled", true);
 
 // Ping Centre Telemetry settings.
 pref("browser.ping-centre.telemetry", true);
@@ -1785,6 +1825,12 @@ pref("dom.ipc.processPrelaunch.enabled", true);
 pref("browser.migrate.chrome.history.limit", 2000);
 pref("browser.migrate.chrome.history.maxAgeInDays", 180);
 
+#ifdef EARLY_BETA_OR_EARLIER
+pref("browser.migrate.showBookmarksToolbarAfterMigration", true);
+#else
+pref("browser.migrate.showBookmarksToolbarAfterMigration", false);
+#endif
+
 pref("extensions.pocket.api", "api.getpocket.com");
 pref("extensions.pocket.enabled", true);
 pref("extensions.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
@@ -1811,7 +1857,7 @@ pref("signon.management.page.hideMobileFooter", false);
 pref("signon.management.page.showPasswordSyncNotification", true);
 pref("signon.passwordEditCapture.enabled", true);
 pref("signon.showAutoCompleteFooter", true);
-pref("signon.showAutoCompleteImport", "");
+pref("signon.showAutoCompleteImport", "import");
 
 // Enable the "Simplify Page" feature in Print Preview. This feature
 // is disabled by default in toolkit.
@@ -1842,13 +1888,15 @@ pref("browser.crashReports.unsubmittedCheck.autoSubmit2", false);
 // any other value means autofill isn't available.
 // "detect" means it's enabled if conditions defined in the extension are met.
 pref("extensions.formautofill.available", "detect");
-pref("extensions.formautofill.creditCards.available", false);
+pref("extensions.formautofill.creditCards.available", true);
 pref("extensions.formautofill.addresses.enabled", true);
 pref("extensions.formautofill.addresses.capture.enabled", false);
 pref("extensions.formautofill.creditCards.enabled", true);
 // Temporary preference to control displaying the UI elements for
 // credit card autofill used for the duration of the A/B test.
 pref("extensions.formautofill.creditCards.hideui", false);
+// Enable the checkbox in sync options for credit card data sync service
+pref("services.sync.engine.creditcards.available", true);
 // Pref for shield/heartbeat to recognize users who have used Credit Card
 // Autofill. The valid values can be:
 // 0: none
@@ -1963,7 +2011,6 @@ pref("identity.fxaccounts.toolbar.enabled", true);
 pref("identity.fxaccounts.toolbar.accessed", false);
 
 // Prefs for different services supported by Firefox Account
-pref("identity.fxaccounts.service.sendLoginUrl", "https://send.firefox.com/login/");
 pref("identity.fxaccounts.service.monitorLoginUrl", "https://monitor.firefox.com/");
 
 // Check bundled omni JARs for corruption.
@@ -2041,6 +2088,8 @@ pref("devtools.inspector.showUserAgentStyles", false);
 pref("devtools.inspector.showAllAnonymousContent", false);
 // Enable the new Rules View
 pref("devtools.inspector.new-rulesview.enabled", false);
+// Enable the inline CSS compatiblity warning in inspector rule view
+pref("devtools.inspector.ruleview.inline-compatibility-warning.enabled", false);
 // Enable the compatibility tool in the inspector.
 #if defined(NIGHTLY_BUILD) || defined(MOZ_DEV_EDITION)
 pref("devtools.inspector.compatibility.enabled", true);
@@ -2058,10 +2107,6 @@ pref("devtools.gridinspector.showGridLineNumbers", false);
 pref("devtools.gridinspector.showInfiniteLines", false);
 // Max number of grid highlighters that can be displayed
 pref("devtools.gridinspector.maxHighlighters", 3);
-
-// Compatibility preferences
-// Stringified array of target browsers that users investigate.
-pref("devtools.inspector.compatibility.target-browsers", "");
 
 // Whether or not the box model panel is opened in the layout view
 pref("devtools.layout.boxmodel.opened", true);

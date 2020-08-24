@@ -240,7 +240,13 @@ pref("browser.shell.mostRecentDateSetAsDefault", "");
 pref("browser.shell.skipDefaultBrowserCheckOnFirstRun", true);
 pref("browser.shell.didSkipDefaultBrowserCheckOnFirstRun", false);
 pref("browser.shell.defaultBrowserCheckCount", 0);
+#ifdef EARLY_BETA_OR_EARLIER
+pref("browser.defaultbrowser.notificationbar", true);
+#else
 pref("browser.defaultbrowser.notificationbar", false);
+#endif
+pref("browser.defaultbrowser.notificationbar.checkcount", 0);
+pref("browser.defaultbrowser.notificationbar.checklimit", 10000);
 
 // 0 = blank, 1 = home (browser.startup.homepage), 2 = last visited page, 3 = resume previous browser session
 // The behavior of option 3 is detailed at: http://wiki.mozilla.org/Session_Restore
@@ -1598,13 +1604,7 @@ pref("toolkit.telemetry.updatePing.enabled", true);
 // Enables sending 'bhr' pings when the browser hangs.
 pref("toolkit.telemetry.bhrPing.enabled", true);
 // Whether to enable Ecosystem Telemetry, requires a restart.
-// This is limited to nightly builds for initial verification and QA,
-// and will eventually default to `true` on all builds.
-#ifdef NIGHTLY_BUILD
 pref("toolkit.telemetry.ecosystemtelemetry.enabled", true);
-#else
-pref("toolkit.telemetry.ecosystemtelemetry.enabled", false);
-#endif
 
 // Ping Centre Telemetry settings.
 pref("browser.ping-centre.telemetry", true);
