@@ -436,6 +436,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
+  pref("media.navigator.video.offer_rtcp_rsize", true);
 
   #ifdef NIGHTLY_BUILD
     pref("media.peerconnection.sdp.parser", "sipcc");
@@ -990,16 +991,6 @@ pref("editor.positioning.offset",            0);
 pref("dom.beforeunload_timeout_ms",         1000);
 pref("dom.disable_window_flip",             false);
 pref("dom.disable_window_move_resize",      false);
-
-pref("dom.disable_window_open_feature.titlebar",    false);
-pref("dom.disable_window_open_feature.close",       false);
-pref("dom.disable_window_open_feature.toolbar",     false);
-pref("dom.disable_window_open_feature.location",    false);
-pref("dom.disable_window_open_feature.personalbar", false);
-pref("dom.disable_window_open_feature.menubar",     false);
-pref("dom.disable_window_open_feature.resizable",   true);
-pref("dom.disable_window_open_feature.minimizable", false);
-pref("dom.disable_window_open_feature.status",      true);
 
 pref("dom.allow_scripts_to_close_windows",          false);
 
