@@ -32,6 +32,11 @@ object FeatureFlags {
     const val newSearchExperience = true
 
     /**
+     * Enables showing the top frequently visited sites
+     */
+    val topFrecentSite = Config.channel.isNightlyOrDebug
+
+    /**
      * Enables wait til first contentful paint
      */
     val waitUntilPaintToDraw = Config.channel.isNightlyOrDebug
@@ -45,4 +50,9 @@ object FeatureFlags {
      * Enables viewing downloads in browser.
      */
     val viewDownloads = Config.channel.isNightlyOrDebug
+
+    /**
+     * Enables selecting from multiple logins.
+     */
+    val loginSelect = Config.channel.isNightlyOrDebug
 }
