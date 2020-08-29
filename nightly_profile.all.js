@@ -463,12 +463,12 @@ pref("permissions.desktop-notification.notNow.enabled", false);
 pref("permissions.fullscreen.allowed", false);
 
 // handle links targeting new windows
-// 1=current window/tab, 2=new window, 3=new tab in most recent window
+// 2=new window, 3=new tab in most recent window
 pref("browser.link.open_newwindow", 3);
 
 // handle external links (i.e. links opened from a different application)
 // default: use browser.link.open_newwindow
-// 1-3: see browser.link.open_newwindow for interpretation
+// 2-3: see browser.link.open_newwindow for interpretation
 pref("browser.link.open_newwindow.override.external", -1);
 
 // 0: no restrictions - divert everything
@@ -1598,7 +1598,7 @@ pref("toolkit.telemetry.updatePing.enabled", true);
 // Enables sending 'bhr' pings when the browser hangs.
 pref("toolkit.telemetry.bhrPing.enabled", true);
 // Whether to enable Ecosystem Telemetry, requires a restart.
-pref("toolkit.telemetry.ecosystemtelemetry.enabled", true);
+pref("toolkit.telemetry.ecosystemtelemetry.enabled", false);
 
 // Ping Centre Telemetry settings.
 pref("browser.ping-centre.telemetry", true);
