@@ -22,11 +22,6 @@ object FeatureFlags {
     val syncedTabsInTabsTray = Config.channel.isNightlyOrDebug
 
     /**
-     * Enables viewing tab history
-     */
-    val tabHistory = Config.channel.isNightlyOrDebug
-
-    /**
      * Enables the new search experience
      */
     const val newSearchExperience = true
@@ -50,9 +45,4 @@ object FeatureFlags {
      * Enables viewing downloads in browser.
      */
     val viewDownloads = Config.channel.isNightlyOrDebug
-
-    /**
-     * Enables selecting from multiple logins.
-     */
-    val loginSelect = Config.channel.isNightlyOrDebug
 }

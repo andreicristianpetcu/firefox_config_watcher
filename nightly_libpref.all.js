@@ -1788,9 +1788,6 @@ pref("network.dns.offline-localhost", true);
 // A negative value will keep the thread alive forever.
 pref("network.dns.resolver-thread-extra-idle-time-seconds", 60);
 
-// Whether to disable TRR when parental control is enabled.
-pref("network.dns.skipTRR-when-parental-control-enabled", true);
-
 // Idle timeout for ftp control connections - 5 minute default
 pref("network.ftp.idleConnectionTimeout", 300);
 
@@ -2458,9 +2455,6 @@ pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
 pref("dom.use_watchdog", true);
-pref("dom.max_chrome_script_run_time", 0);
-pref("dom.max_script_run_time", 10);
-pref("dom.max_ext_content_script_run_time", 5);
 
 // Stop all scripts in a compartment when the "stop script" dialog is used.
 pref("dom.global_stop_script", true);
@@ -4086,17 +4080,6 @@ pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://m
 // credentials to pass to DOH end-point
 pref("network.trr.credentials", "");
 pref("network.trr.custom_uri", "");
-// Wait for captive portal confirmation before enabling TRR
-#if defined(ANDROID)
-  // On Android, the captive portal is handled by the OS itself
-  pref("network.trr.wait-for-portal", false);
-#else
-  pref("network.trr.wait-for-portal", false);
-#endif
-// Allow RFC1918 address in responses?
-pref("network.trr.allow-rfc1918", false);
-// Use GET (rather than POST)
-pref("network.trr.useGET", false);
 // Before TRR is widely used the NS record for this host is fetched
 // from the DOH end point to ensure proper configuration
 pref("network.trr.confirmationNS", "example.com");
@@ -4106,24 +4089,9 @@ pref("network.trr.bootstrapAddress", "");
 // TRR blacklist entry expire time (in seconds). Default is one minute.
 // Meant to survive basically a page load.
 pref("network.trr.blacklist-duration", 60);
-// Allow AAAA entries to be used "early", before the A results are in
-pref("network.trr.early-AAAA", false);
-// When true, it only sends AAAA when the system has IPv6 connectivity
-pref("network.trr.skip-AAAA-when-not-supported", true);
-// When true, the DNS request will wait for both A and AAAA responses
-// (if both have been requested) before notifying the listeners.
-// When true, it effectively cancels `network.trr.early-AAAA`
-pref("network.trr.wait-for-A-and-AAAA", true);
-// Explicitly disable ECS (EDNS Client Subnet, RFC 7871)
-pref("network.trr.disable-ECS", true);
-// After this many failed TRR requests in a row, consider TRR borked
-pref("network.trr.max-fails", 5);
 // Comma separated list of domains that we should not use TRR for
 pref("network.trr.excluded-domains", "");
 pref("network.trr.builtin-excluded-domains", "localhost,local");
-// When true, the DNS+TRR cache will be cleared when a relevant TRR pref
-// changes. (uri, bootstrapAddress, excluded-domains)
-pref("network.trr.clear-cache-on-pref-change", true);
 
 pref("captivedetect.canonicalURL", "http://detectportal.firefox.com/success.txt");
 pref("captivedetect.canonicalContent", "success\n");
