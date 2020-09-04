@@ -1090,11 +1090,24 @@ pref("javascript.options.asmjs",                  true);
 pref("javascript.options.wasm",                   true);
 pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
-pref("javascript.options.wasm_ionjit",            true);
 pref("javascript.options.wasm_baselinejit",       true);
-#ifdef ENABLE_WASM_CRANELIFT
-  pref("javascript.options.wasm_cranelift",       false);
+
+// On aarch64, Cranelift is the optimizing tier used by default for wasm
+// compilation, and Ion is not available.
+// On every other tier-1 platform, Ion is the default, and Cranelift is
+// disabled.
+#ifdef _ARM64_
+  #ifdef ENABLE_WASM_CRANELIFT
+    pref("javascript.options.wasm_cranelift",     true);
+  #endif
+  pref("javascript.options.wasm_ionjit",          false);
+#else
+  #ifdef ENABLE_WASM_CRANELIFT
+    pref("javascript.options.wasm_cranelift",     false);
+  #endif
+  pref("javascript.options.wasm_ionjit",          true);
 #endif
+
 #ifdef ENABLE_WASM_REFTYPES
   pref("javascript.options.wasm_reftypes",        true);
   pref("javascript.options.wasm_gc",              false);
@@ -4255,8 +4268,6 @@ pref("browser.search.update.log", false);
 pref("browser.search.update.interval", 21600);
 pref("browser.search.suggest.enabled", true);
 pref("browser.search.suggest.enabled.private", false);
-pref("browser.search.geoSpecificDefaults", false);
-pref("browser.search.modernConfig", false);
 pref("browser.search.separatePrivateDefault", false);
 pref("browser.search.separatePrivateDefault.ui.enabled", false);
 
