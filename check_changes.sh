@@ -10,5 +10,5 @@ wget https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/browser/app/profi
 wget https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/browser/app/profile/firefox.js -O stable_profile.all.js
 
 wget https://raw.githubusercontent.com/mozilla-mobile/fenix/master/app/src/main/java/org/mozilla/fenix/FeatureFlags.kt -O FeatureFlags.kt
-
+wget https://raw.githubusercontent.com/mozilla-mobile/fenix/master/build.gradle -O build.gradle
 git status
