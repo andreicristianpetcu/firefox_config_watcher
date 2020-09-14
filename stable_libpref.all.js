@@ -350,8 +350,12 @@ pref("print.shrink-to-fit.scale-limit-percent", 20);
 // Whether we should display simplify page checkbox on print preview UI
 pref("print.use_simplify_page", false);
 
-// The tab modal print dialog is currently only for testing/experiments.
-pref("print.tab_modal.enabled", false);
+// Enable fillable forms in the PDF viewer.
+#ifdef EARLY_BETA_OR_EARLIER
+  pref("pdfjs.renderInteractiveForms", true);
+#else
+  pref("pdfjs.renderInteractiveForms", false);
+#endif
 
 // Disable support for MathML
 pref("mathml.disabled",    false);
@@ -685,6 +689,7 @@ pref("gfx.webrender.debug.small-screen", false);
 pref("gfx.webrender.debug.obscure-images", false);
 pref("gfx.webrender.debug.glyph-flashing", false);
 pref("gfx.webrender.debug.disable-raster-root-scale", false);
+pref("gfx.webrender.debug.capture-profiler", false);
 
 
 pref("accessibility.warn_on_browsewithcaret", true);
@@ -890,6 +895,10 @@ pref("devtools.performance.recording.objdirs.remote", "[]");
 // The popup will display some introductory text the first time it is displayed.
 pref("devtools.performance.popup.intro-displayed", false);
 
+// Compatibility preferences
+// Stringified array of target browsers that users investigate.
+pref("devtools.inspector.compatibility.target-browsers", "");
+
 // view source
 pref("view_source.editor.path", "");
 // allows to add further arguments to the editor; use the %LINE% placeholder
@@ -925,7 +934,6 @@ pref("print.print_headerright", "&U");
 pref("print.print_footerleft", "&PT");
 pref("print.print_footercenter", "");
 pref("print.print_footerright", "&D");
-pref("print.show_print_progress", true);
 
 // xxxbsmedberg: more toolkit prefs
 
@@ -1090,18 +1098,22 @@ pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
 pref("javascript.options.wasm_ionjit",            true);
 pref("javascript.options.wasm_baselinejit",       true);
-pref("javascript.options.wasm_reftypes",          true);
 #ifdef ENABLE_WASM_CRANELIFT
   pref("javascript.options.wasm_cranelift",       false);
 #endif
 #ifdef ENABLE_WASM_REFTYPES
+  pref("javascript.options.wasm_reftypes",        true);
   pref("javascript.options.wasm_gc",              false);
 #endif
 #ifdef ENABLE_WASM_MULTI_VALUE
   pref("javascript.options.wasm_multi_value",     true);
 #endif
 #ifdef ENABLE_WASM_SIMD
-  pref("javascript.options.wasm_simd",            true);
+  #ifdef NIGHTLY_BUILD
+    pref("javascript.options.wasm_simd",            true);
+  #else
+    pref("javascript.options.wasm_simd",            false);
+  #endif
 #endif
 pref("javascript.options.native_regexp",    true);
 pref("javascript.options.parallel_parsing", true);
@@ -1437,10 +1449,16 @@ pref("network.http.spdy.enable-hpack-dump", false);
 pref("network.http.http3.enabled", false);
 
 // Http3 qpack table size.
-pref("network.http.http3.default-qpack-table-size", 0);
+pref("network.http.http3.default-qpack-table-size", 65536); // 64k
 // Maximal number of streams that can be blocked on waiting for qpack
 // instructions.
-pref("network.http.http3.default-max-stream-blocked", 10);
+pref("network.http.http3.default-max-stream-blocked", 20);
+
+
+// This is only for testing!
+// This adds alt-svc mapping and it has a form of <host-name>;<alt-svc-header>
+// Example: example1.com;h3-29=":443",example2.com;h3-29=":443"
+pref("network.http.http3.alt-svc-mapping-for-testing", "");
 
 // alt-svc allows separation of transport routing from
 // the origin host without using a proxy.
@@ -2547,9 +2565,8 @@ pref("dom.ipc.processCount.privilegedabout", 1);
 // to avoid multiple of these content processes
 pref("dom.ipc.processCount.privilegedmozilla", 1);
 
-// Isolated content processes are always one-per-origin.
-// Changing this pref will break fission completely, so it is locked.
-pref("dom.ipc.processCount.webIsolated", 1, locked);
+// Maximum number of isolated content processes per-origin.
+pref("dom.ipc.processCount.webIsolated", 1);
 
 // Keep a single privileged about process alive for performance reasons.
 // e.g. we do not want to throw content processes out every time we navigate
@@ -2572,7 +2589,7 @@ pref("browser.tabs.remote.autostart", false);
 // any session can contain a mix of Fission and non-Fission windows. Instead,
 // callers should check whether the relevant nsILoadContext has the
 // `useRemoteSubframes` flag set.
-#ifdef RELEASE_OR_BETA
+#if defined(RELEASE_OR_BETA) || defined(MOZ_WIDGET_ANDROID)
   pref("fission.autostart", false, locked);
 #else
   pref("fission.autostart", false);
@@ -3730,11 +3747,7 @@ pref("signon.autofillForms",                true);
 pref("signon.autofillForms.autocompleteOff", true);
 pref("signon.autofillForms.http",           false);
 pref("signon.autologin.proxy",              false);
-#ifdef NIGHTLY_BUILD
-  pref("signon.capture.inputChanges.enabled", true);
-#else
-  pref("signon.capture.inputChanges.enabled", false);
-#endif
+pref("signon.capture.inputChanges.enabled", true);
 pref("signon.formlessCapture.enabled",      true);
 pref("signon.generation.available",               true);
 pref("signon.backup.enabled",               true);
@@ -3783,7 +3796,6 @@ pref("image.http.accept", "");
 // Allows image locking of decoded image data in content processes.
 pref("image.mem.allow_locking_in_content_processes", true);
 
-pref("webgl.enable-debug-renderer-info", true);
 pref("webgl.renderer-string-override", "");
 pref("webgl.vendor-string-override", "");
 
@@ -3836,7 +3848,7 @@ pref("network.psl.onUpdate_notify", false);
 #endif
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", false);
-  pref("widget.wayland.use-opaque-region", true);
+  pref("widget.wayland.use-opaque-region", false);
   pref("widget.use-xdg-desktop-portal", false);
 #endif
 
