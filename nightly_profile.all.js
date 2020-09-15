@@ -355,6 +355,11 @@ pref("browser.urlbar.update2.localOneOffs", false);
 pref("browser.urlbar.update2.oneOffsRefresh", false);
 #endif
 
+// Controls the empty search behavior in Search Mode:
+//  0 - Show nothing
+//  1 - Show search history
+//  2 - Show search and browsing history
+pref("browser.urlbar.update2.emptySearchBehavior", 2);
 // Whether we display a tab-to-complete result when the user types an engine
 // name.
 pref("browser.urlbar.update2.tabToComplete", false);
@@ -440,6 +445,9 @@ pref("browser.search.widget.inNavBar", false);
 #endif
 // The maximum amount of times the private default banner is shown.
 pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
+
+// Enables the display of the Mozilla VPN banner in private browsing windows
+pref("browser.privatebrowsing.vpnpromourl", "https://vpn.mozilla.org/?utm_source=firefox-browser&utm_medium=firefox-%CHANNEL%-browser&utm_campaign=private-browsing-vpn-link");
 
 pref("browser.sessionhistory.max_entries", 50);
 
@@ -1327,11 +1335,7 @@ pref("browser.partnerlink.attributionURL", "https://topsites.services.mozilla.co
 // Whether to show tab level system prompts opened via nsIPrompt(Service) as
 // SubDialogs in the TabDialogBox (true) or as TabModalPrompt in the
 // TabModalPromptBox (false).
-#ifdef NIGHTLY_BUILD
-  pref("prompts.tabChromePromptSubDialog", true);
-#else
-  pref("prompts.tabChromePromptSubDialog", false);
-#endif
+pref("prompts.tabChromePromptSubDialog", true);
 
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
