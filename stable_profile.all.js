@@ -443,6 +443,9 @@ pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
 
 pref("browser.search.modernConfig", true);
 
+// Enables the display of the Mozilla VPN banner in private browsing windows
+pref("browser.privatebrowsing.vpnpromourl", "https://vpn.mozilla.org/?utm_source=firefox-browser&utm_medium=firefox-%CHANNEL%-browser&utm_campaign=private-browsing-vpn-link");
+
 pref("browser.sessionhistory.max_entries", 50);
 
 // Built-in default permissions.
@@ -2440,11 +2443,11 @@ pref("devtools.debugger.features.async-live-stacks", false);
 pref("devtools.popup.disable_autohide", false);
 
 // Visibility switch preference for the WhatsNew panel.
-pref("devtools.whatsnew.enabled", true);
+pref("devtools.whatsnew.enabled", false);
 
 // Temporary preference to fully disable the WhatsNew panel on any target.
 // Should be removed in https://bugzilla.mozilla.org/show_bug.cgi?id=1596037
-pref("devtools.whatsnew.feature-enabled", true);
+pref("devtools.whatsnew.feature-enabled", false);
 
 // Part of the Overflow Debugging project
 // Here's the meta bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1529280
