@@ -913,6 +913,14 @@ pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
 pref("browser.fixup.fallback-to-https", true);
 
+// NOTE: On most platforms we save print settins to prefs with the name of the
+// printer in the pref name (Android being the notable exception, where prefs
+// are saved "globally" without a printer name in the pref name).  For those
+// platforms, the prefs below simply act as default values for when we
+// encounter a printer for the first time, but only a subset of prefs will be
+// used in this case.  See nsPrintSettingsService::InitPrintSettingsFromPrefs
+// for the restrictions on which prefs can act as defaults.
+
 // Print/Preview Shrink-To-Fit won't shrink below 20% for text-ish documents.
 pref("print.shrink-to-fit.scale-limit-percent", 20);
 
@@ -1096,8 +1104,12 @@ pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
 pref("javascript.options.wasm_baselinejit",       true);
 
-// On aarch64, Cranelift is the optimizing tier used by default for wasm
-// compilation, and Ion is not available.
+// On Nightly on aarch64, Cranelift is the optimizing tier used by default for
+// wasm compilation, and Ion is not available.
+//
+// On non-Nightly aarch64, Cranelift is disabled (and only baseline is
+// available).
+//
 // On every other tier-1 platform, Ion is the default, and Cranelift is
 // disabled.
 #ifdef MOZ_AARCH64
@@ -4161,6 +4173,9 @@ pref("browser.safebrowsing.downloads.remote.block_dangerous_host",       true);
 pref("browser.safebrowsing.downloads.remote.block_potentially_unwanted", true);
 pref("browser.safebrowsing.downloads.remote.block_uncommon",             true);
 
+// Android SafeBrowsing's configuration is in ContentBlocking.java, keep in sync.
+#ifndef MOZ_WIDGET_ANDROID
+
 // Google Safe Browsing provider (legacy)
 pref("browser.safebrowsing.provider.google.pver", "2.2");
 pref("browser.safebrowsing.provider.google.lists", "goog-badbinurl-shavar,goog-downloadwhite-digest256,goog-phish-shavar,googpub-phish-shavar,goog-malware-shavar,goog-unwanted-shavar");
@@ -4184,6 +4199,8 @@ pref("browser.safebrowsing.provider.google4.advisoryURL", "https://developers.go
 pref("browser.safebrowsing.provider.google4.advisoryName", "Google Safe Browsing");
 pref("browser.safebrowsing.provider.google4.dataSharingURL", "https://safebrowsing.googleapis.com/v4/threatHits?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST");
 pref("browser.safebrowsing.provider.google4.dataSharing.enabled", false);
+
+#endif // ifndef MOZ_WIDGET_ANDROID
 
 pref("browser.safebrowsing.reportPhishURL", "https://%LOCALE%.phish-report.mozilla.com/?url=");
 
