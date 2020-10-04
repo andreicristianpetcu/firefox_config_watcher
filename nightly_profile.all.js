@@ -354,12 +354,16 @@ pref("browser.urlbar.update2.oneOffsRefresh", true);
 // be restyled and deduped against form history. This only happens when
 // search mode is active.
 pref("browser.urlbar.update2.restyleBrowsingHistoryAsSearch", true);
+// Whether we display a tab-to-complete result when the user types an engine
+// name.
+pref("browser.urlbar.update2.tabToComplete", true);
 #else
 pref("browser.urlbar.update2", false);
 pref("browser.urlbar.update2.disableOneOffsHorizontalKeyNavigation", false);
 pref("browser.urlbar.update2.localOneOffs", false);
 pref("browser.urlbar.update2.oneOffsRefresh", false);
 pref("browser.urlbar.update2.restyleBrowsingHistoryAsSearch", false);
+pref("browser.urlbar.update2.tabToComplete", false);
 #endif
 
 // Controls the empty search behavior in Search Mode:
@@ -367,9 +371,6 @@ pref("browser.urlbar.update2.restyleBrowsingHistoryAsSearch", false);
 //  1 - Show search history
 //  2 - Show search and browsing history
 pref("browser.urlbar.update2.emptySearchBehavior", 2);
-// Whether we display a tab-to-complete result when the user types an engine
-// name.
-pref("browser.urlbar.update2.tabToComplete", false);
 
 pref("browser.urlbar.eventTelemetry.enabled", false);
 
@@ -1221,6 +1222,7 @@ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.asrouter.userp
 pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features", true);
 pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSearch", true);
 pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsored", true);
+pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsoredTopSites", true);
 pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.topsites", true);
 pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.topSitesRows", true);
 pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.snippets", true);
@@ -1386,8 +1388,8 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config",
 
 // List of regions that get spocs by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "US,CA,DE");
-// List of regions that get the 7 row layout.
-pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA,GB,DE,IE,CH,AT,BE");
+// List of regions that don't get the 7 row layout.
+pref("browser.newtabpage.activity-stream.discoverystream.region-basic-config", "");
 
 // Allows Pocket story collections to be dismissed.
 pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", true);
