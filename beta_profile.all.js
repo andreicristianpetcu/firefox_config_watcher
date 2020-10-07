@@ -1381,8 +1381,8 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config",
 
 // List of regions that get spocs by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "US,CA,DE");
-// List of regions that get the 7 row layout.
-pref("browser.newtabpage.activity-stream.discoverystream.region-layout-config", "US,CA,GB,DE,IE,CH,AT,BE");
+// List of regions that don't get the 7 row layout.
+pref("browser.newtabpage.activity-stream.discoverystream.region-basic-config", "");
 
 // Allows Pocket story collections to be dismissed.
 pref("browser.newtabpage.activity-stream.discoverystream.isCollectionDismissible", true);
@@ -1846,7 +1846,7 @@ pref("extensions.pocket.api", "api.getpocket.com");
 pref("extensions.pocket.enabled", true);
 pref("extensions.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
 pref("extensions.pocket.site", "getpocket.com");
-pref("extensions.pocket.onSaveRecs", false);
+pref("extensions.pocket.onSaveRecs", true);
 pref("extensions.pocket.onSaveRecs.locales", "en-US,en-GB,en-CA");
 
 #ifdef NIGHTLY_BUILD
@@ -1958,6 +1958,9 @@ pref("doh-rollout.provider-steering.enabled", false);
 
 // DoH Rollout: provider details for automatic steering.
 pref("doh-rollout.provider-steering.provider-list", "[{ \"name\": \"comcast\", \"canonicalName\": \"doh-discovery.xfinity.com\", \"uri\": \"https://doh.xfinity.com/dns-query\" }]");
+
+// DoH Rollout: whether to clear the mode value at shutdown.
+pref("doh-rollout.clearModeOnShutdown", true);
 
 // URL for Learn More link for browser error logging in preferences
 pref("browser.chrome.errorReporter.infoURL",
