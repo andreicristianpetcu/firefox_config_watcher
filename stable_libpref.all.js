@@ -1,7 +1,7 @@
-/* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+// -*- indent-tabs-mode: nil; js-indent-level: 2 -*-
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // The prefs in this file are shipped with the GRE and should apply to all
 // embedding situations. Application-specific preferences belong somewhere
@@ -9,8 +9,8 @@
 // mobile/android/app/mobile.js.
 //
 // NOTE: Not all prefs should be defined in this (or any other) data file.
-// Static prefs, especially VarCache prefs, are defined in StaticPrefList.yaml.
-// Those prefs should *not* appear in this file.
+// Static prefs are defined in StaticPrefList.yaml. Those prefs should *not*
+// appear in this file.
 //
 // For the syntax used by this file, consult the comments at the top of
 // modules/libpref/parser/src/lib.rs.
@@ -422,7 +422,7 @@ pref("media.videocontrols.picture-in-picture.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
-pref("media.videocontrols.picture-in-picture.video-toggle.mode", -1);
+pref("media.videocontrols.picture-in-picture.video-toggle.mode", 2);
 pref("media.videocontrols.picture-in-picture.video-toggle.position", "right");
 pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
 
@@ -436,6 +436,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
+  pref("media.navigator.video.offer_rtcp_rsize", true);
 
   #ifdef NIGHTLY_BUILD
     pref("media.peerconnection.sdp.parser", "sipcc");
@@ -688,7 +689,6 @@ pref("gfx.webrender.debug.primitives", false);
 pref("gfx.webrender.debug.small-screen", false);
 pref("gfx.webrender.debug.obscure-images", false);
 pref("gfx.webrender.debug.glyph-flashing", false);
-pref("gfx.webrender.debug.disable-raster-root-scale", false);
 pref("gfx.webrender.debug.capture-profiler", false);
 
 
@@ -919,6 +919,14 @@ pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
 pref("browser.fixup.fallback-to-https", true);
 
+// NOTE: On most platforms we save print settins to prefs with the name of the
+// printer in the pref name (Android being the notable exception, where prefs
+// are saved "globally" without a printer name in the pref name).  For those
+// platforms, the prefs below simply act as default values for when we
+// encounter a printer for the first time, but only a subset of prefs will be
+// used in this case.  See nsPrintSettingsService::InitPrintSettingsFromPrefs
+// for the restrictions on which prefs can act as defaults.
+
 // Print header customization
 // Use the following codes:
 // &T - Title
@@ -989,16 +997,6 @@ pref("editor.positioning.offset",            0);
 pref("dom.beforeunload_timeout_ms",         1000);
 pref("dom.disable_window_flip",             false);
 pref("dom.disable_window_move_resize",      false);
-
-pref("dom.disable_window_open_feature.titlebar",    false);
-pref("dom.disable_window_open_feature.close",       false);
-pref("dom.disable_window_open_feature.toolbar",     false);
-pref("dom.disable_window_open_feature.location",    false);
-pref("dom.disable_window_open_feature.personalbar", false);
-pref("dom.disable_window_open_feature.menubar",     false);
-pref("dom.disable_window_open_feature.resizable",   true);
-pref("dom.disable_window_open_feature.minimizable", false);
-pref("dom.disable_window_open_feature.status",      true);
 
 pref("dom.allow_scripts_to_close_windows",          false);
 
@@ -1087,6 +1085,9 @@ pref("javascript.options.baselinejit",      true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.baselinejit.threshold", 100);
 pref("javascript.options.ion",              true);
+#ifdef NIGHTLY_BUILD
+pref("javascript.options.warp",             false);
+#endif
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.ion.threshold",    1000);
 pref("javascript.options.ion.full.threshold", 100000);
@@ -1096,11 +1097,28 @@ pref("javascript.options.asmjs",                  true);
 pref("javascript.options.wasm",                   true);
 pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
-pref("javascript.options.wasm_ionjit",            true);
 pref("javascript.options.wasm_baselinejit",       true);
-#ifdef ENABLE_WASM_CRANELIFT
-  pref("javascript.options.wasm_cranelift",       false);
+
+// On Nightly on aarch64, Cranelift is the optimizing tier used by default for
+// wasm compilation, and Ion is not available.
+//
+// On non-Nightly aarch64, Cranelift is disabled (and only baseline is
+// available).
+//
+// On every other tier-1 platform, Ion is the default, and Cranelift is
+// disabled.
+#ifdef MOZ_AARCH64
+  #ifdef ENABLE_WASM_CRANELIFT
+    pref("javascript.options.wasm_cranelift",     true);
+  #endif
+  pref("javascript.options.wasm_ionjit",          false);
+#else
+  #ifdef ENABLE_WASM_CRANELIFT
+    pref("javascript.options.wasm_cranelift",     false);
+  #endif
+  pref("javascript.options.wasm_ionjit",          true);
 #endif
+
 #ifdef ENABLE_WASM_REFTYPES
   pref("javascript.options.wasm_reftypes",        true);
   pref("javascript.options.wasm_gc",              false);
@@ -1196,6 +1214,12 @@ pref("javascript.options.mem.gc_min_empty_chunk_count", 1);
 
 // JSGC_MAX_EMPTY_CHUNK_COUNT
 pref("javascript.options.mem.gc_max_empty_chunk_count", 30);
+
+// JSGC_HELPER_THREAD_RATIO
+pref("javascript.options.mem.gc_helper_thread_ratio", 50);
+
+// JSGC_MAX_HELPER_THREADS
+pref("javascript.options.mem.gc_max_helper_threads", 8);
 
 pref("javascript.options.showInConsole", false);
 
@@ -1787,9 +1811,6 @@ pref("network.dns.offline-localhost", true);
 // Defines how much longer resolver threads should stay idle before are shut down.
 // A negative value will keep the thread alive forever.
 pref("network.dns.resolver-thread-extra-idle-time-seconds", 60);
-
-// Whether to disable TRR when parental control is enabled.
-pref("network.dns.skipTRR-when-parental-control-enabled", true);
 
 // Idle timeout for ftp control connections - 5 minute default
 pref("network.ftp.idleConnectionTimeout", 300);
@@ -2383,22 +2404,6 @@ pref("mousewheel.with_win.delta_multiplier_x", 100);
 pref("mousewheel.with_win.delta_multiplier_y", 100);
 pref("mousewheel.with_win.delta_multiplier_z", 100);
 
-// These define the smooth scroll behavior (min ms, max ms) for different triggers
-// Some triggers:
-// mouseWheel: Discrete mouse wheel events, Synaptics touchpads on windows (generate wheel events)
-// Lines:  Up/Down/Left/Right KB arrows
-// Pages:  Page up/down, Space
-// Scrollbars: Clicking scrollbars arrows, clicking scrollbars tracks
-// Note: Currently OS X trackpad and magic mouse don't use our smooth scrolling
-// Note: These are relevant only when "general.smoothScroll" is enabled
-pref("general.smoothScroll.scrollbars.durationMinMS", 150);
-pref("general.smoothScroll.scrollbars.durationMaxMS", 150);
-// Enable disable smooth scrolling for different triggers (when "general.smoothScroll" is enabled)
-pref("general.smoothScroll.pixels", true);
-pref("general.smoothScroll.lines", true);
-pref("general.smoothScroll.scrollbars", true);
-pref("general.smoothScroll.other", true);
-
 // We can show it anytime from menus
 pref("profile.manage_only_at_launch", false);
 
@@ -2458,9 +2463,6 @@ pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
 pref("dom.use_watchdog", true);
-pref("dom.max_chrome_script_run_time", 0);
-pref("dom.max_script_run_time", 10);
-pref("dom.max_ext_content_script_run_time", 5);
 
 // Stop all scripts in a compartment when the "stop script" dialog is used.
 pref("dom.global_stop_script", true);
@@ -4086,17 +4088,6 @@ pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://m
 // credentials to pass to DOH end-point
 pref("network.trr.credentials", "");
 pref("network.trr.custom_uri", "");
-// Wait for captive portal confirmation before enabling TRR
-#if defined(ANDROID)
-  // On Android, the captive portal is handled by the OS itself
-  pref("network.trr.wait-for-portal", false);
-#else
-  pref("network.trr.wait-for-portal", false);
-#endif
-// Allow RFC1918 address in responses?
-pref("network.trr.allow-rfc1918", false);
-// Use GET (rather than POST)
-pref("network.trr.useGET", false);
 // Before TRR is widely used the NS record for this host is fetched
 // from the DOH end point to ensure proper configuration
 pref("network.trr.confirmationNS", "example.com");
@@ -4106,24 +4097,9 @@ pref("network.trr.bootstrapAddress", "");
 // TRR blacklist entry expire time (in seconds). Default is one minute.
 // Meant to survive basically a page load.
 pref("network.trr.blacklist-duration", 60);
-// Allow AAAA entries to be used "early", before the A results are in
-pref("network.trr.early-AAAA", false);
-// When true, it only sends AAAA when the system has IPv6 connectivity
-pref("network.trr.skip-AAAA-when-not-supported", true);
-// When true, the DNS request will wait for both A and AAAA responses
-// (if both have been requested) before notifying the listeners.
-// When true, it effectively cancels `network.trr.early-AAAA`
-pref("network.trr.wait-for-A-and-AAAA", true);
-// Explicitly disable ECS (EDNS Client Subnet, RFC 7871)
-pref("network.trr.disable-ECS", true);
-// After this many failed TRR requests in a row, consider TRR borked
-pref("network.trr.max-fails", 5);
 // Comma separated list of domains that we should not use TRR for
 pref("network.trr.excluded-domains", "");
 pref("network.trr.builtin-excluded-domains", "localhost,local");
-// When true, the DNS+TRR cache will be cleared when a relevant TRR pref
-// changes. (uri, bootstrapAddress, excluded-domains)
-pref("network.trr.clear-cache-on-pref-change", true);
 
 pref("captivedetect.canonicalURL", "http://detectportal.firefox.com/success.txt");
 pref("captivedetect.canonicalContent", "success\n");
@@ -4287,8 +4263,6 @@ pref("browser.search.update.log", false);
 pref("browser.search.update.interval", 21600);
 pref("browser.search.suggest.enabled", true);
 pref("browser.search.suggest.enabled.private", false);
-pref("browser.search.geoSpecificDefaults", false);
-pref("browser.search.modernConfig", false);
 pref("browser.search.separatePrivateDefault", false);
 pref("browser.search.separatePrivateDefault.ui.enabled", false);
 
@@ -4449,6 +4423,14 @@ pref("browser.sanitizer.loglevel", "Warn");
 // To disable blocking of auth prompts, set the limit to -1.
 pref("prompts.authentication_dialog_abuse_limit", 2);
 
+// The prompt type to use for http auth prompts
+// content: 1, tab: 2, window: 3
+#ifdef NIGHTLY_BUILD
+  pref("prompts.modalType.httpAuth", 2);
+#else
+  pref("prompts.modalType.httpAuth", 3);
+#endif
+
 // Payment Request API preferences
 pref("dom.payments.loglevel", "Warn");
 pref("dom.payments.defaults.saveCreditCard", false);
@@ -4473,6 +4455,11 @@ pref("dom.clients.openwindow_favors_same_process", true);
 #else
   pref("toolkit.aboutPerformance.showInternals", true);
 #endif
+
+// If `true`, about:processes shows in-process subframes.
+pref("toolkit.aboutProcesses.showAllSubframes", false);
+// If `true`, about:processes shows thread information.
+pref("toolkit.aboutProcesses.showThreads", false);
 
 // When a crash happens, whether to include heap regions of the crash context
 // in the minidump. Enabled by default on nightly and aurora.
