@@ -12,7 +12,7 @@ object FeatureFlags {
      * Pull-to-refresh allows you to pull the web content down far enough to have the page to
      * reload.
      */
-    const val pullToRefreshEnabled = false
+    val pullToRefreshEnabled = Config.channel.isNightlyOrDebug
 
     /**
      * Shows Synced Tabs in the tabs tray.
@@ -45,4 +45,9 @@ object FeatureFlags {
      * Enables ETP cookie purging
      */
     val etpCookiePurging = Config.channel.isNightlyOrDebug
+
+    /**
+     * Returns user to browser on cold start if they have open tabs
+     */
+    val returnToBrowserOnColdStart = Config.channel.isNightlyOrDebug
 }
