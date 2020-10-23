@@ -255,6 +255,7 @@ pref("browser.defaultbrowser.notificationbar.checklimit", 10000);
 pref("browser.startup.page",                1);
 pref("browser.startup.homepage",            "about:home");
 pref("browser.startup.homepage.abouthome_cache.enabled", false);
+pref("browser.startup.homepage.abouthome_cache.loglevel", "Warn");
 
 // Whether we should skip the homepage when opening the first-run page
 pref("browser.startup.firstrunSkipsHomepage", true);
@@ -1650,6 +1651,8 @@ pref("browser.contentblocking.fingerprinting.preferences.ui.enabled", true);
   // Enable cookieBehavior = BEHAVIOR_REJECT_TRACKER_AND_PARTITION_FOREIGN as an option in the custom category ui
   pref("browser.contentblocking.reject-and-isolate-cookies.preferences.ui.enabled", true);
 #endif
+// State Partitioning MVP UI. Disabled by default for now.
+pref("browser.contentblocking.state-partitioning.mvp.ui.enabled", false);
 
 // Possible values for browser.contentblocking.features.strict pref:
 //   Tracking Protection:
