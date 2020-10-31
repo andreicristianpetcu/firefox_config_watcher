@@ -582,6 +582,8 @@ pref("apz.overscroll.stretch_factor", "0.35");
 
 pref("apz.zoom-to-focused-input.enabled", true);
 
+pref("formhelper.autozoom.force-disable.test-only", false);
+
 #ifdef XP_MACOSX
   // Whether to run in native HiDPI mode on machines with "Retina"/HiDPI
   // display.
@@ -4736,3 +4738,8 @@ pref("dom.postMessage.sharedArrayBuffer.bypassCOOP_COEP.insecure.enabled", false
 
 // Whether to start the private browsing mode at application startup
 pref("browser.privatebrowsing.autostart", false);
+
+// Whether sites require the open-protocol-handler permission to open a
+//preferred external application for a protocol. If a site doesn't have
+// permission we will show a prompt.
+pref("security.external_protocol_requires_permission", true);
