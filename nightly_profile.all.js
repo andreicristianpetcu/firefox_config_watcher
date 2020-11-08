@@ -273,6 +273,12 @@ pref("browser.startup.firstrunSkipsHomepage", true);
   pref("browser.startup.blankWindow", false);
 #endif
 
+// Show a skeleton UI window prior to loading libxul. Only visible for windows
+// users as it is not implemented anywhere else.
+#if defined(XP_WIN)
+pref("browser.startup.preXulSkeletonUI", false);
+#endif
+
 // Don't create the hidden window during startup on
 // platforms that don't always need it (Win/Linux).
 pref("toolkit.lazyHiddenWindow", true);
@@ -358,7 +364,7 @@ pref("browser.urlbar.update2.disableOneOffsHorizontalKeyNavigation", true);
 //  0 - Show nothing
 //  1 - Show search history
 //  2 - Show search and browsing history
-pref("browser.urlbar.update2.emptySearchBehavior", 2);
+pref("browser.urlbar.update2.emptySearchBehavior", 0);
 
 // Whether the urlbar displays one-offs to filter searches to history,
 // bookmarks, or tabs.
@@ -600,6 +606,18 @@ pref("browser.bookmarks.max_backups",             15);
 
 // Whether menu should close after Ctrl-click, middle-click, etc.
 pref("browser.bookmarks.openInTabClosesMenu", true);
+
+// Where new bookmarks go by default.
+// Use PlacesUIUtils.defaultParentGuid to read this; do NOT read the pref
+// directly.
+// The pref is ignored if the browser.toolbars.bookmarks.2h2020 pref is false,
+// in which case bookmarks always go in the "Other bookmarks" folder.
+// The value is one of:
+// - a bookmarks guid
+// - "toolbar", "menu" or "unfiled" for those folders.
+// If we use the pref but the value isn't any of these, we'll fall back to
+// the bookmarks toolbar as a default.
+pref("browser.bookmarks.defaultLocation", "toolbar");
 
 // Scripts & Windows prefs
 pref("dom.disable_open_during_load",              true);
@@ -1339,6 +1357,8 @@ pref("prompts.defaultModalType", 3);
 pref("browser.topsites.useRemoteSetting", false);
 
 pref("browser.partnerlink.attributionURL", "https://topsites.services.mozilla.com/cid/amzn_2020_a1");
+
+pref("browser.partnerlink.useAttributionURL", false);
 
 // Whether to show tab level system prompts opened via nsIPrompt(Service) as
 // SubDialogs in the TabDialogBox (true) or as TabModalPrompt in the
