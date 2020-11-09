@@ -185,6 +185,10 @@ pref("security.pki.distrust_ca_policy", 2);
 // 2: Enable and enforce revocations via CRLite
 pref("security.pki.crlite_mode", 1);
 
+// Represents the expected certificate transparency log merge delay (including
+// the time to generate a CRLite filter). Currently 28 hours in seconds.
+pref("security.pki.crlite_ct_merge_delay_seconds", 100800);
+
 // Issuer we use to detect MitM proxies. Set to the issuer of the cert of the
 // Firefox update service. The string format is whatever NSS uses to print a DN.
 // This value is set and cleared automatically.
@@ -344,18 +348,8 @@ pref("browser.chrome.image_icons.max_size", 1024);
 
 pref("browser.triple_click_selects_paragraph", true);
 
-// Print/Preview Shrink-To-Fit won't shrink below 20% for text-ish documents.
-pref("print.shrink-to-fit.scale-limit-percent", 20);
-
-// Whether we should display simplify page checkbox on print preview UI
-pref("print.use_simplify_page", false);
-
 // Enable fillable forms in the PDF viewer.
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("pdfjs.renderInteractiveForms", true);
-#else
-  pref("pdfjs.renderInteractiveForms", false);
-#endif
+pref("pdfjs.renderInteractiveForms", true);
 
 // Disable support for MathML
 pref("mathml.disabled",    false);
@@ -432,7 +426,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   pref("media.navigator.video.use_remb", true);
   pref("media.navigator.video.use_transport_cc", true);
   pref("media.peerconnection.video.use_rtx", true);
-  pref("media.peerconnection.video.use_rtx.blocklist", "");
+  pref("media.peerconnection.video.use_rtx.blocklist", "doxy.me,*.doxy.me");
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
@@ -617,15 +611,6 @@ pref("gfx.downloadable_fonts.disable_cache", false);
 // Do we fire a notification about missing fonts, so the front-end can decide
 // whether to try and do something about it (e.g. download additional fonts)?
 pref("gfx.missing_fonts.notify", false);
-
-// prefs controlling the font (name/cmap) loader that runs shortly after startup
-#ifdef XP_WIN
-  pref("gfx.font_loader.delay", 120000);       // 2 minutes after startup
-  pref("gfx.font_loader.interval", 1000);      // every 1 second until complete
-#else
-  pref("gfx.font_loader.delay", 8000);         // 8 secs after startup
-  pref("gfx.font_loader.interval", 50);        // run every 50 ms
-#endif
 
 // whether to always search all font cmaps during system font fallback
 pref("gfx.font_rendering.fallback.always_use_cmaps", false);
@@ -927,6 +912,12 @@ pref("browser.fixup.fallback-to-https", true);
 // used in this case.  See nsPrintSettingsService::InitPrintSettingsFromPrefs
 // for the restrictions on which prefs can act as defaults.
 
+// Print/Preview Shrink-To-Fit won't shrink below 20% for text-ish documents.
+pref("print.shrink-to-fit.scale-limit-percent", 20);
+
+// Whether we should display simplify page checkbox on print preview UI
+pref("print.use_simplify_page", false);
+
 // Print header customization
 // Use the following codes:
 // &T - Title
@@ -974,6 +965,13 @@ pref("print.print_edge_bottom", 0);
   pref("print.print_via_parent", true);
 #else
   pref("print.print_via_parent", false);
+#endif
+
+// Should this just be checking for MOZ_WIDGET_GTK?
+#if defined(ANDROID) || defined(XP_UNIX) && !defined(XP_MACOSX)
+  pref("print.print_reversed", false);
+  // This is the default. Probably just remove this.
+  pref("print.print_in_color", true);
 #endif
 
 // Pref used by the spellchecker extension to control the
@@ -1057,11 +1055,10 @@ pref("privacy.restrict3rdpartystorage.url_decorations", "");
 pref("privacy.popups.maxReported", 100);
 
 // Purging first-party tracking cookies.
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("privacy.purge_trackers.enabled", true);
+pref("privacy.purge_trackers.enabled", true);
+#ifdef NIGHTLY_BUILD
   pref("privacy.purge_trackers.logging.level", "Warn");
 #else
-  pref("privacy.purge_trackers.enabled", false);
   pref("privacy.purge_trackers.logging.level", "Error");
 #endif
 
@@ -1085,11 +1082,9 @@ pref("javascript.options.baselinejit",      true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.baselinejit.threshold", 100);
 pref("javascript.options.ion",              true);
-#ifdef NIGHTLY_BUILD
-pref("javascript.options.warp",             false);
-#endif
+pref("javascript.options.warp",             true);
 // Duplicated in JitOptions - ensure both match.
-pref("javascript.options.ion.threshold",    1000);
+pref("javascript.options.ion.threshold",    1500);
 pref("javascript.options.ion.full.threshold", 100000);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.ion.frequent_bailout_threshold", 10);
@@ -2244,9 +2239,6 @@ pref("security.notification_enable_delay", 500);
   pref("security.disallow_non_local_systemprincipal_in_tests", false);
 #endif
 
-// Sub-resource integrity
-pref("security.sri.enable", true);
-
 // OCSP must-staple
 pref("security.ssl.enable_ocsp_must_staple", true);
 
@@ -3372,12 +3364,6 @@ pref("font.size.monospace.x-math", 13);
   pref("helpers.global_mailcap_file", "/etc/mailcap");
   pref("helpers.private_mime_types_file", "~/.mime.types");
   pref("helpers.private_mailcap_file", "~/.mailcap");
-  pref("print.printer_list", ""); // list of printers, separated by spaces
-  pref("print.print_reversed", false);
-  pref("print.print_in_color", true);
-
-  /* PostScript print module prefs */
-  // pref("print.postscript.enabled",      true);
 
   // Setting default_level_parent to true makes the default level for popup
   // windows "top" instead of "parent".  On GTK2 platform, this is implemented
@@ -3413,9 +3399,6 @@ pref("font.size.monospace.x-math", 13);
   pref("helpers.global_mailcap_file", "/etc/mailcap");
   pref("helpers.private_mime_types_file", "~/.mime.types");
   pref("helpers.private_mailcap_file", "~/.mailcap");
-  pref("print.printer_list", ""); // list of printers, separated by spaces
-  pref("print.print_reversed", false);
-  pref("print.print_in_color", true);
 
   // font names
 
@@ -3569,9 +3552,6 @@ pref("font.size.monospace.x-math", 13);
   pref("font.name-list.sans-serif.zh-TW", "sans-serif");
   pref("font.name-list.monospace.zh-TW", "monospace");
   pref("font.name-list.cursive.zh-TW", "cursive");
-
-  /* PostScript print module prefs */
-  // pref("print.postscript.enabled",      true);
 
   // On GTK2 platform, we should use topmost window level for the default window
   // level of <panel> element of XUL. GTK2 has only two window types. One is
@@ -3760,7 +3740,9 @@ pref("signon.privateBrowsingCapture.enabled",     true);
 pref("signon.storeWhenAutocompleteOff",     true);
 pref("signon.userInputRequiredToCapture.enabled", true);
 pref("signon.debug",                        false);
-pref("signon.recipes.path",                 "chrome://passwordmgr/content/recipes.json");
+pref("signon.recipes.path", "resource://app/defaults/settings/main/password-recipes.json");
+pref("signon.recipes.remoteRecipesEnabled", true);
+
 pref("signon.schemeUpgrades",                     true);
 pref("signon.includeOtherSubdomainsInLookup",     true);
 // This temporarily prevents the master password to reprompt for autocomplete.
@@ -4072,8 +4054,8 @@ pref("network.captive-portal-service.backoffFactor", "5.0");
 pref("network.captive-portal-service.enabled", false);
 
 pref("network.connectivity-service.enabled", true);
-pref("network.connectivity-service.DNSv4.domain", "mozilla.org");
-pref("network.connectivity-service.DNSv6.domain", "mozilla.org");
+pref("network.connectivity-service.DNSv4.domain", "example.org");
+pref("network.connectivity-service.DNSv6.domain", "example.org");
 pref("network.connectivity-service.IPv4.url", "http://detectportal.firefox.com/success.txt?ipv4");
 pref("network.connectivity-service.IPv6.url", "http://detectportal.firefox.com/success.txt?ipv6");
 
@@ -4183,6 +4165,9 @@ pref("browser.safebrowsing.downloads.remote.block_dangerous_host",       true);
 pref("browser.safebrowsing.downloads.remote.block_potentially_unwanted", true);
 pref("browser.safebrowsing.downloads.remote.block_uncommon",             true);
 
+// Android SafeBrowsing's configuration is in ContentBlocking.java, keep in sync.
+#ifndef MOZ_WIDGET_ANDROID
+
 // Google Safe Browsing provider (legacy)
 pref("browser.safebrowsing.provider.google.pver", "2.2");
 pref("browser.safebrowsing.provider.google.lists", "goog-badbinurl-shavar,goog-downloadwhite-digest256,goog-phish-shavar,googpub-phish-shavar,goog-malware-shavar,goog-unwanted-shavar");
@@ -4206,6 +4191,8 @@ pref("browser.safebrowsing.provider.google4.advisoryURL", "https://developers.go
 pref("browser.safebrowsing.provider.google4.advisoryName", "Google Safe Browsing");
 pref("browser.safebrowsing.provider.google4.dataSharingURL", "https://safebrowsing.googleapis.com/v4/threatHits?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST");
 pref("browser.safebrowsing.provider.google4.dataSharing.enabled", false);
+
+#endif // ifndef MOZ_WIDGET_ANDROID
 
 pref("browser.safebrowsing.reportPhishURL", "https://%LOCALE%.phish-report.mozilla.com/?url=");
 
@@ -4425,11 +4412,7 @@ pref("prompts.authentication_dialog_abuse_limit", 2);
 
 // The prompt type to use for http auth prompts
 // content: 1, tab: 2, window: 3
-#ifdef NIGHTLY_BUILD
-  pref("prompts.modalType.httpAuth", 2);
-#else
-  pref("prompts.modalType.httpAuth", 3);
-#endif
+pref("prompts.modalType.httpAuth", 2);
 
 // Payment Request API preferences
 pref("dom.payments.loglevel", "Warn");
@@ -4524,7 +4507,6 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
   pref("services.sync.engine.addons", true);
   pref("services.sync.engine.addresses", false);
   pref("services.sync.engine.bookmarks", true);
-  pref("services.sync.engine.bookmarks.buffer", true);
   pref("services.sync.engine.creditcards", false);
   pref("services.sync.engine.history", true);
   pref("services.sync.engine.passwords", true);
@@ -4575,12 +4557,6 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
     // not release candidates or Release.
     pref("services.sync.engine.bookmarks.validation.enabled", true);
     pref("services.sync.engine.passwords.validation.enabled", true);
-  #endif
-
-  #if defined(NIGHTLY_BUILD)
-    // Enable repair of bookmarks on Nightly only - requires validation also be
-    // enabled.
-    pref("services.sync.engine.bookmarks.repair.enabled", true);
   #endif
 
   // We consider validation this frequently. After considering validation, even
