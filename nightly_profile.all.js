@@ -1358,8 +1358,6 @@ pref("browser.topsites.useRemoteSetting", false);
 
 pref("browser.partnerlink.attributionURL", "https://topsites.services.mozilla.com/cid/amzn_2020_a1");
 
-pref("browser.partnerlink.useAttributionURL", false);
-
 // Whether to show tab level system prompts opened via nsIPrompt(Service) as
 // SubDialogs in the TabDialogBox (true) or as TabModalPrompt in the
 // TabModalPromptBox (false).
@@ -1431,6 +1429,8 @@ pref("browser.newtabpage.activity-stream.feeds.section.topstories", true);
 #else
   pref("browser.newtabpage.activity-stream.improvesearch.handoffToAwesomebar", false);
 #endif
+
+pref("browser.newtabpage.activity-stream.logowordmark.alwaysVisible", false);
 
 // Used to display triplet cards on newtab
 pref("trailhead.firstrun.newtab.triplets", "");
@@ -1998,11 +1998,7 @@ pref("doh-rollout.provider-steering.enabled", false);
 pref("doh-rollout.provider-steering.provider-list", "[{ \"name\": \"comcast\", \"canonicalName\": \"doh-discovery.xfinity.com\", \"uri\": \"https://doh.xfinity.com/dns-query\" }]");
 
 // DoH Rollout: whether to clear the mode value at shutdown.
-#ifdef NIGHTLY_BUILD
-  pref("doh-rollout.clearModeOnShutdown", false);
-#else
-  pref("doh-rollout.clearModeOnShutdown", true);
-#endif
+pref("doh-rollout.clearModeOnShutdown", false);
 
 // URL for Learn More link for browser error logging in preferences
 pref("browser.chrome.errorReporter.infoURL",
