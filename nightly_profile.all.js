@@ -561,12 +561,7 @@ pref("browser.tabs.delayHidingAudioPlayingIconMS", 3000);
 // for about: pages. This pref name did not age well: we will have multiple
 // types of privileged content processes, each with different privileges.
 // types of privleged content processes, each with different privleges.
-#if defined(MOZ_CODE_COVERAGE) && defined(XP_LINUX)
-  // Disabled on Linux ccov builds due to bug 1621269.
-  pref("browser.tabs.remote.separatePrivilegedContentProcess", false);
-#else
-  pref("browser.tabs.remote.separatePrivilegedContentProcess", true);
-#endif
+pref("browser.tabs.remote.separatePrivilegedContentProcess", true);
 
 #if defined(NIGHTLY_BUILD) && !defined(MOZ_ASAN)
   // This pref will cause assertions when a remoteType triggers a process switch
@@ -1401,9 +1396,13 @@ pref("browser.newtabpage.activity-stream.discoverystream.spocs-endpoint", "");
 // List of regions that do not get stories, regardless of locale-list-config.
 pref("browser.newtabpage.activity-stream.discoverystream.region-stories-block", "FR");
 // List of locales that get stories, regardless of region-stories-config.
-pref("browser.newtabpage.activity-stream.discoverystream.locale-list-config", "en-US,en-CA,en-GB");
+#ifdef NIGHTLY_BUILD
+  pref("browser.newtabpage.activity-stream.discoverystream.locale-list-config", "en-US,en-CA,en-GB");
+#else
+  pref("browser.newtabpage.activity-stream.discoverystream.locale-list-config", "");
+#endif
 // List of regions that get stories by default.
-pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config", "US,DE,CA,GB,IE,CH,AT,BE");
+pref("browser.newtabpage.activity-stream.discoverystream.region-stories-config", "US,DE,CA,GB,IE,CH,AT,BE,IN");
 
 // List of regions that get spocs by default.
 pref("browser.newtabpage.activity-stream.discoverystream.region-spocs-config", "US,CA,DE,GB");
@@ -1596,6 +1595,20 @@ pref("media.gmp.trial-create.enabled", true);
 
 pref("media.gmp-gmpopenh264.visible", true);
 pref("media.gmp-gmpopenh264.enabled", true);
+
+#ifdef XP_MACOSX
+  // These prefs control whether or not a universal build running on
+  // an Apple Silicon machine will attempt to use an x64 Widevine or
+  // OpenH264 plugin. This requires launching the GMP child process
+  // executable in x64 mode. We expect to allow this for Widevine until
+  // an arm64 version of Widevine is made available. We don't expect
+  // to need to allow this for OpenH264.
+  //
+  // Allow a Widevine GMP x64 process to be executed on ARM builds.
+  pref("media.gmp-widevinecdm.allow-x64-plugin-on-arm64", true);
+  // Don't allow an OpenH264 GMP x64 process to be executed on ARM builds.
+  pref("media.gmp-gmpopenh264.allow-x64-plugin-on-arm64", false);
+#endif
 
 // Set Firefox to block autoplay, asking for permission by default.
 pref("media.autoplay.default", 1); // 0=Allowed, 1=Blocked, 5=All Blocked
@@ -2066,7 +2079,7 @@ pref("browser.toolbars.bookmarks.visibility", "newtab");
 // When true, this pref will always show the bookmarks bar on
 // the New Tab Page, allowing showing/hiding via keyboard shortcut,
 // and other functionality to improve the usage of the Bookmarks Toolbar.
-#ifdef NIGHTLY_BUILD
+#ifdef EARLY_BETA_OR_EARLIER
 pref("browser.toolbars.bookmarks.2h2020", true);
 #else
 pref("browser.toolbars.bookmarks.2h2020", false);
