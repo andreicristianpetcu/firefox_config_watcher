@@ -1364,6 +1364,10 @@ pref("browser.newtab.preload", true);
 // Preference to enable the entire new newtab experience at once.
 pref("browser.newtabpage.activity-stream.newNewtabExperience.enabled", false);
 
+// A preference which allows us to enable the fly out customization overlay
+// on the newtab page.
+pref("browser.newtabpage.activity-stream.customizationMenu.enabled", false);
+
 // Activity Stream prefs that control to which page to redirect
 #ifndef RELEASE_OR_BETA
   pref("browser.newtabpage.activity-stream.debug", false);
@@ -1880,12 +1884,7 @@ pref("dom.ipc.processPrelaunch.enabled", true);
 // See comments in bug 1340115 on how we got to these numbers.
 pref("browser.migrate.chrome.history.limit", 2000);
 pref("browser.migrate.chrome.history.maxAgeInDays", 180);
-
-#ifdef EARLY_BETA_OR_EARLIER
 pref("browser.migrate.showBookmarksToolbarAfterMigration", true);
-#else
-pref("browser.migrate.showBookmarksToolbarAfterMigration", false);
-#endif
 
 pref("extensions.pocket.api", "api.getpocket.com");
 pref("extensions.pocket.enabled", true);
