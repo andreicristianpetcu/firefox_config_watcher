@@ -1,7 +1,7 @@
-// -*- indent-tabs-mode: nil; js-indent-level: 2 -*-
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // The prefs in this file are shipped with the GRE and should apply to all
 // embedding situations. Application-specific preferences belong somewhere
@@ -9,8 +9,8 @@
 // mobile/android/app/mobile.js.
 //
 // NOTE: Not all prefs should be defined in this (or any other) data file.
-// Static prefs are defined in StaticPrefList.yaml. Those prefs should *not*
-// appear in this file.
+// Static prefs, especially VarCache prefs, are defined in StaticPrefList.yaml.
+// Those prefs should *not* appear in this file.
 //
 // For the syntax used by this file, consult the comments at the top of
 // modules/libpref/parser/src/lib.rs.
@@ -185,10 +185,6 @@ pref("security.pki.distrust_ca_policy", 2);
 // 2: Enable and enforce revocations via CRLite
 pref("security.pki.crlite_mode", 1);
 
-// Represents the expected certificate transparency log merge delay (including
-// the time to generate a CRLite filter). Currently 28 hours in seconds.
-pref("security.pki.crlite_ct_merge_delay_seconds", 100800);
-
 // Issuer we use to detect MitM proxies. Set to the issuer of the cert of the
 // Firefox update service. The string format is whatever NSS uses to print a DN.
 // This value is set and cleared automatically.
@@ -348,8 +344,18 @@ pref("browser.chrome.image_icons.max_size", 1024);
 
 pref("browser.triple_click_selects_paragraph", true);
 
+// Print/Preview Shrink-To-Fit won't shrink below 20% for text-ish documents.
+pref("print.shrink-to-fit.scale-limit-percent", 20);
+
+// Whether we should display simplify page checkbox on print preview UI
+pref("print.use_simplify_page", false);
+
 // Enable fillable forms in the PDF viewer.
-pref("pdfjs.renderInteractiveForms", true);
+#ifdef EARLY_BETA_OR_EARLIER
+  pref("pdfjs.renderInteractiveForms", true);
+#else
+  pref("pdfjs.renderInteractiveForms", false);
+#endif
 
 // Disable support for MathML
 pref("mathml.disabled",    false);
@@ -416,7 +422,7 @@ pref("media.videocontrols.picture-in-picture.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
-pref("media.videocontrols.picture-in-picture.video-toggle.mode", 2);
+pref("media.videocontrols.picture-in-picture.video-toggle.mode", -1);
 pref("media.videocontrols.picture-in-picture.video-toggle.position", "right");
 pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
 
@@ -426,11 +432,10 @@ pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   pref("media.navigator.video.use_remb", true);
   pref("media.navigator.video.use_transport_cc", true);
   pref("media.peerconnection.video.use_rtx", true);
-  pref("media.peerconnection.video.use_rtx.blocklist", "doxy.me,*.doxy.me");
+  pref("media.peerconnection.video.use_rtx.blocklist", "");
   pref("media.navigator.video.use_tmmbr", false);
   pref("media.navigator.audio.use_fec", true);
   pref("media.navigator.video.red_ulpfec_enabled", false);
-  pref("media.navigator.video.offer_rtcp_rsize", true);
 
   #ifdef NIGHTLY_BUILD
     pref("media.peerconnection.sdp.parser", "sipcc");
@@ -612,6 +617,15 @@ pref("gfx.downloadable_fonts.disable_cache", false);
 // whether to try and do something about it (e.g. download additional fonts)?
 pref("gfx.missing_fonts.notify", false);
 
+// prefs controlling the font (name/cmap) loader that runs shortly after startup
+#ifdef XP_WIN
+  pref("gfx.font_loader.delay", 120000);       // 2 minutes after startup
+  pref("gfx.font_loader.interval", 1000);      // every 1 second until complete
+#else
+  pref("gfx.font_loader.delay", 8000);         // 8 secs after startup
+  pref("gfx.font_loader.interval", 50);        // run every 50 ms
+#endif
+
 // whether to always search all font cmaps during system font fallback
 pref("gfx.font_rendering.fallback.always_use_cmaps", false);
 
@@ -674,6 +688,7 @@ pref("gfx.webrender.debug.primitives", false);
 pref("gfx.webrender.debug.small-screen", false);
 pref("gfx.webrender.debug.obscure-images", false);
 pref("gfx.webrender.debug.glyph-flashing", false);
+pref("gfx.webrender.debug.disable-raster-root-scale", false);
 pref("gfx.webrender.debug.capture-profiler", false);
 
 
@@ -904,20 +919,6 @@ pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
 pref("browser.fixup.fallback-to-https", true);
 
-// NOTE: On most platforms we save print settins to prefs with the name of the
-// printer in the pref name (Android being the notable exception, where prefs
-// are saved "globally" without a printer name in the pref name).  For those
-// platforms, the prefs below simply act as default values for when we
-// encounter a printer for the first time, but only a subset of prefs will be
-// used in this case.  See nsPrintSettingsService::InitPrintSettingsFromPrefs
-// for the restrictions on which prefs can act as defaults.
-
-// Print/Preview Shrink-To-Fit won't shrink below 20% for text-ish documents.
-pref("print.shrink-to-fit.scale-limit-percent", 20);
-
-// Whether we should display simplify page checkbox on print preview UI
-pref("print.use_simplify_page", false);
-
 // Print header customization
 // Use the following codes:
 // &T - Title
@@ -967,13 +968,6 @@ pref("print.print_edge_bottom", 0);
   pref("print.print_via_parent", false);
 #endif
 
-// Should this just be checking for MOZ_WIDGET_GTK?
-#if defined(ANDROID) || defined(XP_UNIX) && !defined(XP_MACOSX)
-  pref("print.print_reversed", false);
-  // This is the default. Probably just remove this.
-  pref("print.print_in_color", true);
-#endif
-
 // Pref used by the spellchecker extension to control the
 // maximum number of misspelled words that will be underlined
 // in a document.
@@ -995,6 +989,16 @@ pref("editor.positioning.offset",            0);
 pref("dom.beforeunload_timeout_ms",         1000);
 pref("dom.disable_window_flip",             false);
 pref("dom.disable_window_move_resize",      false);
+
+pref("dom.disable_window_open_feature.titlebar",    false);
+pref("dom.disable_window_open_feature.close",       false);
+pref("dom.disable_window_open_feature.toolbar",     false);
+pref("dom.disable_window_open_feature.location",    false);
+pref("dom.disable_window_open_feature.personalbar", false);
+pref("dom.disable_window_open_feature.menubar",     false);
+pref("dom.disable_window_open_feature.resizable",   true);
+pref("dom.disable_window_open_feature.minimizable", false);
+pref("dom.disable_window_open_feature.status",      true);
 
 pref("dom.allow_scripts_to_close_windows",          false);
 
@@ -1055,10 +1059,11 @@ pref("privacy.restrict3rdpartystorage.url_decorations", "");
 pref("privacy.popups.maxReported", 100);
 
 // Purging first-party tracking cookies.
-pref("privacy.purge_trackers.enabled", true);
-#ifdef NIGHTLY_BUILD
+#ifdef EARLY_BETA_OR_EARLIER
+  pref("privacy.purge_trackers.enabled", true);
   pref("privacy.purge_trackers.logging.level", "Warn");
 #else
+  pref("privacy.purge_trackers.enabled", false);
   pref("privacy.purge_trackers.logging.level", "Error");
 #endif
 
@@ -1082,9 +1087,8 @@ pref("javascript.options.baselinejit",      true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.baselinejit.threshold", 100);
 pref("javascript.options.ion",              true);
-pref("javascript.options.warp",             true);
 // Duplicated in JitOptions - ensure both match.
-pref("javascript.options.ion.threshold",    1500);
+pref("javascript.options.ion.threshold",    1000);
 pref("javascript.options.ion.full.threshold", 100000);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.ion.frequent_bailout_threshold", 10);
@@ -1092,28 +1096,11 @@ pref("javascript.options.asmjs",                  true);
 pref("javascript.options.wasm",                   true);
 pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
+pref("javascript.options.wasm_ionjit",            true);
 pref("javascript.options.wasm_baselinejit",       true);
-
-// On Nightly on aarch64, Cranelift is the optimizing tier used by default for
-// wasm compilation, and Ion is not available.
-//
-// On non-Nightly aarch64, Cranelift is disabled (and only baseline is
-// available).
-//
-// On every other tier-1 platform, Ion is the default, and Cranelift is
-// disabled.
-#ifdef MOZ_AARCH64
-  #ifdef ENABLE_WASM_CRANELIFT
-    pref("javascript.options.wasm_cranelift",     true);
-  #endif
-  pref("javascript.options.wasm_ionjit",          false);
-#else
-  #ifdef ENABLE_WASM_CRANELIFT
-    pref("javascript.options.wasm_cranelift",     false);
-  #endif
-  pref("javascript.options.wasm_ionjit",          true);
+#ifdef ENABLE_WASM_CRANELIFT
+  pref("javascript.options.wasm_cranelift",       false);
 #endif
-
 #ifdef ENABLE_WASM_REFTYPES
   pref("javascript.options.wasm_reftypes",        true);
   pref("javascript.options.wasm_gc",              false);
@@ -1209,12 +1196,6 @@ pref("javascript.options.mem.gc_min_empty_chunk_count", 1);
 
 // JSGC_MAX_EMPTY_CHUNK_COUNT
 pref("javascript.options.mem.gc_max_empty_chunk_count", 30);
-
-// JSGC_HELPER_THREAD_RATIO
-pref("javascript.options.mem.gc_helper_thread_ratio", 50);
-
-// JSGC_MAX_HELPER_THREADS
-pref("javascript.options.mem.gc_max_helper_threads", 8);
 
 pref("javascript.options.showInConsole", false);
 
@@ -1807,6 +1788,9 @@ pref("network.dns.offline-localhost", true);
 // A negative value will keep the thread alive forever.
 pref("network.dns.resolver-thread-extra-idle-time-seconds", 60);
 
+// Whether to disable TRR when parental control is enabled.
+pref("network.dns.skipTRR-when-parental-control-enabled", true);
+
 // Idle timeout for ftp control connections - 5 minute default
 pref("network.ftp.idleConnectionTimeout", 300);
 
@@ -2239,6 +2223,9 @@ pref("security.notification_enable_delay", 500);
   pref("security.disallow_non_local_systemprincipal_in_tests", false);
 #endif
 
+// Sub-resource integrity
+pref("security.sri.enable", true);
+
 // OCSP must-staple
 pref("security.ssl.enable_ocsp_must_staple", true);
 
@@ -2396,6 +2383,22 @@ pref("mousewheel.with_win.delta_multiplier_x", 100);
 pref("mousewheel.with_win.delta_multiplier_y", 100);
 pref("mousewheel.with_win.delta_multiplier_z", 100);
 
+// These define the smooth scroll behavior (min ms, max ms) for different triggers
+// Some triggers:
+// mouseWheel: Discrete mouse wheel events, Synaptics touchpads on windows (generate wheel events)
+// Lines:  Up/Down/Left/Right KB arrows
+// Pages:  Page up/down, Space
+// Scrollbars: Clicking scrollbars arrows, clicking scrollbars tracks
+// Note: Currently OS X trackpad and magic mouse don't use our smooth scrolling
+// Note: These are relevant only when "general.smoothScroll" is enabled
+pref("general.smoothScroll.scrollbars.durationMinMS", 150);
+pref("general.smoothScroll.scrollbars.durationMaxMS", 150);
+// Enable disable smooth scrolling for different triggers (when "general.smoothScroll" is enabled)
+pref("general.smoothScroll.pixels", true);
+pref("general.smoothScroll.lines", true);
+pref("general.smoothScroll.scrollbars", true);
+pref("general.smoothScroll.other", true);
+
 // We can show it anytime from menus
 pref("profile.manage_only_at_launch", false);
 
@@ -2455,6 +2458,9 @@ pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
 pref("dom.use_watchdog", true);
+pref("dom.max_chrome_script_run_time", 0);
+pref("dom.max_script_run_time", 10);
+pref("dom.max_ext_content_script_run_time", 5);
 
 // Stop all scripts in a compartment when the "stop script" dialog is used.
 pref("dom.global_stop_script", true);
@@ -3364,6 +3370,12 @@ pref("font.size.monospace.x-math", 13);
   pref("helpers.global_mailcap_file", "/etc/mailcap");
   pref("helpers.private_mime_types_file", "~/.mime.types");
   pref("helpers.private_mailcap_file", "~/.mailcap");
+  pref("print.printer_list", ""); // list of printers, separated by spaces
+  pref("print.print_reversed", false);
+  pref("print.print_in_color", true);
+
+  /* PostScript print module prefs */
+  // pref("print.postscript.enabled",      true);
 
   // Setting default_level_parent to true makes the default level for popup
   // windows "top" instead of "parent".  On GTK2 platform, this is implemented
@@ -3399,6 +3411,9 @@ pref("font.size.monospace.x-math", 13);
   pref("helpers.global_mailcap_file", "/etc/mailcap");
   pref("helpers.private_mime_types_file", "~/.mime.types");
   pref("helpers.private_mailcap_file", "~/.mailcap");
+  pref("print.printer_list", ""); // list of printers, separated by spaces
+  pref("print.print_reversed", false);
+  pref("print.print_in_color", true);
 
   // font names
 
@@ -3552,6 +3567,9 @@ pref("font.size.monospace.x-math", 13);
   pref("font.name-list.sans-serif.zh-TW", "sans-serif");
   pref("font.name-list.monospace.zh-TW", "monospace");
   pref("font.name-list.cursive.zh-TW", "cursive");
+
+  /* PostScript print module prefs */
+  // pref("print.postscript.enabled",      true);
 
   // On GTK2 platform, we should use topmost window level for the default window
   // level of <panel> element of XUL. GTK2 has only two window types. One is
@@ -3740,9 +3758,7 @@ pref("signon.privateBrowsingCapture.enabled",     true);
 pref("signon.storeWhenAutocompleteOff",     true);
 pref("signon.userInputRequiredToCapture.enabled", true);
 pref("signon.debug",                        false);
-pref("signon.recipes.path", "resource://app/defaults/settings/main/password-recipes.json");
-pref("signon.recipes.remoteRecipesEnabled", true);
-
+pref("signon.recipes.path",                 "chrome://passwordmgr/content/recipes.json");
 pref("signon.schemeUpgrades",                     true);
 pref("signon.includeOtherSubdomainsInLookup",     true);
 // This temporarily prevents the master password to reprompt for autocomplete.
@@ -4054,8 +4070,8 @@ pref("network.captive-portal-service.backoffFactor", "5.0");
 pref("network.captive-portal-service.enabled", false);
 
 pref("network.connectivity-service.enabled", true);
-pref("network.connectivity-service.DNSv4.domain", "example.org");
-pref("network.connectivity-service.DNSv6.domain", "example.org");
+pref("network.connectivity-service.DNSv4.domain", "mozilla.org");
+pref("network.connectivity-service.DNSv6.domain", "mozilla.org");
 pref("network.connectivity-service.IPv4.url", "http://detectportal.firefox.com/success.txt?ipv4");
 pref("network.connectivity-service.IPv6.url", "http://detectportal.firefox.com/success.txt?ipv6");
 
@@ -4070,6 +4086,17 @@ pref("network.trr.resolvers", "[{ \"name\": \"Cloudflare\", \"url\": \"https://m
 // credentials to pass to DOH end-point
 pref("network.trr.credentials", "");
 pref("network.trr.custom_uri", "");
+// Wait for captive portal confirmation before enabling TRR
+#if defined(ANDROID)
+  // On Android, the captive portal is handled by the OS itself
+  pref("network.trr.wait-for-portal", false);
+#else
+  pref("network.trr.wait-for-portal", false);
+#endif
+// Allow RFC1918 address in responses?
+pref("network.trr.allow-rfc1918", false);
+// Use GET (rather than POST)
+pref("network.trr.useGET", false);
 // Before TRR is widely used the NS record for this host is fetched
 // from the DOH end point to ensure proper configuration
 pref("network.trr.confirmationNS", "example.com");
@@ -4079,9 +4106,24 @@ pref("network.trr.bootstrapAddress", "");
 // TRR blacklist entry expire time (in seconds). Default is one minute.
 // Meant to survive basically a page load.
 pref("network.trr.blacklist-duration", 60);
+// Allow AAAA entries to be used "early", before the A results are in
+pref("network.trr.early-AAAA", false);
+// When true, it only sends AAAA when the system has IPv6 connectivity
+pref("network.trr.skip-AAAA-when-not-supported", true);
+// When true, the DNS request will wait for both A and AAAA responses
+// (if both have been requested) before notifying the listeners.
+// When true, it effectively cancels `network.trr.early-AAAA`
+pref("network.trr.wait-for-A-and-AAAA", true);
+// Explicitly disable ECS (EDNS Client Subnet, RFC 7871)
+pref("network.trr.disable-ECS", true);
+// After this many failed TRR requests in a row, consider TRR borked
+pref("network.trr.max-fails", 5);
 // Comma separated list of domains that we should not use TRR for
 pref("network.trr.excluded-domains", "");
 pref("network.trr.builtin-excluded-domains", "localhost,local");
+// When true, the DNS+TRR cache will be cleared when a relevant TRR pref
+// changes. (uri, bootstrapAddress, excluded-domains)
+pref("network.trr.clear-cache-on-pref-change", true);
 
 pref("captivedetect.canonicalURL", "http://detectportal.firefox.com/success.txt");
 pref("captivedetect.canonicalContent", "success\n");
@@ -4165,9 +4207,6 @@ pref("browser.safebrowsing.downloads.remote.block_dangerous_host",       true);
 pref("browser.safebrowsing.downloads.remote.block_potentially_unwanted", true);
 pref("browser.safebrowsing.downloads.remote.block_uncommon",             true);
 
-// Android SafeBrowsing's configuration is in ContentBlocking.java, keep in sync.
-#ifndef MOZ_WIDGET_ANDROID
-
 // Google Safe Browsing provider (legacy)
 pref("browser.safebrowsing.provider.google.pver", "2.2");
 pref("browser.safebrowsing.provider.google.lists", "goog-badbinurl-shavar,goog-downloadwhite-digest256,goog-phish-shavar,googpub-phish-shavar,goog-malware-shavar,goog-unwanted-shavar");
@@ -4191,8 +4230,6 @@ pref("browser.safebrowsing.provider.google4.advisoryURL", "https://developers.go
 pref("browser.safebrowsing.provider.google4.advisoryName", "Google Safe Browsing");
 pref("browser.safebrowsing.provider.google4.dataSharingURL", "https://safebrowsing.googleapis.com/v4/threatHits?$ct=application/x-protobuf&key=%GOOGLE_SAFEBROWSING_API_KEY%&$httpMethod=POST");
 pref("browser.safebrowsing.provider.google4.dataSharing.enabled", false);
-
-#endif // ifndef MOZ_WIDGET_ANDROID
 
 pref("browser.safebrowsing.reportPhishURL", "https://%LOCALE%.phish-report.mozilla.com/?url=");
 
@@ -4250,6 +4287,8 @@ pref("browser.search.update.log", false);
 pref("browser.search.update.interval", 21600);
 pref("browser.search.suggest.enabled", true);
 pref("browser.search.suggest.enabled.private", false);
+pref("browser.search.geoSpecificDefaults", false);
+pref("browser.search.modernConfig", false);
 pref("browser.search.separatePrivateDefault", false);
 pref("browser.search.separatePrivateDefault.ui.enabled", false);
 
@@ -4410,10 +4449,6 @@ pref("browser.sanitizer.loglevel", "Warn");
 // To disable blocking of auth prompts, set the limit to -1.
 pref("prompts.authentication_dialog_abuse_limit", 2);
 
-// The prompt type to use for http auth prompts
-// content: 1, tab: 2, window: 3
-pref("prompts.modalType.httpAuth", 2);
-
 // Payment Request API preferences
 pref("dom.payments.loglevel", "Warn");
 pref("dom.payments.defaults.saveCreditCard", false);
@@ -4438,11 +4473,6 @@ pref("dom.clients.openwindow_favors_same_process", true);
 #else
   pref("toolkit.aboutPerformance.showInternals", true);
 #endif
-
-// If `true`, about:processes shows in-process subframes.
-pref("toolkit.aboutProcesses.showAllSubframes", false);
-// If `true`, about:processes shows thread information.
-pref("toolkit.aboutProcesses.showThreads", false);
 
 // When a crash happens, whether to include heap regions of the crash context
 // in the minidump. Enabled by default on nightly and aurora.
@@ -4507,6 +4537,7 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
   pref("services.sync.engine.addons", true);
   pref("services.sync.engine.addresses", false);
   pref("services.sync.engine.bookmarks", true);
+  pref("services.sync.engine.bookmarks.buffer", true);
   pref("services.sync.engine.creditcards", false);
   pref("services.sync.engine.history", true);
   pref("services.sync.engine.passwords", true);
@@ -4557,6 +4588,12 @@ pref("services.common.log.logger.tokenserverclient", "Debug");
     // not release candidates or Release.
     pref("services.sync.engine.bookmarks.validation.enabled", true);
     pref("services.sync.engine.passwords.validation.enabled", true);
+  #endif
+
+  #if defined(NIGHTLY_BUILD)
+    // Enable repair of bookmarks on Nightly only - requires validation also be
+    // enabled.
+    pref("services.sync.engine.bookmarks.repair.enabled", true);
   #endif
 
   // We consider validation this frequently. After considering validation, even
