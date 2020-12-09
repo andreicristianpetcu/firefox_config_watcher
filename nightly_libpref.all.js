@@ -911,6 +911,7 @@ pref("nglayout.debug.paint_flashing_chrome", false);
 // URI fixup prefs
 pref("browser.fixup.alternate.enabled", true);
 pref("browser.fixup.alternate.prefix", "www.");
+pref("browser.fixup.alternate.protocol", "https");
 pref("browser.fixup.alternate.suffix", ".com");
 pref("browser.fixup.fallback-to-https", true);
 
@@ -3817,6 +3818,7 @@ pref("network.psl.onUpdate_notify", false);
   pref("gfx.xrender.enabled",false);
   pref("widget.content.gtk-theme-override", "");
   pref("widget.disable-workspace-management", false);
+  pref("widget.titlebar-x11-use-shape-mask", false);
 #endif
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", true);
@@ -4658,8 +4660,6 @@ pref("devtools.errorconsole.deprecation_warnings", true);
   pref("devtools.chrome.enabled", true, sticky);
   pref("devtools.debugger.remote-enabled", true, sticky);
 #endif
-
-pref("devtools.debugger.features.watchpoints", true);
 
 // Disable service worker debugging on all channels (see Bug 1651605).
 pref("devtools.debugger.features.windowless-service-workers", false);

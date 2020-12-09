@@ -393,6 +393,13 @@ pref("browser.urlbar.eventTelemetry.enabled", false);
 // 0 - never resolve; 1 - use heuristics (default); 2 - always resolve
 pref("browser.urlbar.dnsResolveSingleWordsAfterSearch", 1);
 
+// Whether IME composition should close the results panel.
+// The default value is true because some IME open a picker panel, and we end
+// up with two panels on top of each other. Since for now we can't detect that
+// we leave this choice to the user, hopefully in the future this can be flipped
+// for everyone.
+pref("browser.urlbar.imeCompositionClosesPanel", true);
+
 pref("browser.altClickSave", false);
 
 // Enable logging downloads operations to the Console.
@@ -2069,6 +2076,10 @@ pref("browser.discovery.containers.enabled", true);
 pref("browser.discovery.sites", "addons.mozilla.org");
 
 pref("browser.engagement.recent_visited_origins.expiry", 86400); // 24 * 60 * 60 (24 hours in seconds)
+pref("browser.engagement.downloads-button.has-used", false);
+pref("browser.engagement.fxa-toolbar-menu-button.has-used", false);
+pref("browser.engagement.home-button.has-used", false);
+pref("browser.engagement.sidebar-button.has-used", false);
 
 pref("browser.aboutConfig.showWarning", true);
 
