@@ -330,6 +330,7 @@ pref("browser.urlbar.suggest.history",              true);
 pref("browser.urlbar.suggest.openpage",             true);
 pref("browser.urlbar.suggest.searches",             true);
 pref("browser.urlbar.suggest.topsites",             true);
+pref("browser.urlbar.suggest.engines",              true);
 
 // As a user privacy measure, don't fetch search suggestions if a pasted string
 // is longer than this.
@@ -368,7 +369,9 @@ pref("browser.urlbar.update2.emptySearchBehavior", 0);
 
 // Whether the urlbar displays one-offs to filter searches to history,
 // bookmarks, or tabs.
-pref("browser.urlbar.update2.localOneOffs", true);
+pref("browser.urlbar.shortcuts.bookmarks", true);
+pref("browser.urlbar.shortcuts.tabs", true);
+pref("browser.urlbar.shortcuts.history", true);
 
 // Whether the urlbar one-offs act as search filters instead of executing a
 // search immediately.
@@ -379,10 +382,6 @@ pref("browser.urlbar.update2.oneOffsRefresh", true);
 // search mode is active.
 pref("browser.urlbar.update2.restyleBrowsingHistoryAsSearch", true);
 
-// Whether we display a tab-to-complete result when the user types an engine
-// name.
-pref("browser.urlbar.update2.tabToComplete", true);
-
 pref("browser.urlbar.eventTelemetry.enabled", false);
 
 // Controls when to DNS resolve single word search strings, after they were
@@ -390,6 +389,13 @@ pref("browser.urlbar.eventTelemetry.enabled", false);
 // "Did you mean to go to 'host'" prompt.
 // 0 - never resolve; 1 - use heuristics (default); 2 - always resolve
 pref("browser.urlbar.dnsResolveSingleWordsAfterSearch", 1);
+
+// Whether IME composition should close the results panel.
+// The default value is true because some IME open a picker panel, and we end
+// up with two panels on top of each other. Since for now we can't detect that
+// we leave this choice to the user, hopefully in the future this can be flipped
+// for everyone.
+pref("browser.urlbar.imeCompositionClosesPanel", true);
 
 pref("browser.altClickSave", false);
 
@@ -573,6 +579,12 @@ pref("browser.tabs.remote.separatePrivilegedContentProcess", true);
 // for certain mozilla webpages (which are listed in the pref
 // browser.tabs.remote.separatedMozillaDomains).
 pref("browser.tabs.remote.separatePrivilegedMozillaWebContentProcess", true);
+
+#ifdef NIGHTLY_BUILD
+pref("browser.tabs.tooltipsShowPid", true);
+#else
+pref("browser.tabs.tooltipsShowPid", false);
+#endif
 
 // allow_eval_* is enabled on Firefox Desktop only at this
 // point in time
@@ -822,6 +834,8 @@ pref("browser.preferences.experimental.hidden", false);
 pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 
 pref("browser.preferences.exposeHTTPSOnly", true);
+
+pref("browser.proton.enabled", false);
 
 pref("browser.download.show_plugins_in_list", true);
 pref("browser.download.hide_plugins_without_extensions", true);
@@ -1271,6 +1285,7 @@ pref("services.sync.prefs.sync.browser.urlbar.suggest.history", true);
 pref("services.sync.prefs.sync.browser.urlbar.suggest.openpage", true);
 pref("services.sync.prefs.sync.browser.urlbar.suggest.searches", true);
 pref("services.sync.prefs.sync.browser.urlbar.suggest.topsites", true);
+pref("services.sync.prefs.sync.browser.urlbar.suggest.engines", true);
 pref("services.sync.prefs.sync.dom.disable_open_during_load", true);
 pref("services.sync.prefs.sync.dom.disable_window_flip", true);
 pref("services.sync.prefs.sync.dom.disable_window_move_resize", true);
@@ -1361,6 +1376,13 @@ pref("prompts.tabChromePromptSubDialog", true);
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
 
+// Preference to enable the entire new newtab experience at once.
+pref("browser.newtabpage.activity-stream.newNewtabExperience.enabled", false);
+
+// A preference which allows us to enable the fly out customization overlay
+// on the newtab page.
+pref("browser.newtabpage.activity-stream.customizationMenu.enabled", false);
+
 // Activity Stream prefs that control to which page to redirect
 #ifndef RELEASE_OR_BETA
   pref("browser.newtabpage.activity-stream.debug", false);
@@ -1383,6 +1405,10 @@ pref("browser.newtabpage.activity-stream.asrouter.providers.message-groups", "{\
 // repackager of this code using an alternate snippet url, please keep your users safe
 pref("browser.newtabpage.activity-stream.asrouter.providers.snippets", "{\"id\":\"snippets\",\"enabled\":true,\"type\":\"remote\",\"url\":\"https://snippets.cdn.mozilla.net/%STARTPAGE_VERSION%/%NAME%/%VERSION%/%APPBUILDID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/\",\"updateCycleInMs\":14400000}");
 pref("browser.newtabpage.activity-stream.asrouter.providers.messaging-experiments", "{\"id\":\"messaging-experiments\",\"enabled\":true,\"type\":\"remote-experiments\",\"messageGroups\":[\"cfr\",\"whats-new-panel\",\"moments-page\",\"snippets\",\"cfr-fxa\",\"aboutwelcome\"],\"updateCycleInMs\":3600000}");
+
+// ASRouter user prefs
+pref("browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons", true);
+pref("browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features", true);
 
 // The pref that controls if ASRouter uses the remote fluent files.
 // It's enabled by default, but could be disabled to force ASRouter to use the local files.
@@ -1429,7 +1455,7 @@ pref("browser.newtabpage.activity-stream.feeds.section.topstories", true);
   pref("browser.newtabpage.activity-stream.improvesearch.handoffToAwesomebar", false);
 #endif
 
-pref("browser.newtabpage.activity-stream.logowordmark.alwaysVisible", true);
+pref("browser.newtabpage.activity-stream.logowordmark.alwaysVisible", false);
 
 // Used to display triplet cards on newtab
 pref("trailhead.firstrun.newtab.triplets", "");
@@ -1448,6 +1474,7 @@ pref("browser.messaging-system.personalized-cfr.score-threshold", 5000);
 // See Console.jsm LOG_LEVELS for all possible values
 pref("messaging-system.log", "warn");
 pref("messaging-system.rsexperimentloader.enabled", true);
+pref("messaging-system.rsexperimentloader.collection_id", "nimbus-desktop-experiments");
 
 // Enable the DOM fullscreen API.
 pref("full-screen-api.enabled", true);
@@ -1703,9 +1730,9 @@ pref("browser.contentblocking.state-partitioning.mvp.ui.enabled", false);
 // One value from each section must be included in the browser.contentblocking.features.strict pref.
 #ifdef NIGHTLY_BUILD
 // Enable Dynamic First-Party Isolation in Nightly.
-pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior5,cm,fp,stp");
+pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior5,cm,fp,stp,lvl2");
 #else
-pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior4,cm,fp,stp");
+pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior4,cm,fp,stp,lvl2");
 #endif
 
 // Hide the "Change Block List" link for trackers/tracking content in the custom
@@ -2047,6 +2074,10 @@ pref("browser.discovery.containers.enabled", true);
 pref("browser.discovery.sites", "addons.mozilla.org");
 
 pref("browser.engagement.recent_visited_origins.expiry", 86400); // 24 * 60 * 60 (24 hours in seconds)
+pref("browser.engagement.downloads-button.has-used", false);
+pref("browser.engagement.fxa-toolbar-menu-button.has-used", false);
+pref("browser.engagement.home-button.has-used", false);
+pref("browser.engagement.sidebar-button.has-used", false);
 
 pref("browser.aboutConfig.showWarning", true);
 
@@ -2057,6 +2088,11 @@ pref("browser.toolbars.keyboard_navigation", true);
 // "always": Always show
 // "never": Never show
 pref("browser.toolbars.bookmarks.visibility", "newtab");
+
+// Visibility of the "Show Other Bookmarks" menuitem in the
+// bookmarks toolbar contextmenu.
+pref("browser.toolbars.bookmarks.showOtherBookmarks", true);
+
 // When true, this pref will always show the bookmarks bar on
 // the New Tab Page, allowing showing/hiding via keyboard shortcut,
 // and other functionality to improve the usage of the Bookmarks Toolbar.

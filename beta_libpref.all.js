@@ -172,14 +172,6 @@ pref("security.xfocsp.errorReporting.automatic", false);
 // https://tools.ietf.org/html/rfc7469#section-4.1
 pref("security.cert_pinning.max_max_age_seconds", 5184000);
 
-// security.pki.distrust_ca_policy controls what root program distrust policies
-// are enforced at this time:
-// 0: No distrust policies enforced
-// 1: Symantec roots distrusted for certificates issued after cutoff
-// 2: Symantec roots distrusted regardless of date
-// See https://wiki.mozilla.org/CA/Upcoming_Distrust_Actions for more details.
-pref("security.pki.distrust_ca_policy", 2);
-
 // 0: Disable CRLite entirely
 // 1: Enable and check revocations via CRLite, but only collect telemetry
 // 2: Enable and enforce revocations via CRLite
@@ -890,6 +882,10 @@ pref("devtools.performance.popup.intro-displayed", false);
 // Stringified array of target browsers that users investigate.
 pref("devtools.inspector.compatibility.target-browsers", "");
 
+// Storage preferencex
+// Force instancing legacy storage actors
+pref("devtools.storage.test.forceLegacyActors", false);
+
 // view source
 pref("view_source.editor.path", "");
 // allows to add further arguments to the editor; use the %LINE% placeholder
@@ -907,6 +903,7 @@ pref("nglayout.debug.paint_flashing_chrome", false);
 // URI fixup prefs
 pref("browser.fixup.alternate.enabled", true);
 pref("browser.fixup.alternate.prefix", "www.");
+pref("browser.fixup.alternate.protocol", "https");
 pref("browser.fixup.alternate.suffix", ".com");
 pref("browser.fixup.fallback-to-https", true);
 
@@ -1048,9 +1045,11 @@ pref("dom.cycle_collector.incremental", true);
 //   3 = openAbused
 pref("privacy.popups.disable_from_plugins", 3);
 
-// Enable Paritioned LocalStorage for a list of hosts when detected as trackers
+// Fix cookie blocking breakage by providing ephemeral Paritioned LocalStorage
+// for a list of hosts when detected as trackers.
 // (See nsICookieService::BEHAVIOR_REJECT_TRACKER cookie behavior)
-pref("privacy.restrict3rdpartystorage.partitionedHosts", "accounts.google.com/o/oauth2/");
+// See: Bug 1505212, Bug 1659394, Bug 1631811, Bug 1665035.
+pref("privacy.restrict3rdpartystorage.partitionedHosts", "accounts.google.com/o/oauth2/,d35nw2lg0ahg0v.cloudfront.net/,datastudio.google.com/embed/reporting/,d3qlaywcwingl6.cloudfront.net/");
 
 // If a host is contained in this pref list, user-interaction is required
 // before granting the storage access permission.
@@ -1096,7 +1095,6 @@ pref("javascript.options.baselinejit",      true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.baselinejit.threshold", 100);
 pref("javascript.options.ion",              true);
-pref("javascript.options.warp",             true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.ion.threshold",    1500);
 pref("javascript.options.ion.full.threshold", 100000);
@@ -1518,6 +1516,11 @@ pref("network.http.send_window_size", 1024);
 #else
   pref("network.http.active_tab_priority", true);
 #endif
+
+// By default the Accept header sent for documents loaded over HTTP(S) is derived
+// by DocumentAcceptHeader() in nsHttpHandler.cpp. If set, this pref overrides it.
+// There is also image.http.accept which works in scope of image.
+pref("network.http.accept", "");
 
 // default values for FTP
 // in a DSCP environment this should be 40 (0x28, or AF11), per RFC-4594,
@@ -1986,12 +1989,6 @@ pref("intl.regional_prefs.use_os_locales",  false);
 pref("intl.fallbackCharsetList.ISO-8859-1", "windows-1252");
 pref("font.language.group",                 "chrome://global/locale/intl.properties");
 pref("font.cjk_pref_fallback_order",        "zh-cn,zh-hk,zh-tw,ja,ko");
-
-// If you use legacy Chinese IME which puts an ideographic space to composition
-// string as placeholder, this pref might be useful.  If this is true and when
-// web contents forcibly commits composition (e.g., moving focus), the
-// ideographic space will be ignored (i.e., commits with empty string).
-pref("intl.ime.remove_placeholder_character_at_commit", false);
 
 pref("intl.uidirection", -1); // -1 to set from locale; 0 for LTR; 1 for RTL
 
@@ -3156,7 +3153,7 @@ pref("font.size.monospace.x-math", 13);
   pref("font.name-list.fantasy.he", "Times New Roman");
 
   pref("font.name-list.serif.ja", "Hiragino Mincho ProN, Hiragino Mincho Pro");
-  pref("font.name-list.sans-serif.ja", "Hiragino Kaku Gothic ProN, Hiragino Kaku Gothic Pro");
+  pref("font.name-list.sans-serif.ja", "Hiragino Kaku Gothic ProN, Hiragino Kaku Gothic Pro, Hiragino Sans");
   pref("font.name-list.monospace.ja", "Osaka-Mono");
 
   pref("font.name-list.serif.ko", "AppleMyungjo");
@@ -3605,7 +3602,7 @@ pref("font.size.monospace.x-math", 13);
   pref("font.name-list.monospace.ja", "MotoyaLMaru, MotoyaLCedar, Noto Sans Mono CJK JP, SEC Mono CJK JP, Droid Sans Mono");
 
   pref("font.name-list.serif.ko", "Charis SIL Compact, Noto Serif CJK KR, Noto Serif, Droid Serif, HYSerif");
-  pref("font.name-list.sans-serif.ko", "Roboto, Google Sans, SmartGothic, NanumGothic, Noto Sans KR, Noto Sans CJK KR, SEC CJK KR, DroidSansFallback, Droid Sans Fallback");
+  pref("font.name-list.sans-serif.ko", "Roboto, Google Sans, SmartGothic, NanumGothic, Noto Sans KR, Noto Sans CJK KR, SamsungKorean_v2.0, SEC CJK KR, DroidSansFallback, Droid Sans Fallback");
   pref("font.name-list.monospace.ko", "Droid Sans Mono, Noto Sans Mono CJK KR, SEC Mono CJK KR");
 
   pref("font.name-list.serif.th", "Charis SIL Compact, Noto Serif, Noto Serif Thai, Droid Serif");
@@ -3746,7 +3743,7 @@ pref("browser.formfill.prefixWeight",     5);
 
 // Zoom prefs
 pref("browser.zoom.full", false);
-pref("toolkit.zoomManager.zoomValues", ".3,.5,.67,.8,.9,1,1.1,1.2,1.33,1.5,1.7,2,2.4,3");
+pref("toolkit.zoomManager.zoomValues", ".3,.5,.67,.8,.9,1,1.1,1.2,1.33,1.5,1.7,2,2.4,3,4,5");
 
 //
 // Image-related prefs
@@ -3754,6 +3751,7 @@ pref("toolkit.zoomManager.zoomValues", ".3,.5,.67,.8,.9,1,1.1,1.2,1.33,1.5,1.7,2
 
 // By default the Accept header sent for images loaded over HTTP(S) is derived
 // by ImageAcceptHeader() in nsHttpHandler.cpp. If set, this pref overrides it.
+// There is also network.http.accept which works in scope of document.
 pref("image.http.accept", "");
 
 //
@@ -3812,6 +3810,7 @@ pref("network.psl.onUpdate_notify", false);
   pref("gfx.xrender.enabled",false);
   pref("widget.content.gtk-theme-override", "");
   pref("widget.disable-workspace-management", false);
+  pref("widget.titlebar-x11-use-shape-mask", false);
 #endif
 #ifdef MOZ_WAYLAND
   pref("widget.wayland_vsync.enabled", false);
@@ -4332,13 +4331,6 @@ pref("narrate.voice", " { \"default\": \"automatic\" }");
 // Only make voices that match content language available.
 pref("narrate.filter-voices", true);
 
-// Allow control characters appear in composition string.
-// When this is false, control characters except
-// CHARACTER TABULATION (horizontal tab) are removed from
-// both composition string and data attribute of compositionupdate
-// and compositionend events.
-pref("dom.compositionevent.allow_control_characters", false);
-
 pref("memory.report_concurrency", 10);
 
 // Add Mozilla AudioChannel APIs.
@@ -4661,8 +4653,6 @@ pref("devtools.errorconsole.deprecation_warnings", true);
   pref("devtools.debugger.remote-enabled", true, sticky);
 #endif
 
-pref("devtools.debugger.features.watchpoints", true);
-
 // Disable service worker debugging on all channels (see Bug 1651605).
 pref("devtools.debugger.features.windowless-service-workers", false);
 
@@ -4728,3 +4718,8 @@ pref("browser.privatebrowsing.autostart", false);
 //preferred external application for a protocol. If a site doesn't have
 // permission we will show a prompt.
 pref("security.external_protocol_requires_permission", true);
+
+// Whether about:support shows a section "Third-Party Modules" or not
+#ifdef XP_WIN
+  pref("browser.enableAboutThirdParty", false);
+#endif
