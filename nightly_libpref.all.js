@@ -79,8 +79,9 @@ pref("security.enterprise_roots.enabled", false);
 
 // If true, attempt to load the osclientcerts PKCS#11 module at startup on a
 // background thread. This module allows Firefox to use client certificates
-// stored in OS certificate storage. Currently only available for Windows.
-#ifdef NIGHTLY_BUILD
+// stored in OS certificate storage. Currently only available for Windows and
+// macOS.
+#ifdef EARLY_BETA_OR_EARLIER
   pref("security.osclientcerts.autoload", true);
 #else
   pref("security.osclientcerts.autoload", false);
@@ -413,6 +414,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
 pref("media.videocontrols.picture-in-picture.video-toggle.position", "right");
 pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
+pref("media.videocontrols.keyboard-tab-to-all-controls", false);
 
 #ifdef MOZ_WEBRTC
   pref("media.navigator.video.enabled", true);
@@ -3882,9 +3884,6 @@ pref("extensions.webextensions.restrictedDomains", "accounts-static.cdn.mozilla.
 // purposes only. Setting this to false will break moz-extension URI loading
 // unless other process sandboxing and extension remoting prefs are changed.
 pref("extensions.webextensions.protocol.remote", true);
-
-// Enable tab hiding API by default.
-pref("extensions.webextensions.tabhide.enabled", true);
 
 // Enable userScripts API by default.
 pref("extensions.webextensions.userScripts.enabled", true);

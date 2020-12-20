@@ -353,14 +353,6 @@ pref("browser.urlbar.openintab", false);
 // If true, we show tail suggestions when available.
 pref("browser.urlbar.richSuggestions.tail", true);
 
-// Whether the Urlbar can enter search mode. Also controls the other
-// urlbar.update2 prefs.
-pref("browser.urlbar.update2", true);
-
-// Whether horizontal key navigation with left/right is disabled for urlbar's
-// one-off buttons.
-pref("browser.urlbar.update2.disableOneOffsHorizontalKeyNavigation", true);
-
 // Controls the empty search behavior in Search Mode:
 //  0 - Show nothing
 //  1 - Show search history
@@ -372,15 +364,6 @@ pref("browser.urlbar.update2.emptySearchBehavior", 0);
 pref("browser.urlbar.shortcuts.bookmarks", true);
 pref("browser.urlbar.shortcuts.tabs", true);
 pref("browser.urlbar.shortcuts.history", true);
-
-// Whether the urlbar one-offs act as search filters instead of executing a
-// search immediately.
-pref("browser.urlbar.update2.oneOffsRefresh", true);
-
-// Whether browsing history that is recognized as a previous search should
-// be restyled and deduped against form history. This only happens when
-// search mode is active.
-pref("browser.urlbar.update2.restyleBrowsingHistoryAsSearch", true);
 
 pref("browser.urlbar.eventTelemetry.enabled", false);
 
@@ -1990,7 +1973,7 @@ pref("extensions.formautofill.loglevel", "Warn");
 
 pref("toolkit.osKeyStore.loglevel", "Warn");
 
-pref("extensions.formautofill.supportedCountries", "US");
+pref("extensions.formautofill.supportedCountries", "US,CA");
 pref("extensions.formautofill.supportRTL", false);
 
 // Whether or not to restore a session with lazy-browser tabs.
@@ -2091,13 +2074,9 @@ pref("browser.toolbars.bookmarks.visibility", "newtab");
 pref("browser.toolbars.bookmarks.showOtherBookmarks", true);
 
 // When true, this pref will always show the bookmarks bar on
-// the New Tab Page, allowing showing/hiding via keyboard shortcut,
-// and other functionality to improve the usage of the Bookmarks Toolbar.
-#ifdef EARLY_BETA_OR_EARLIER
+// the New Tab Page, and other functionality to improve the usage of the
+// Bookmarks Toolbar.
 pref("browser.toolbars.bookmarks.2h2020", true);
-#else
-pref("browser.toolbars.bookmarks.2h2020", false);
-#endif
 
 // Prefs to control the Firefox Account toolbar menu.
 // This pref will surface existing Firefox Account information
