@@ -68,10 +68,6 @@ pref("extensions.startupScanScopes", 0);
 pref("extensions.geckoProfiler.acceptedExtensionIds", "geckoprofiler@mozilla.com,quantum-foxfooding@mozilla.com,raptor@mozilla.org");
 
 
-// Add-on content security policies.
-pref("extensions.webextensions.base-content-security-policy", "script-src 'self' https://* moz-extension: blob: filesystem: 'unsafe-eval' 'unsafe-inline'; object-src 'self' https://* moz-extension: blob: filesystem:;");
-pref("extensions.webextensions.default-content-security-policy", "script-src 'self'; object-src 'self';");
-
 pref("extensions.webextensions.remote", true);
 pref("extensions.webextensions.background-delayed-startup", true);
 
@@ -572,9 +568,9 @@ pref("browser.tabs.remote.separatePrivilegedContentProcess", true);
 pref("browser.tabs.remote.separatePrivilegedMozillaWebContentProcess", true);
 
 #ifdef NIGHTLY_BUILD
-pref("browser.tabs.tooltipsShowPid", true);
+pref("browser.tabs.tooltipsShowPidAndActiveness", true);
 #else
-pref("browser.tabs.tooltipsShowPid", false);
+pref("browser.tabs.tooltipsShowPidAndActiveness", false);
 #endif
 
 // allow_eval_* is enabled on Firefox Desktop only at this
@@ -2065,6 +2061,7 @@ pref("browser.engagement.fxa-toolbar-menu-button.has-used", false);
 pref("browser.engagement.home-button.has-used", false);
 pref("browser.engagement.sidebar-button.has-used", false);
 pref("browser.engagement.library-button.has-used", false);
+pref("browser.engagement.ctrlTab.has-used", false);
 
 pref("browser.aboutConfig.showWarning", true);
 
