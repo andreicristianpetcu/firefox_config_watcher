@@ -38,10 +38,10 @@ pref("extensions.postDownloadThirdPartyPrompt", true);
 
 // Preferences for AMO integration
 pref("extensions.getAddons.cache.enabled", true);
-pref("extensions.getAddons.get.url", "https://services.addons.mozilla.org/api/v3/addons/search/?guid=%IDS%&lang=%LOCALE%");
+pref("extensions.getAddons.get.url", "https://services.addons.mozilla.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%");
 pref("extensions.getAddons.search.browseURL", "https://addons.mozilla.org/%LOCALE%/firefox/search?q=%TERMS%&platform=%OS%&appver=%VERSION%");
 pref("extensions.getAddons.link.url", "https://addons.mozilla.org/%LOCALE%/firefox/");
-pref("extensions.getAddons.langpacks.url", "https://services.addons.mozilla.org/api/v3/addons/language-tools/?app=firefox&type=language&appversion=%VERSION%");
+pref("extensions.getAddons.langpacks.url", "https://services.addons.mozilla.org/api/v4/addons/language-tools/?app=firefox&type=language&appversion=%VERSION%");
 pref("extensions.getAddons.discovery.api_url", "https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%");
 
 // Use bloomfilters for the addons blocklist, instead of JSON only.
@@ -67,10 +67,6 @@ pref("extensions.startupScanScopes", 0);
 
 pref("extensions.geckoProfiler.acceptedExtensionIds", "geckoprofiler@mozilla.com,quantum-foxfooding@mozilla.com,raptor@mozilla.org");
 
-
-// Add-on content security policies.
-pref("extensions.webextensions.base-content-security-policy", "script-src 'self' https://* moz-extension: blob: filesystem: 'unsafe-eval' 'unsafe-inline'; object-src 'self' https://* moz-extension: blob: filesystem:;");
-pref("extensions.webextensions.default-content-security-policy", "script-src 'self'; object-src 'self';");
 
 pref("extensions.webextensions.remote", true);
 pref("extensions.webextensions.background-delayed-startup", true);
@@ -276,7 +272,11 @@ pref("browser.startup.firstrunSkipsHomepage", true);
 // Show a skeleton UI window prior to loading libxul. Only visible for windows
 // users as it is not implemented anywhere else.
 #if defined(XP_WIN)
+#ifdef NIGHTLY_BUILD
+pref("browser.startup.preXulSkeletonUI", true);
+#else
 pref("browser.startup.preXulSkeletonUI", false);
+#endif
 #endif
 
 // Don't create the hidden window during startup on
@@ -353,14 +353,6 @@ pref("browser.urlbar.openintab", false);
 // If true, we show tail suggestions when available.
 pref("browser.urlbar.richSuggestions.tail", true);
 
-// Whether the Urlbar can enter search mode. Also controls the other
-// urlbar.update2 prefs.
-pref("browser.urlbar.update2", true);
-
-// Whether horizontal key navigation with left/right is disabled for urlbar's
-// one-off buttons.
-pref("browser.urlbar.update2.disableOneOffsHorizontalKeyNavigation", true);
-
 // Controls the empty search behavior in Search Mode:
 //  0 - Show nothing
 //  1 - Show search history
@@ -373,16 +365,11 @@ pref("browser.urlbar.shortcuts.bookmarks", true);
 pref("browser.urlbar.shortcuts.tabs", true);
 pref("browser.urlbar.shortcuts.history", true);
 
-// Whether the urlbar one-offs act as search filters instead of executing a
-// search immediately.
-pref("browser.urlbar.update2.oneOffsRefresh", true);
-
-// Whether browsing history that is recognized as a previous search should
-// be restyled and deduped against form history. This only happens when
-// search mode is active.
-pref("browser.urlbar.update2.restyleBrowsingHistoryAsSearch", true);
-
 pref("browser.urlbar.eventTelemetry.enabled", false);
+
+// When we send events to Urlbar extensions, we wait this amount of time in
+// milliseconds for them to respond before timing out.
+pref("browser.urlbar.extension.timeout", 400);
 
 // Controls when to DNS resolve single word search strings, after they were
 // searched for. If the string is resolved as a valid host, show a
@@ -581,9 +568,9 @@ pref("browser.tabs.remote.separatePrivilegedContentProcess", true);
 pref("browser.tabs.remote.separatePrivilegedMozillaWebContentProcess", true);
 
 #ifdef NIGHTLY_BUILD
-pref("browser.tabs.tooltipsShowPid", true);
+pref("browser.tabs.tooltipsShowPidAndActiveness", true);
 #else
-pref("browser.tabs.tooltipsShowPid", false);
+pref("browser.tabs.tooltipsShowPidAndActiveness", false);
 #endif
 
 // allow_eval_* is enabled on Firefox Desktop only at this
@@ -836,9 +823,6 @@ pref("browser.preferences.defaultPerformanceSettings.enabled", true);
 pref("browser.preferences.exposeHTTPSOnly", true);
 
 pref("browser.proton.enabled", false);
-
-pref("browser.download.show_plugins_in_list", true);
-pref("browser.download.hide_plugins_without_extensions", true);
 
 // Backspace and Shift+Backspace behavior
 // 0 goes Back/Forward
@@ -1357,21 +1341,29 @@ pref("services.sync.syncedTabs.showRemoteIcons", true);
 // preference is a string so that localizers can alter it.
 pref("browser.menu.showCharacterEncoding", "chrome://browser/locale/browser.properties");
 
-// Allow using tab-modal prompts when possible.
-pref("prompts.tab_modal.enabled", true);
-
 // Whether prompts should be content modal (1) tab modal (2) or window modal(3) by default
 // This is a fallback value for when prompt callers do not specify a modalType.
 pref("prompts.defaultModalType", 3);
 
 pref("browser.topsites.useRemoteSetting", false);
 
-pref("browser.partnerlink.attributionURL", "https://topsites.services.mozilla.com/cid/amzn_2020_a1");
+// The base URL for the Quick Suggest anonymizing proxy. To make a request to
+// the proxy, include a campaign ID in the path.
+pref("browser.partnerlink.attributionURL", "https://topsites.services.mozilla.com/cid/");
+pref("browser.partnerlink.campaign.topsites", "amzn_2020_a1");
 
 // Whether to show tab level system prompts opened via nsIPrompt(Service) as
 // SubDialogs in the TabDialogBox (true) or as TabModalPrompt in the
 // TabModalPromptBox (false).
 pref("prompts.tabChromePromptSubDialog", true);
+
+// Whether to show the dialogs opened at the content level, such as
+// alert() or prompt(), using a SubDialogManager in the TabDialogBox.
+#ifdef EARLY_BETA_OR_EARLIER
+  pref("prompts.contentPromptSubDialog", true);
+#else
+  pref("prompts.contentPromptSubDialog", false);
+#endif
 
 // Activates preloading of the new tab url.
 pref("browser.newtab.preload", true);
@@ -1382,6 +1374,7 @@ pref("browser.newtabpage.activity-stream.newNewtabExperience.enabled", false);
 // A preference which allows us to enable the fly out customization overlay
 // on the newtab page.
 pref("browser.newtabpage.activity-stream.customizationMenu.enabled", false);
+pref("browser.newtabpage.activity-stream.newNewtabExperience.colors", "#0090ED,#FF4F5F,#2AC3A2,#FF7139,#A172FF,#FFA437,#FF2A8A");
 
 // Activity Stream prefs that control to which page to redirect
 #ifndef RELEASE_OR_BETA
@@ -1418,6 +1411,7 @@ pref("browser.newtabpage.activity-stream.asrouter.useRemoteL10n", true);
 pref("browser.newtabpage.activity-stream.discoverystream.enabled", true);
 pref("browser.newtabpage.activity-stream.discoverystream.hardcoded-basic-layout", false);
 pref("browser.newtabpage.activity-stream.discoverystream.spocs-endpoint", "");
+pref("browser.newtabpage.activity-stream.discoverystream.spocs-endpoint-query", "");
 
 // List of regions that do not get stories, regardless of locale-list-config.
 pref("browser.newtabpage.activity-stream.discoverystream.region-stories-block", "FR");
@@ -1701,8 +1695,8 @@ pref("browser.contentblocking.fingerprinting.preferences.ui.enabled", true);
   // Enable cookieBehavior = BEHAVIOR_REJECT_TRACKER_AND_PARTITION_FOREIGN as an option in the custom category ui
   pref("browser.contentblocking.reject-and-isolate-cookies.preferences.ui.enabled", true);
 #endif
-// State Partitioning MVP UI. Disabled by default for now.
-pref("browser.contentblocking.state-partitioning.mvp.ui.enabled", false);
+// State Partitioning MVP UI.
+pref("browser.contentblocking.state-partitioning.mvp.ui.enabled", true);
 
 // Possible values for browser.contentblocking.features.strict pref:
 //   Tracking Protection:
@@ -1728,12 +1722,7 @@ pref("browser.contentblocking.state-partitioning.mvp.ui.enabled", false);
 //     "cookieBehavior4": cookie behaviour BEHAVIOR_REJECT_TRACKER
 //     "cookieBehavior5": cookie behaviour BEHAVIOR_REJECT_TRACKER_AND_PARTITION_FOREIGN
 // One value from each section must be included in the browser.contentblocking.features.strict pref.
-#ifdef NIGHTLY_BUILD
-// Enable Dynamic First-Party Isolation in Nightly.
 pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior5,cm,fp,stp,lvl2");
-#else
-pref("browser.contentblocking.features.strict", "tp,tpPrivate,cookieBehavior4,cm,fp,stp,lvl2");
-#endif
 
 // Hide the "Change Block List" link for trackers/tracking content in the custom
 // Content Blocking/ETP panel. By default, it will not be visible. There is also
@@ -1790,7 +1779,7 @@ pref("browser.contentblocking.report.cryptominer.url", "https://support.mozilla.
 pref("browser.contentblocking.cfr-milestone.enabled", true);
 pref("browser.contentblocking.cfr-milestone.milestone-achieved", 0);
 // Milestones should always be in increasing order
-pref("browser.contentblocking.cfr-milestone.milestones", "[1000, 5000, 10000, 25000, 50000, 100000, 500000]");
+pref("browser.contentblocking.cfr-milestone.milestones", "[1000, 5000, 10000, 25000, 50000, 100000, 250000, 314159, 500000, 750000, 1000000, 1250000, 1500000, 1750000, 2000000, 2250000, 2500000, 8675309]");
 
 // Enables the new Protections Panel.
 #ifdef NIGHTLY_BUILD
@@ -1993,7 +1982,7 @@ pref("extensions.formautofill.loglevel", "Warn");
 
 pref("toolkit.osKeyStore.loglevel", "Warn");
 
-pref("extensions.formautofill.supportedCountries", "US");
+pref("extensions.formautofill.supportedCountries", "US,CA");
 pref("extensions.formautofill.supportRTL", false);
 
 // Whether or not to restore a session with lazy-browser tabs.
@@ -2041,9 +2030,6 @@ pref("app.normandy.onsync_skew_sec", 600);
   pref("app.shield.optoutstudies.enabled", false);
 #endif
 
-// Web apps support
-pref("browser.ssb.enabled", false);
-
 // Multi-lingual preferences
 #if defined(RELEASE_OR_BETA) && !defined(MOZ_DEV_EDITION)
   pref("intl.multilingual.enabled", true);
@@ -2078,6 +2064,8 @@ pref("browser.engagement.downloads-button.has-used", false);
 pref("browser.engagement.fxa-toolbar-menu-button.has-used", false);
 pref("browser.engagement.home-button.has-used", false);
 pref("browser.engagement.sidebar-button.has-used", false);
+pref("browser.engagement.library-button.has-used", false);
+pref("browser.engagement.ctrlTab.has-used", false);
 
 pref("browser.aboutConfig.showWarning", true);
 
@@ -2150,6 +2138,7 @@ pref("devtools.command-button-screenshot.enabled", false);
 pref("devtools.command-button-rulers.enabled", false);
 pref("devtools.command-button-measure.enabled", false);
 pref("devtools.command-button-noautohide.enabled", false);
+pref("devtools.command-button-errorcount.enabled", true);
 #ifndef MOZILLA_OFFICIAL
   pref("devtools.command-button-fission-prefs.enabled", true);
 #endif
@@ -2531,4 +2520,11 @@ pref("first-startup.timeout", 30000);
 // but it exits immediately before taking any action.
 #ifdef XP_WIN
   pref("default-browser-agent.enabled", true);
+#endif
+
+// Test Prefs that do nothing for testing
+#if defined(EARLY_BETA_OR_EARLIER)
+  pref("app.normandy.test-prefs.bool", false);
+  pref("app.normandy.test-prefs.integer", 0);
+  pref("app.normandy.test-prefs.string", "");
 #endif

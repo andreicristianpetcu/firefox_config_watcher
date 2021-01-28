@@ -377,12 +377,12 @@ pref("browser.urlbar.extension.timeout", 400);
 // 0 - never resolve; 1 - use heuristics (default); 2 - always resolve
 pref("browser.urlbar.dnsResolveSingleWordsAfterSearch", 1);
 
-// Whether IME composition should close the results panel.
-// The default value is true because some IME open a picker panel, and we end
+// Whether the results panel should be kept open during IME composition.
+// The default value is false because some IME open a picker panel, and we end
 // up with two panels on top of each other. Since for now we can't detect that
 // we leave this choice to the user, hopefully in the future this can be flipped
 // for everyone.
-pref("browser.urlbar.imeCompositionClosesPanel", true);
+pref("browser.urlbar.keepPanelOpenDuringImeComposition", false);
 
 pref("browser.altClickSave", false);
 
@@ -1370,7 +1370,7 @@ pref("browser.newtabpage.activity-stream.newNewtabExperience.enabled", false);
 // A preference which allows us to enable the fly out customization overlay
 // on the newtab page.
 pref("browser.newtabpage.activity-stream.customizationMenu.enabled", false);
-pref("browser.newtabpage.activity-stream.newNewtabExperience.colors", "#0090ED,#FF4F5F,#2AC3A2,#FF7139,#A172FF,#FFA437,#FF2A8A,#FFD567");
+pref("browser.newtabpage.activity-stream.newNewtabExperience.colors", "#0090ED,#FF4F5F,#2AC3A2,#FF7139,#A172FF,#FFA437,#FF2A8A");
 
 // Activity Stream prefs that control to which page to redirect
 #ifndef RELEASE_OR_BETA

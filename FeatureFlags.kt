@@ -22,11 +22,6 @@ object FeatureFlags {
     val syncedTabsInTabsTray = Config.channel.isNightlyOrDebug
 
     /**
-     * Enables downloads with external download managers.
-     */
-    const val externalDownloadManager = true
-
-    /**
      * Enables the Nimbus experiments library, especially the settings toggle to opt-out of
      * all experiments.
      */
@@ -51,11 +46,6 @@ object FeatureFlags {
      */
     @Suppress("MayBeConst")
     val newMediaSessionApi = true
-
-    /**
-     * Enabled showing site permission indicators in the toolbars.
-     */
-    val permissionIndicatorsToolbar = Config.channel.isNightlyOrDebug
 
     /**
      * Enables experimental WebAuthn support. This implementation should never reach release!
