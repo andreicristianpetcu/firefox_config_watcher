@@ -79,8 +79,9 @@ pref("security.enterprise_roots.enabled", false);
 
 // If true, attempt to load the osclientcerts PKCS#11 module at startup on a
 // background thread. This module allows Firefox to use client certificates
-// stored in OS certificate storage. Currently only available for Windows.
-#ifdef NIGHTLY_BUILD
+// stored in OS certificate storage. Currently only available for Windows and
+// macOS.
+#ifdef EARLY_BETA_OR_EARLIER
   pref("security.osclientcerts.autoload", true);
 #else
   pref("security.osclientcerts.autoload", false);
@@ -160,10 +161,6 @@ pref("security.webauth.webauthn_enable_softtoken", false);
   pref("security.webauth.webauthn_enable_usbtoken", true);
 #endif
 
-pref("security.ssl.errorReporting.enabled", false);
-pref("security.ssl.errorReporting.url", "https://incoming.telemetry.mozilla.org/submit/sslreports/");
-pref("security.ssl.errorReporting.automatic", false);
-
 pref("security.xfocsp.errorReporting.enabled", true);
 pref("security.xfocsp.errorReporting.automatic", false);
 
@@ -175,11 +172,7 @@ pref("security.cert_pinning.max_max_age_seconds", 5184000);
 // 0: Disable CRLite entirely
 // 1: Enable and check revocations via CRLite, but only collect telemetry
 // 2: Enable and enforce revocations via CRLite
-#if defined(NIGHTLY_BUILD)
-pref("security.pki.crlite_mode", 2);
-#else
 pref("security.pki.crlite_mode", 1);
-#endif
 
 // Represents the expected certificate transparency log merge delay (including
 // the time to generate a CRLite filter). Currently 28 hours in seconds.
@@ -201,12 +194,12 @@ pref("security.pki.mitm_canary_issuer.enabled", true);
 pref("security.pki.mitm_detected", false);
 
 // Intermediate CA Preloading settings
-#if defined(MOZ_NEW_CERT_STORAGE) && !defined(MOZ_WIDGET_ANDROID)
+#if !defined(MOZ_WIDGET_ANDROID)
   pref("security.remote_settings.intermediates.enabled", true);
 #else
   pref("security.remote_settings.intermediates.enabled", false);
 #endif
-#if defined(MOZ_NEW_CERT_STORAGE) && !defined(MOZ_WIDGET_ANDROID) && defined(EARLY_BETA_OR_EARLIER)
+#if defined(EARLY_BETA_OR_EARLIER) && !defined(MOZ_WIDGET_ANDROID)
   pref("security.intermediate_preloading_healer.enabled", true);
 #else
   pref("security.intermediate_preloading_healer.enabled", false);
@@ -380,8 +373,6 @@ pref("media.hardware-video-decoding.enabled", true);
 
 #ifdef MOZ_WMF
   pref("media.wmf.dxva.enabled", true);
-  pref("media.wmf.disable-d3d11-for-dlls", "igd11dxva64.dll: 20.19.15.4463, 20.19.15.4454, 20.19.15.4444, 20.19.15.4416, 20.19.15.4404, 20.19.15.4390, 20.19.15.4380, 20.19.15.4377, 20.19.15.4364, 20.19.15.4360, 20.19.15.4352, 20.19.15.4331, 20.19.15.4326, 20.19.15.4300; igd10iumd32.dll: 20.19.15.4444, 20.19.15.4424, 20.19.15.4409, 20.19.15.4390, 20.19.15.4380, 20.19.15.4360, 10.18.10.4358, 20.19.15.4331, 20.19.15.4312, 20.19.15.4300, 10.18.15.4281, 10.18.15.4279, 10.18.10.4276, 10.18.15.4268, 10.18.15.4256, 10.18.10.4252, 10.18.15.4248, 10.18.14.4112, 10.18.10.3958, 10.18.10.3496, 10.18.10.3431, 10.18.10.3412, 10.18.10.3355, 9.18.10.3234, 9.18.10.3071, 9.18.10.3055, 9.18.10.3006; igd10umd32.dll: 9.17.10.4229, 9.17.10.3040, 9.17.10.2884, 9.17.10.2857, 8.15.10.2274, 8.15.10.2272, 8.15.10.2246, 8.15.10.1840, 8.15.10.1808; igd10umd64.dll: 9.17.10.4229, 9.17.10.2884, 9.17.10.2857, 10.18.10.3496; isonyvideoprocessor.dll: 4.1.2247.8090, 4.1.2153.6200; tosqep.dll: 1.2.15.526, 1.1.12.201, 1.0.11.318, 1.0.11.215, 1.0.10.1224; tosqep64.dll: 1.1.12.201, 1.0.11.215; nvwgf2um.dll: 22.21.13.8253, 22.21.13.8233, 22.21.13.8205, 22.21.13.8189, 22.21.13.8178, 22.21.13.8165, 21.21.13.7892, 21.21.13.7878, 21.21.13.7866, 21.21.13.7849, 21.21.13.7654, 21.21.13.7653, 21.21.13.7633, 21.21.13.7619, 21.21.13.7563, 21.21.13.7306, 21.21.13.7290, 21.21.13.7270, 21.21.13.7254, 21.21.13.6939, 21.21.13.6926, 21.21.13.6909, 21.21.13.4201, 21.21.13.4200, 10.18.13.6881, 10.18.13.6839, 10.18.13.6510, 10.18.13.6472, 10.18.13.6143, 10.18.13.5946, 10.18.13.5923, 10.18.13.5921, 10.18.13.5891, 10.18.13.5887, 10.18.13.5582, 10.18.13.5445, 10.18.13.5382, 10.18.13.5362, 9.18.13.4788, 9.18.13.4752, 9.18.13.4725, 9.18.13.4709, 9.18.13.4195, 9.18.13.4192, 9.18.13.4144, 9.18.13.4052, 9.18.13.3788, 9.18.13.3523, 9.18.13.3235, 9.18.13.3165, 9.18.13.2723, 9.18.13.2702, 9.18.13.1422, 9.18.13.1407, 9.18.13.1106, 9.18.13.546; atidxx32.dll: 21.19.151.3, 21.19.142.257, 21.19.137.514, 21.19.137.1, 21.19.134.1, 21.19.128.7, 21.19.128.4, 20.19.0.32837, 20.19.0.32832, 8.17.10.682, 8.17.10.671, 8.17.10.661, 8.17.10.648, 8.17.10.644, 8.17.10.625, 8.17.10.605, 8.17.10.581, 8.17.10.569, 8.17.10.560, 8.17.10.545, 8.17.10.539, 8.17.10.531, 8.17.10.525, 8.17.10.520, 8.17.10.519, 8.17.10.514, 8.17.10.511, 8.17.10.494, 8.17.10.489, 8.17.10.483, 8.17.10.453, 8.17.10.451, 8.17.10.441, 8.17.10.436, 8.17.10.432, 8.17.10.425, 8.17.10.418, 8.17.10.414, 8.17.10.401, 8.17.10.395, 8.17.10.385, 8.17.10.378, 8.17.10.362, 8.17.10.355, 8.17.10.342, 8.17.10.331, 8.17.10.318, 8.17.10.310, 8.17.10.286, 8.17.10.269, 8.17.10.261, 8.17.10.247, 8.17.10.240, 8.15.10.212; atidxx64.dll: 21.19.151.3, 21.19.142.257, 21.19.137.514, 21.19.137.1, 21.19.134.1, 21.19.128.7, 21.19.128.4, 20.19.0.32832, 8.17.10.682, 8.17.10.661, 8.17.10.644, 8.17.10.625; nvumdshim.dll: 10.18.13.6822");
-  pref("media.wmf.disable-d3d9-for-dlls", "igdumd64.dll: 8.15.10.2189, 8.15.10.2119, 8.15.10.2104, 8.15.10.2102, 8.771.1.0; atiumd64.dll: 7.14.10.833, 7.14.10.867, 7.14.10.885, 7.14.10.903, 7.14.10.911, 8.14.10.768, 9.14.10.1001, 9.14.10.1017, 9.14.10.1080, 9.14.10.1128, 9.14.10.1162, 9.14.10.1171, 9.14.10.1183, 9.14.10.1197, 9.14.10.945, 9.14.10.972, 9.14.10.984, 9.14.10.996");
   pref("media.wmf.play-stand-alone", true);
 #endif
 pref("media.gmp.decoder.aac", 0);
@@ -409,12 +400,13 @@ pref("media.decoder-doctor.verbose", false);
 pref("media.decoder-doctor.new-issue-endpoint", "https://webcompat.com/issues/new");
 
 pref("media.videocontrols.picture-in-picture.enabled", false);
-pref("media.videocontrols.picture-in-picture.allow-multiple", false);
+pref("media.videocontrols.picture-in-picture.allow-multiple", true);
 pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.always-show", false);
 pref("media.videocontrols.picture-in-picture.video-toggle.min-video-secs", 45);
 pref("media.videocontrols.picture-in-picture.video-toggle.position", "right");
 pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
+pref("media.videocontrols.keyboard-tab-to-all-controls", true);
 
 #ifdef MOZ_WEBRTC
   pref("media.navigator.video.enabled", true);
@@ -501,11 +493,7 @@ pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   pref("media.peerconnection.mute_on_bye_or_timeout", false);
 
   // 770 = DTLS 1.0, 771 = DTLS 1.2, 772 = DTLS 1.3
-#ifdef EARLY_BETA_OR_EARLIER
-  pref("media.peerconnection.dtls.version.min", 771);
-#else
-  pref("media.peerconnection.dtls.version.min", 770);
-#endif
+pref("media.peerconnection.dtls.version.min", 771);
 #ifdef NIGHTLY_BUILD
   pref("media.peerconnection.dtls.version.max", 772);
 #else
@@ -601,11 +589,6 @@ pref("gfx.downloadable_fonts.fallback_delay_short", 100);
 // the uncached load behavior across pages (useful for testing reflow problems)
 pref("gfx.downloadable_fonts.disable_cache", false);
 
-#ifdef ANDROID
-  pref("gfx.bundled_fonts.enabled", true);
-  pref("gfx.bundled_fonts.force-enabled", false);
-#endif
-
 // Do we fire a notification about missing fonts, so the front-end can decide
 // whether to try and do something about it (e.g. download additional fonts)?
 pref("gfx.missing_fonts.notify", false);
@@ -663,6 +646,7 @@ pref("gfx.webrender.debug.echo-driver-messages", false);
 pref("gfx.webrender.debug.show-overdraw", false);
 pref("gfx.webrender.debug.slow-frame-indicator", false);
 pref("gfx.webrender.debug.picture-caching", false);
+pref("gfx.webrender.debug.force-picture-invalidation", false);
 pref("gfx.webrender.debug.tile-cache-logging", false);
 pref("gfx.webrender.debug.primitives", false);
 pref("gfx.webrender.debug.small-screen", false);
@@ -670,6 +654,17 @@ pref("gfx.webrender.debug.obscure-images", false);
 pref("gfx.webrender.debug.glyph-flashing", false);
 pref("gfx.webrender.debug.capture-profiler", false);
 pref("gfx.webrender.debug.profiler-ui", "Default");
+
+// Temporarily use the debug pref to configure the upload startegy on windows.
+// If this doesn't cause breakage it will be selected directly in WebRender's
+// initialization code.
+#ifdef XP_WIN
+pref("gfx.webrender.debug.batched-texture-uploads", true);
+pref("gfx.webrender.debug.draw-calls-for-texture-copy", true);
+#else
+pref("gfx.webrender.debug.batched-texture-uploads", false);
+pref("gfx.webrender.debug.draw-calls-for-texture-copy", false);
+#endif
 
 
 pref("accessibility.warn_on_browsewithcaret", true);
@@ -950,6 +945,10 @@ pref("print.cups.monochrome.extra_settings", "");
 // Save the Printings after each print job
 pref("print.save_print_settings", true);
 
+// Enables the "more settings" in Print Preview to match previous
+// configuration.
+pref("print.more-settings.open", false);
+
 // Enables you to specify the amount of the paper that is to be treated
 // as unwriteable.  The print_edge_XXX and print_margin_XXX preferences
 // are treated as offsets that are added to this pref.
@@ -1009,7 +1008,7 @@ pref("dom.disable_window_move_resize",      false);
 
 pref("dom.allow_scripts_to_close_windows",          false);
 
-pref("dom.popup_allowed_events", "change click dblclick auxclick mouseup pointerup notificationclick reset submit touchend contextmenu");
+pref("dom.popup_allowed_events", "change click dblclick auxclick mousedown mouseup pointerdown pointerup notificationclick reset submit touchend contextmenu");
 
 pref("dom.serviceWorkers.disable_open_click_delay", 1000);
 
@@ -1097,7 +1096,6 @@ pref("javascript.options.baselinejit.threshold", 100);
 pref("javascript.options.ion",              true);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.ion.threshold",    1500);
-pref("javascript.options.ion.full.threshold", 100000);
 // Duplicated in JitOptions - ensure both match.
 pref("javascript.options.ion.frequent_bailout_threshold", 10);
 pref("javascript.options.asmjs",                  true);
@@ -1921,8 +1919,6 @@ pref("network.http.tailing.total-max", 45000);
 
 // Enable or disable the whole fix from bug 1563538
 pref("network.http.spdy.bug1563538", true);
-pref("network.http.spdy.bug1563695", true);
-pref("network.http.spdy.bug1556491", true);
 
 pref("network.proxy.ftp",                   "");
 pref("network.proxy.ftp_port",              0);
@@ -2558,18 +2554,9 @@ pref("dom.ipc.processCount.webLargeAllocation", 10);
 // Disable e10s for Gecko by default. This is overridden in firefox.js.
 pref("browser.tabs.remote.autostart", false);
 
-// Disable fission for Gecko by default. Lock it on release and beta because
-// it is not ready for use and can leak URIs to telemetry until bug 1561653 is
-// fixed.
-// IMPORTANT: This preference should *almost never* be checked directly, since
-// any session can contain a mix of Fission and non-Fission windows. Instead,
-// callers should check whether the relevant nsILoadContext has the
-// `useRemoteSubframes` flag set.
-#if defined(RELEASE_OR_BETA)
-  pref("fission.autostart", false, locked);
-#else
-  pref("fission.autostart", false);
-#endif
+// Whether certain properties from origin attributes should be included as part
+// of remote types. Only in effect when fission is enabled.
+pref("browser.tabs.remote.useOriginAttributesInRemoteType", false);
 
 // Pref to control whether we use separate content processes for top-level load
 // of file:// URIs.
@@ -3318,8 +3305,6 @@ pref("font.size.monospace.x-math", 13);
   // See bug 404131, topmost <panel> element wins to Dashboard on MacOSX.
   pref("ui.panel.default_level_parent", false);
 
-  pref("ui.plugin.cancel_composition_at_input_source_changed", false);
-
   // Macbook touchpad two finger pixel scrolling
   pref("mousewheel.enable_pixel_scrolling", true);
 
@@ -3786,20 +3771,6 @@ pref("network.tcp.keepalive.idle_time", 600); // seconds; 10 mins
   pref("network.tcp.keepalive.probe_count", 4);
 #endif
 
-pref("network.tcp.tcp_fastopen_enable", false);
-
-pref("network.tcp.tcp_fastopen_consecutive_failure_limit", 5);
-// We are trying to detect stalled tcp connections that use TFO and TLS
-// (bug 1395494).
-// This is only happening if a connection is idle for more than 10s, but we
-// will make this a pref. If tcp_fastopen_http_stalls_limit of stalls are
-// detected the TCP fast open will be disabled.
-// If tcp_fastopen_http_check_for_stalls_only_if_idle_for is set to 0 the
-// check will not be performed.
-pref("network.tcp.tcp_fastopen_http_check_for_stalls_only_if_idle_for", 10);
-pref("network.tcp.tcp_fastopen_http_stalls_limit", 3);
-pref("network.tcp.tcp_fastopen_http_stalls_timeout", 20);
-
 // This pref controls if we send the "public-suffix-list-updated" notification
 // from PublicSuffixList.onUpdate() - Doing so would cause the PSL graph to
 // be updated while Firefox is running which may cause principals to have an
@@ -3813,8 +3784,7 @@ pref("network.psl.onUpdate_notify", false);
   pref("widget.titlebar-x11-use-shape-mask", false);
 #endif
 #ifdef MOZ_WAYLAND
-  pref("widget.wayland_vsync.enabled", false);
-  pref("widget.wayland.use-opaque-region", false);
+  pref("widget.wayland_vsync.enabled", true);
   pref("widget.use-xdg-desktop-portal", false);
 #endif
 
@@ -3885,9 +3855,6 @@ pref("extensions.webextensions.restrictedDomains", "accounts-static.cdn.mozilla.
 // unless other process sandboxing and extension remoting prefs are changed.
 pref("extensions.webextensions.protocol.remote", true);
 
-// Enable tab hiding API by default.
-pref("extensions.webextensions.tabhide.enabled", true);
-
 // Enable userScripts API by default.
 pref("extensions.webextensions.userScripts.enabled", true);
 
@@ -3924,6 +3891,12 @@ pref("extensions.webcompat-reporter.newIssueEndpoint", "https://webcompat.com/is
 #else
   pref("extensions.webcompat-reporter.enabled", false);
 #endif
+
+// Add-on content security policies.
+pref("extensions.webextensions.base-content-security-policy", "script-src 'self' https://* http://localhost:* http://127.0.0.1:* moz-extension: blob: filesystem: 'unsafe-eval' 'unsafe-inline'; object-src 'self' moz-extension: blob: filesystem:;");
+pref("extensions.webextensions.base-content-security-policy.v3", "script-src 'self' http://localhost:* http://127.0.0.1:*; object-src 'self';");
+pref("extensions.webextensions.default-content-security-policy", "script-src 'self'; object-src 'self';");
+
 
 pref("network.buffer.cache.count", 24);
 pref("network.buffer.cache.size",  32768);
@@ -4363,11 +4336,6 @@ pref("media.default_volume", "1.0");
 // return the maximum number of cores that navigator.hardwareCurrency returns
 pref("dom.maxHardwareConcurrency", 16);
 
-// Shutdown the osfile worker if its no longer needed.
-#if !defined(RELEASE_OR_BETA)
-  pref("osfile.reset_worker_delay", 30000);
-#endif
-
 pref("dom.storageManager.prompt.testing", false);
 pref("dom.storageManager.prompt.testing.allow", false);
 
@@ -4596,11 +4564,7 @@ pref("marionette.contentListener", false);
 #if defined(ENABLE_REMOTE_AGENT)
   // Indicates whether the remote agent is enabled.
   // If it is false, the remote agent will not be loaded.
-  #if defined(NIGHTLY_BUILD)
-    pref("remote.enabled", true);
-  #else
-    pref("remote.enabled", false);
-  #endif
+  pref("remote.enabled", true);
 
   // Limits remote agent to listen on loopback devices,
   // e.g. 127.0.0.1, localhost, and ::1.
