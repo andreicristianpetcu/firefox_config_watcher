@@ -29,11 +29,7 @@ pref("security.tls.insecure_fallback_hosts", "");
 // https://tools.ietf.org/html/draft-davidben-http2-tls13-00
 pref("security.tls.enable_post_handshake_auth", false);
 pref("security.tls.hello_downgrade_check", true);
-#ifdef NIGHTLY_BUILD
-  pref("security.tls.enable_delegated_credentials", true);
-#else if MOZ_UPDATE_CHANNEL != esr
-  pref("security.tls.enable_delegated_credentials", false);
-#endif
+pref("security.tls.enable_delegated_credentials", true);
 
 pref("security.ssl.treat_unsafe_negotiation_as_broken", false);
 pref("security.ssl.require_safe_negotiation",  false);
@@ -630,10 +626,6 @@ pref("gfx.font_rendering.graphite.enabled", true);
   pref("gfx.webrender.triple-buffering.enabled", true);
 #endif
 
-#if defined(XP_WIN) || defined(MOZ_WIDGET_ANDROID)
-  pref("gfx.webrender.program-binary-disk", true);
-#endif
-
 // WebRender debugging utilities.
 pref("gfx.webrender.debug.texture-cache", false);
 pref("gfx.webrender.debug.texture-cache.clear-evicted", true);
@@ -694,6 +686,21 @@ pref("accessibility.browsewithcaret_shortcut.enabled", true);
 #if !defined(XP_MACOSX) && !defined(MOZ_WIDGET_GTK)
   pref("ui.scrollToClick", 0);
 #endif
+
+// These are some selection-related colors which have no per platform
+// implementation.
+#if !defined(XP_MACOSX)
+pref("ui.textSelectBackgroundDisabled", "#b0b0b0");
+#endif
+// This makes the selection stand out when typeaheadfind is on.
+// Used with nsISelectionController::SELECTION_ATTENTION
+pref("ui.textSelectBackgroundAttention", "#38d878");
+// This makes the matched text stand out when findbar highlighting is on.
+// Used with nsISelectionController::SELECTION_FIND
+pref("ui.textHighlightBackground", "#ef0fff");
+// The foreground color for the matched text in findbar highlighting
+// Used with nsISelectionController::SELECTION_FIND
+pref("ui.textHighlightForeground", "#ffffff");
 
 // We want the ability to forcibly disable platform a11y, because
 // some non-a11y-related components attempt to bring it up.  See bug
@@ -792,7 +799,7 @@ pref("toolkit.telemetry.unified", true);
   #if defined(MOZ_TSAN)
     pref("toolkit.asyncshutdown.crash_timeout", 360000); // 6 minutes
   #else
-    pref("toolkit.asyncshutdown.crash_timeout", 180000); // 3 minutes
+    pref("toolkit.asyncshutdown.crash_timeout", 300000); // 5 minutes
   #endif
 #endif // !defined(MOZ_ASAN) && !defined(MOZ_TSAN)
 // Extra logging for AsyncShutdown barriers and phases
@@ -1095,13 +1102,6 @@ pref("javascript.options.wasm_trustedprincipals", true);
 pref("javascript.options.wasm_verbose",           false);
 pref("javascript.options.wasm_baselinejit",       true);
 
-#ifdef ENABLE_WASM_REFTYPES
-  pref("javascript.options.wasm_reftypes",        true);
-  pref("javascript.options.wasm_gc",              false);
-#endif
-#ifdef ENABLE_WASM_MULTI_VALUE
-  pref("javascript.options.wasm_multi_value",     true);
-#endif
 pref("javascript.options.parallel_parsing", true);
 pref("javascript.options.source_pragmas",    true);
 
@@ -1415,7 +1415,7 @@ pref("network.http.spdy.websockets", true);
 pref("network.http.spdy.enable-hpack-dump", false);
 
 // Http3 parameters
-#if defined(EARLY_BETA_OR_EARLIER) && !defined(ANDROID)
+#if defined(EARLY_BETA_OR_EARLIER)
 pref("network.http.http3.enabled", true);
 #else
 pref("network.http.http3.enabled", false);
@@ -1954,6 +1954,10 @@ pref("font.language.group",                 "chrome://global/locale/intl.propert
 pref("font.cjk_pref_fallback_order",        "zh-cn,zh-hk,zh-tw,ja,ko");
 
 pref("intl.uidirection", -1); // -1 to set from locale; 0 for LTR; 1 for RTL
+
+// This pref controls pseudolocales for testing localization.
+// See https://firefox-source-docs.mozilla.org/l10n/fluent/tutorial.html#pseudolocalization.
+pref("intl.l10n.pseudo", "");
 
 // use en-US hyphenation by default for content tagged with plain lang="en"
 pref("intl.hyphenation-alias.en", "en-us");
@@ -2524,10 +2528,6 @@ pref("browser.tabs.remote.autostart", false);
 // Whether certain properties from origin attributes should be included as part
 // of remote types. Only in effect when fission is enabled.
 pref("browser.tabs.remote.useOriginAttributesInRemoteType", true);
-
-// Pref to control whether we use separate content processes for top-level load
-// of file:// URIs.
-pref("browser.tabs.remote.separateFileUriProcess", true);
 
 // Pref to control whether we put all data: uri's in the default
 // web process when running with fission.
@@ -3678,7 +3678,8 @@ pref("signon.storeWhenAutocompleteOff",     true);
 pref("signon.userInputRequiredToCapture.enabled", true);
 pref("signon.debug",                        false);
 pref("signon.recipes.path", "resource://app/defaults/settings/main/password-recipes.json");
-pref("signon.recipes.remoteRecipesEnabled", true);
+pref("signon.recipes.remoteRecipes.enabled", true);
+pref("signon.relatedRealms.enabled", false);
 
 pref("signon.schemeUpgrades",                     true);
 pref("signon.includeOtherSubdomainsInLookup",     true);
@@ -3883,9 +3884,6 @@ pref("alerts.showFavicons", false);
 #ifdef XP_MACOSX
   // Whether to use macOS native full screen for Fullscreen API
   pref("full-screen-api.macos-native-full-screen", false);
-  // Whether the toolbar should slide down with the menubar when the user mouses
-  // to the top of the screen in fullscreen mode.
-  pref("full-screen-api.macos.shiftToolbar", false);
 #endif
 // whether to prevent the top level widget from going fullscreen
 pref("full-screen-api.ignore-widgets", false);
@@ -4003,9 +4001,6 @@ pref("network.trr.custom_uri", "");
 // Before TRR is widely used the NS record for this host is fetched
 // from the DOH end point to ensure proper configuration
 pref("network.trr.confirmationNS", "example.com");
-// hardcode the resolution of the hostname in network.trr.uri instead of
-// relying on the system resolver to do it for you
-pref("network.trr.bootstrapAddress", "");
 // TRR blacklist entry expire time (in seconds). Default is one minute.
 // Meant to survive basically a page load.
 pref("network.trr.blacklist-duration", 60);
@@ -4013,8 +4008,8 @@ pref("network.trr.blacklist-duration", 60);
 pref("network.trr.excluded-domains", "");
 pref("network.trr.builtin-excluded-domains", "localhost,local");
 
-pref("captivedetect.canonicalURL", "http://detectportal.firefox.com/success.txt");
-pref("captivedetect.canonicalContent", "success\n");
+pref("captivedetect.canonicalURL", "http://detectportal.firefox.com/canonical.html");
+pref("captivedetect.canonicalContent", "<meta http-equiv=\"refresh\" content=\"0;url=https://support.mozilla.org/kb/captive-portal\"/>");
 pref("captivedetect.maxWaitingTime", 5000);
 pref("captivedetect.pollingTime", 3000);
 pref("captivedetect.maxRetryCount", 5);
@@ -4636,3 +4631,33 @@ pref("security.external_protocol_requires_permission", true);
 #ifdef XP_WIN
   pref("browser.enableAboutThirdParty", false);
 #endif
+
+// Preferences for the form autofill toolkit component.
+// The truthy values of "extensions.formautofill.available" are "on" and "detect",
+// any other value means autofill isn't available.
+// "detect" means it's enabled if conditions defined in the extension are met.
+pref("extensions.formautofill.available", "detect");
+pref("extensions.formautofill.addresses.enabled", true);
+pref("extensions.formautofill.addresses.capture.enabled", false);
+pref("extensions.formautofill.creditCards.available", true);
+pref("extensions.formautofill.creditCards.enabled", true);
+// Temporary preference to control displaying the UI elements for
+// credit card autofill used for the duration of the A/B test.
+pref("extensions.formautofill.creditCards.hideui", false);
+// Pref for shield/heartbeat to recognize users who have used Credit Card
+// Autofill. The valid values can be:
+// 0: none
+// 1: submitted a manually-filled credit card form (but didn't see the doorhanger
+//    because of a duplicate profile in the storage)
+// 2: saw the doorhanger
+// 3: submitted an autofill'ed credit card form
+pref("extensions.formautofill.creditCards.used", 0);
+pref("extensions.formautofill.firstTimeUse", true);
+pref("extensions.formautofill.heuristics.enabled", true);
+pref("extensions.formautofill.section.enabled", true);
+pref("extensions.formautofill.loglevel", "Warn");
+
+pref("toolkit.osKeyStore.loglevel", "Warn");
+
+pref("extensions.formautofill.supportedCountries", "US,CA");
+pref("extensions.formautofill.supportRTL", false);
